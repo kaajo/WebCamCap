@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CamWidget</class>
+ <widget class="QWidget" name="CamWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>320</width>
+    <height>281</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="CQtOpenCVViewerGl" name="glimage" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>40</y>
+     <width>320</width>
+     <height>240</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="UseCamera">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>10</y>
+     <width>101</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Use camera</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="Threshold">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>51</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>256</number>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="ShowVideo">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>10</y>
+     <width>91</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Show video</string>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CQtOpenCVViewerGl</class>
+   <extends>QWidget</extends>
+   <header location="global">camwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
