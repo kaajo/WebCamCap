@@ -328,12 +328,12 @@ int main( int argc, char** argv )
         const char* s = argv[i];
         if( strcmp( s, "-w" ) == 0 )
         {
-            if( sscanf( argv[++i], "%u", &boardSize.width ) != 1 || boardSize.width <= 0 )
+            if( sscanf( argv[++i], "%d", &boardSize.width ) != 1 || boardSize.width <= 0 )
                 return fprintf( stderr, "Invalid board width\n" ), -1;
         }
         else if( strcmp( s, "-h" ) == 0 )
         {
-            if( sscanf( argv[++i], "%u", &boardSize.height ) != 1 || boardSize.height <= 0 )
+            if( sscanf( argv[++i], "%d", &boardSize.height ) != 1 || boardSize.height <= 0 )
                 return fprintf( stderr, "Invalid board height\n" ), -1;
         }
         else if( strcmp( s, "-pt" ) == 0 )
@@ -355,7 +355,7 @@ int main( int argc, char** argv )
         }
         else if( strcmp( s, "-n" ) == 0 )
         {
-            if( sscanf( argv[++i], "%u", &nframes ) != 1 || nframes <= 3 )
+            if( sscanf( argv[++i], "%d", &nframes ) != 1 || nframes <= 3 )
                 return printf("Invalid number of images\n" ), -1;
         }
         else if( strcmp( s, "-a" ) == 0 )
@@ -366,7 +366,7 @@ int main( int argc, char** argv )
         }
         else if( strcmp( s, "-d" ) == 0 )
         {
-            if( sscanf( argv[++i], "%u", &delay ) != 1 || delay <= 0 )
+            if( sscanf( argv[++i], "%d", &delay ) != 1 || delay <= 0 )
                 return printf("Invalid delay\n" ), -1;
         }
         else if( strcmp( s, "-op" ) == 0 )
