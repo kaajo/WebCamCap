@@ -466,7 +466,7 @@ void Room::sendMessageString(std::string str)
     out.device()->seek(0);
     out << (quint16)(block.size() - sizeof(quint16));
 
-    if(socket != nullptr)
+    if(socket != nullptr && socket->isOpen() && socket->isWritable())
     {
         socket->write(block);
         socket->flush();
@@ -564,8 +564,14 @@ void Room::handleConnection()
 
     if(socket != nullptr)
     {
-        connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
+        connect(socket, SIGNAL(disconnected()), this, SLOT(handleDisconnected()));
     }
+}
+
+void Room::handleDisconnected()
+{
+    delete socket;
+    socket = nullptr;
 }
 
 const QString projectNameKey("projectName");

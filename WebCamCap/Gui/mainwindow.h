@@ -45,7 +45,7 @@ class MainWindow : public QMainWindow
 
     bool captureAnimation;
     bool record;
-    Room *project;
+    Room *project = nullptr;
 
     std::vector<std::vector<Line> > lines;
     std::vector<glm::vec3> points;
@@ -60,7 +60,7 @@ class MainWindow : public QMainWindow
     QVector<Animation*> m_animations;
 
     //scroll area
-    QWidget *scrollWidget;
+    QWidget *scrollWidget = nullptr;
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -121,6 +121,8 @@ private:
     void handleMainWProject(Room *p);
 
     void editProject(Room * project);
+
+    void noProjectOpenedWarning();
 
     Ui::MainWindow *ui;
 };

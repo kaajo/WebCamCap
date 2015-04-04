@@ -142,6 +142,7 @@ private slots:
     void ResultReady(QVector<Line> lines);
     void record2D();
     void handleConnection();
+    void handleDisconnected();
 
 private:
     void sendMessage(std::vector<Pnt> &Points);

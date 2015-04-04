@@ -251,7 +251,10 @@ void MainWindow::on_openProject_triggered()
 
 void MainWindow::on_editProject_triggered()
 {
-    editProject(project);
+    if(project != nullptr)
+    {
+        editProject(project);
+    }
 }
 
 void MainWindow::on_saveProject_triggered()
@@ -292,15 +295,18 @@ void MainWindow::on_saveProject_triggered()
     }
     else
     {
-        QMessageBox msgBox;
-        msgBox.setWindowTitle("");
-        msgBox.warning(this, "", "No project opened");
-        msgBox.setFixedSize(200,100);
+        noProjectOpenedWarning();
     }
 }
 
 void MainWindow::on_nahravanie_clicked(bool checked)
 {
+    if(project == nullptr)
+    {
+        ui->nahravanie->setChecked(false);
+        return;
+    }
+
     if(checked)
     {
         ui->nahravanie->setText("Stop");
@@ -442,8 +448,18 @@ void MainWindow::editProject(Room *project)
     }
 }
 
+void MainWindow::noProjectOpenedWarning()
+{
+    QMessageBox::warning(this, "Warning", "No project opened");
+}
+
 void MainWindow::on_playButton_pressed()
 {
+    if(project == nullptr)
+    {
+        return;
+    }
+
     if(!captureAnimation)
     {
         captureAnimation = true;
@@ -453,6 +469,11 @@ void MainWindow::on_playButton_pressed()
 
 void MainWindow::on_stopButton_pressed()
 {
+    if(project == nullptr)
+    {
+        return;
+    }
+
     if(captureAnimation)
     {
         Animation * ActualAnimation = project->CaptureAnimationStop();
@@ -534,6 +555,12 @@ void MainWindow::on_JointsCheck_stateChanged(int arg1)
 
 void MainWindow::on_LivePipe_stateChanged(int arg1)
 {
+    if(project == nullptr)
+    {
+        ui->LivePipe->setChecked(false);
+        return;
+    }
+
     if(arg1 == 0)
     {
         project->setPipe(false);
@@ -546,6 +573,11 @@ void MainWindow::on_LivePipe_stateChanged(int arg1)
 
 void MainWindow::on_NumberOfPoints_editingFinished()
 {
+    if(project == nullptr)
+    {
+        return;
+    }
+
     project->setNumberOfPoints(ui->NumberOfPoints->text().toInt());
 }
 
