@@ -5,7 +5,7 @@
 
 /**
  * @author Miroslav Krajicek <409917@mail.muni.cz>
- * @class Movement
+ * @class Movement movement.h
  * @brief Small class used to keep information about direction and size of movement.
  * @date 2015
  */
@@ -25,26 +25,26 @@ public:
     Movement(glm::vec3 direction, float size);
 
     /**
-     * @brief direction
-     * @return
+     * @brief direction getter
+     * @return returns Direction of Movement. Default is glm::vec3(0.0f,0.0f,0.0f)
      */
     glm::vec3 direction() const;
 
     /**
-     * @brief setDirection
-     * @param direction
+     * @brief direction setter
+     * @param direction of Movement
      */
     void setDirection(const glm::vec3 &direction);
 
     /**
-     * @brief size
-     * @return
+     * @brief size getter
+     * @return size of Movement
      */
     float size() const;
 
     /**
-     * @brief setSize
-     * @param size
+     * @brief size setter
+     * @param size of Movement
      */
     void setSize(float size);
 };

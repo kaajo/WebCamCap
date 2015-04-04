@@ -16,7 +16,7 @@ class ControlPanel;
 
 /**
  * @author Miroslav Krajicek <409917@mail.muni.cz>
- * @class ControlPanel
+ * @class ControlPanel controlpanel.h
  * @brief Qt Designer form class with all settings needed for WebCamCap game.
  * @date 2015
  */
@@ -25,8 +25,8 @@ class ControlPanel : public QMainWindow
 {
     Q_OBJECT
 
-    MyFifo *m_fifo;
-    QTimer *m_reconnectTimer;
+    MyFifo *m_fifo = nullptr;
+    QTimer *m_reconnectTimer = nullptr;
 
     bool m_sendPositions = false;
     bool m_sendMovement = false;
@@ -39,7 +39,7 @@ class ControlPanel : public QMainWindow
     QMap<size_t, Point> diff, lastDiff, acceleration;
 
     //move
-    QTime *m_movementTimer;
+    QTime *m_movementTimer = nullptr;
     float m_minSizeOfMovement = 0.0f;
     glm::vec3 m_startMovementPoint;
     glm::vec3 m_endMovementPoint;
@@ -47,29 +47,19 @@ class ControlPanel : public QMainWindow
 public:
 
     /**
-     * @brief ControlPanel
-     * @param parent
+     * @brief ControlPanel constructs ControlPanel object
+     * @param parent Default QWidget parameter
      */
-
     explicit ControlPanel(QWidget *parent = 0);
 
     ~ControlPanel();
 
-    /**
-     * @brief getFifo
-     * @return
-     */
-
-    MyFifo *getFifo() const {return m_fifo;}
-
-    /**
-     * @brief setFifo
-     * @param value
-     */
-
-    void setFifo(MyFifo *value) {m_fifo = value;}
-
 public slots:
+
+    /**
+     * @brief Used to handle points in actual frame
+     * @param pts Points from MyFifo
+     */
     void handlePoints(QVector<Point> pts);
 
 private slots:
@@ -98,18 +88,18 @@ private slots:
 signals:
 
     /**
-     * @brief movement
-     * @param move
-     * @param index
+     * @brief Movement signal is emited every time when some point make Movement that fits parameters in ControlPanel gui (size, speed, ...).
+     * This signal is emitted only if checkbox "Movements" is checked and Timeout(ms) period elapsed.
+     * @param move Movement
+     * @param index index of point which made Movement
      */
-
     void movement(Movement move, size_t index);
 
     /**
-     * @brief pointsReady
-     * @param pts
+     * @brief This signal transfer Points in last captured frame.
+     * This signal is emitted only if checkbox "Positions" is checked.
+     * @param pts Points
      */
-
     void pointsReady(QVector<Point> pts);
 
 private:

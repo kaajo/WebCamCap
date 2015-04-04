@@ -32,11 +32,10 @@
 
 /**
  * @author Miroslav Krajicek <409917@mail.muni.cz>
- * @class Movement
- * @brief Small class used to keep information about direction and size of movement.
+ * @class MyFifo myfifo.h
+ * @brief Small class used to transfer information from main WebCamCap application to ControlPanel.
  * @date 2015
  */
-
 class MyFifo : public QObject
 {
     Q_OBJECT
@@ -51,22 +50,19 @@ public:
     ~MyFifo();
 
     /**
-     * @brief tryConnectToServer
+     * @brief Tries to connect MyFifo to server.
      */
-
     void tryConnectToServer();
 
     /**
-     * @brief disconnectServer
+     * @brief Disconnect MyFifo from server.
      */
-
     void disconnectServer();
 
     /**
      * @brief isConnected
      * @return true if connection between MyFifo and WebCamCap application exists otherwise false.
      */
-
     bool isConnected();
 
 private slots:
@@ -78,18 +74,18 @@ private slots:
 signals:
 
     /**
-     * @brief disconnectedServer
+     * @brief This signal is emitted when MyFifo is disconnected from server.
      */
     void disconnectedServer();
 
     /**
-     * @brief connectedServer
+     * @brief This signal is emitted when MyFifo is connected to server.
      */
     void connectedServer();
 
     /**
-     * @brief pointsReady
-     * @param pts
+     * @brief Emitted every time when points are received from WebCamCap. This signal is emitted if there were no points in the frame.
+     * @param pts Point received from WebCamCap
      */
     void pointsReady(QVector<Point> pts);
 
