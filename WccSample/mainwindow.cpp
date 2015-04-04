@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QDebug>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -28,7 +30,7 @@ void MainWindow::handlePoints(QVector<Point> pts)
         text += one;
     }
 
-    ui->positionslabel->setText(text);
+    ui->positions->setText(text);
 }
 
 void MainWindow::handleMovement(Movement mvmnt, size_t index)
@@ -39,5 +41,5 @@ void MainWindow::handleMovement(Movement mvmnt, size_t index)
                  + QString::number(mvmnt.direction().z) + " "
                                    + mvmnt.size());
 
-    ui->positionslabel->setText(text);
+    ui->movements->setText(text);
 }

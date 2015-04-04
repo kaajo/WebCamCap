@@ -158,8 +158,6 @@ std::vector<vec2> CaptureCamera::RecordNextFrame2D()
 
     camera >> frame;
 
-    std::cout << timer.elapsed() << std::endl;
-
     UseFilter();
     MiddleOfContours();
 

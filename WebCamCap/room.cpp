@@ -417,7 +417,7 @@ void Room::ResultReady(QVector<Line> lines)
 
     if(m_usePipe)
     {
-        sendMessage(labeledPoints, std::string("3D"));
+        sendMessage(labeledPoints);
     }
 /*
     for(size_t i = 0; i < points.size(); i++)
@@ -433,15 +433,15 @@ void Room::ResultReady(QVector<Line> lines)
     QCoreApplication::processEvents();
 }
 
-void Room::sendMessage(std::vector<Pnt> &Points, std::string type)
+void Room::sendMessage(std::vector<Pnt> &Points)
 {
     std::stringstream ss;
 
-    ss << type << " " << Points.size();
+    ss << " " << Points.size();
 
     for(size_t i = 0; i < Points.size(); i++)
     {
-        ss << " P " << Points[i];
+        ss << " " << Points[i];
     }
 
     ss << std::endl;
@@ -458,15 +458,18 @@ void Room::sendMessageString(std::string str)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
-    out << (quint16)0;
     out.setVersion(QDataStream::Qt_4_0);
+    out << (quint16)0;
+
     out << QString::fromStdString(str);
+
     out.device()->seek(0);
     out << (quint16)(block.size() - sizeof(quint16));
 
     if(socket != nullptr)
     {
         socket->write(block);
+        socket->flush();
     }
 }
 
@@ -541,7 +544,7 @@ void Room::record2D()
 
         if(m_usePipe)
         {
-            sendMessage(labeledPoints, std::string("2D"));
+            sendMessage(labeledPoints);
         }
 
         if(m_captureAnimation)
@@ -555,7 +558,7 @@ void Room::record2D()
 
 void Room::handleConnection()
 {
-    std::cout << "connect" << std::endl;
+    qDebug() << "connect";
 
     socket = server->nextPendingConnection();
 

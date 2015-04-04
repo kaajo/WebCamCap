@@ -144,7 +144,7 @@ private slots:
     void handleConnection();
 
 private:
-    void sendMessage(std::vector<Pnt> &Points, std::string type);
+    void sendMessage(std::vector<Pnt> &Points);
     void sendMessageString(std::string str);
 
     void Intersections();

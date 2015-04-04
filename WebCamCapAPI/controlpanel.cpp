@@ -194,6 +194,7 @@ void ControlPanel::connected()
 void ControlPanel::disconnected()
 {
     m_reconnectTimer->start();
+    qDebug() << "disconnected";
 }
 
 void ControlPanel::on_positions_stateChanged(int arg1)

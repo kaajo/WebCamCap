@@ -42,7 +42,6 @@ class MyFifo : public QObject
     Q_OBJECT
 
     bool m_haveConnection = false;
-    char m_buffer[1024];
 
     QLocalSocket *m_socket = nullptr;
     quint16 m_blockSize = 0;

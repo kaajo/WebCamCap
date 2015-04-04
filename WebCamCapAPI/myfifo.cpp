@@ -75,7 +75,8 @@ void MyFifo::handleMessageFromSocket()
     {
         if (m_socket->bytesAvailable() < (int)sizeof(quint16))
             return;
-            in >> m_blockSize;
+
+        in >> m_blockSize;
     }
 
     if (in.atEnd())
@@ -122,12 +123,9 @@ void MyFifo::setupSocket()
 
 
 QVector<Point> MyFifo::messageToPoint(std::string msg)
-{   
-    msg = m_buffer;
-
+{
     std::stringstream split(msg);
-    std::string trash;
-    size_t NumOfPoints;
+    size_t NumOfPoints = 0;
 
     split >> NumOfPoints;
 
@@ -137,7 +135,6 @@ QVector<Point> MyFifo::messageToPoint(std::string msg)
 
     for(size_t i = 0; i < NumOfPoints; i++)
     {
-        split >> trash;
         split >> id;
         split >> x;
         split >> y;
