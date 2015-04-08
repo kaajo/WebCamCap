@@ -146,9 +146,13 @@ void MainWindow::on_newProject_triggered()
     {
         delete(project);
 
-        project = NewProjectDialog.getProject();
-        handleMainWProject(project);
 
+
+        Room * temp = NewProjectDialog.resolveProject();
+
+        handleMainWProject(temp);
+
+        this->project = temp;
     }
 }
 

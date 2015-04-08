@@ -339,7 +339,6 @@ void Room::RecordingStart()
     else if(m_activeCamerasCount == 1)
     {
         timer.start();
-        m_openGLWindow->setTwoDimensions(true);
         emit startWork2D();
     }
 }
@@ -347,7 +346,6 @@ void Room::RecordingStart()
 void Room::RecordingStop()
 {
     m_record = false;
-    m_openGLWindow->setTwoDimensions(false);
     emit stopWork();
 }
 /*
@@ -477,9 +475,9 @@ void Room::Intersection(Edge &camsEdge)
 {
     vec3 tempPoint;
 
-     for(size_t i = 0; i < camsEdge.a.size(); i++)
+     for(int i = 0; i < camsEdge.a.size(); i++)
      {
-         for(size_t j = 0; j < camsEdge.b.size(); j++)
+         for(int j = 0; j < camsEdge.b.size(); j++)
          {
              tempPoint = Line::Intersection(camsEdge.a[i], camsEdge.b[j], camsEdge.m_maxError);
 
@@ -510,6 +508,9 @@ void Room::Intersections()
     }
 
     labeledPoints = checker.solvePointIDs(points);
+
+    NormaliseCoords(labeledPoints, m_roomDimensions);
+
     m_openGLWindow->setFrame(labeledPoints, results);
 
     QCoreApplication::processEvents();
@@ -525,6 +526,16 @@ void Room::Intersections()
     }
 }
 
+void Room::NormaliseCoords(std::vector<Pnt> &points, glm::vec3 roomSize)
+{
+    for(Pnt &pnt: points)
+    {
+        pnt.m_position.x /= roomSize.x;
+        pnt.m_position.y /= roomSize.y;
+        pnt.m_position.z /= roomSize.z;
+    }
+}
+
 void Room::weldPoints(std::vector<glm::vec3> &points)
 {
 
@@ -535,7 +546,6 @@ void Room::record2D()
     while(m_record)
     {
         points2D = m_cameras[m_lastActiveCamIndex]->RecordNextFrame2D();
-
 
         labeledPoints = checker.solvePointIDs(points2D);
         m_openGLWindow->setFrame(labeledPoints);

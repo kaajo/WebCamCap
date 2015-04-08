@@ -75,6 +75,9 @@ void AddProject::EditProject(Room *Project)
     {
         cameras[i]->TurnOff();
         cameras[i]->Hide();
+
+        newCameras.push_back(cameras[i]);
+
         addCamToTable(cameras[i]);
     }
 
@@ -92,11 +95,11 @@ void AddProject::EditProject(Room *Project)
 
 void AddProject::addCamToTable(CaptureCamera *temp)
 {
-    CaptureCamera* newCam = new CaptureCamera();
+    /*CaptureCamera* newCam = new CaptureCamera();
     newCam->fromVariantMap(temp->toVariantMap());
 
     newCameras.push_back(newCam);
-
+*/
     int row = ui->CameraTable->rowCount();
     ui->CameraTable->insertRow(row);
 
@@ -125,6 +128,12 @@ void AddProject::addCamToTable(CaptureCamera *temp)
 void AddProject::on_CameraTable_cellChanged(int row, int column)
 {
     QTableWidgetItem *item = ui->CameraTable->item(row, column);
+
+    if(row >= newCameras.size())
+    {
+        return;
+    }
+
 
     switch (column)
     {

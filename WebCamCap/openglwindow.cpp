@@ -30,16 +30,6 @@
 using glm::vec2;
 using glm::vec3;
 
-
-bool OpenGLWindow::getTwoDimensions() const
-{
-    return twoDimensions;
-}
-
-void OpenGLWindow::setTwoDimensions(bool value)
-{
-    twoDimensions = value;
-}
 OpenGLWindow::OpenGLWindow(QWidget *parent) : QGLWidget(parent)
 {
     zoom = 1.0f;
@@ -255,9 +245,9 @@ void OpenGLWindow::drawLines()
 {
     glColor3f(1.0f,0.5f,0.0f);
 
-    for(size_t i = 0; i < lines.size(); i++)
+    for(int i = 0; i < lines.size(); i++)
     {
-        for(size_t j = 0; j < lines[i].size(); j++)
+        for(int j = 0; j < lines[i].size(); j++)
         {
             drawLine(lines.at(i).at(j));
         }
@@ -272,18 +262,10 @@ void OpenGLWindow::drawJoints()
         //std::cout << joints[i].ID << " ";
         glColor3ub(randomColors[joints[i].m_id][0],randomColors[joints[i].m_id][1],randomColors[joints[i].m_id][2]);
 
-        if(twoDimensions)
-        {
-            glTranslatef(joints[i].m_position.x*100, joints[i].m_position.z, -joints[i].m_position.y*100);
-            glutSolidSphere(3, 8, 8);
-            glTranslatef(-joints[i].m_position.x*100, -joints[i].m_position.z, joints[i].m_position.y*100);
-        }
-        else
-        {
-            glTranslatef(joints[i].m_position.x, joints[i].m_position.z, -joints[i].m_position.y);
-            glutSolidSphere(3, 8, 8);
-            glTranslatef(-joints[i].m_position.x, -joints[i].m_position.z, joints[i].m_position.y);
-        }
+
+        glTranslatef(joints[i].m_position.x*roomDims.x, joints[i].m_position.z*roomDims.z, -joints[i].m_position.y*roomDims.y);
+        glutSolidSphere(3, 8, 8);
+        glTranslatef(-joints[i].m_position.x*roomDims.x, -joints[i].m_position.z*roomDims.z, joints[i].m_position.y*roomDims.y);
 
     }
     //std::cout << std::endl;

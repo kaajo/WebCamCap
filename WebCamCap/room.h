@@ -149,6 +149,7 @@ private:
     void sendMessageString(std::string str);
 
     void Intersections();
+    void NormaliseCoords(std::vector<Pnt> &points, glm::vec3 roomSize);
 
     void weldPoints(std::vector<glm::vec3> &points);
 

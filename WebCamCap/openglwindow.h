@@ -63,8 +63,6 @@ public:
     void setDrawJoints(bool draw){mdrawJoints = draw;}
     void setDrawLines(bool draw){mdrawLines = draw;}
     void setFrame(std::vector<Point> pts, QVector<QVector<Line>> lns = QVector<QVector<Line> >());
-    bool getTwoDimensions() const;
-    void setTwoDimensions(bool value);
 
 signals:
 

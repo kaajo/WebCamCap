@@ -132,6 +132,7 @@ void AddCamera::on_Play_ID_clicked(bool checked)
 
             ui->Play_ID->setChecked(false);
             ui->deviceUSB_ID->setEnabled(true);
+            m_cameraRecording = false;
             return;
         }
         ui->FrameCols->setText(QString::number(m_videoCaptureTemp.get(CV_CAP_PROP_FRAME_WIDTH)));
