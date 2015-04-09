@@ -129,7 +129,7 @@ void AddProject::on_CameraTable_cellChanged(int row, int column)
 {
     QTableWidgetItem *item = ui->CameraTable->item(row, column);
 
-    if(row >= newCameras.size())
+    if(row >= (int) newCameras.size())
     {
         return;
     }

@@ -31,6 +31,17 @@ using glm::vec2;
 using glm::vec3;
 using namespace cv;
 
+
+LocalServer *Room::server() const
+{
+    return m_server;
+}
+
+void Room::setServer(LocalServer *server)
+{
+    m_server = server;
+}
+
 Room::Room(OpenGLWindow *opengl, vec3 dimensions, float eps, QString name)
 {
     if(dimensions == vec3(0.0f, 0.0f, 0.0f) && eps == 0.5 &&  name == "Default Project")
@@ -48,17 +59,12 @@ Room::Room(OpenGLWindow *opengl, vec3 dimensions, float eps, QString name)
 
     std::cout << m_roomDimensions << std::endl;
 
-    m_usePipe = m_captureAnimation = m_record = false;
-
     m_maxError  = eps;
 
     m_activeCamerasCount = 0;
     m_lastActiveCamIndex = 0;
 
-    server = new QLocalServer();
-    server->setMaxPendingConnections(1);
-
-    connect(server, SIGNAL(newConnection()), this, SLOT(handleConnection()));
+    m_server = new LocalServer;
 }
 
 Room::~Room()
@@ -77,15 +83,15 @@ Room::~Room()
         delete(m_cameras[i]);
     }
 
-    for(size_t i = 0; i < animations.size(); i++)
+    /*
+    for(size_t i = 0; i < m_animations.size(); i++)
     {
-        delete(animations[i]);
-    }
+        delete(m_animations[i]);
+    }*/
 
-    if(m_usePipe)
-    {
-        setPipe(false);
-    }
+    qDeleteAll(m_animations);
+
+    delete m_server;
 }
 
 void Room::AddCamera(CaptureCamera *cam)
@@ -100,10 +106,10 @@ void Room::AddCamera(CaptureCamera *cam)
 
     m_saved = false;
 
-    haveResults.push_back(false);
-    results.push_back(QVector<Line>());
+    m_haveResults.push_back(false);
+    m_resultLines.push_back(QVector<Line>());
 
-    workers.push_back(new worker(&allLines, cam));
+    workers.push_back(new worker(&m_linesWaitCondition, cam));
     workerthreads.push_back(new QThread);
 
     workers[workers.size()-1]->moveToThread(workerthreads[workerthreads.size()-1]);
@@ -143,7 +149,7 @@ void Room::setEpsilon(float size)
 
 void Room::setNumberOfPoints(size_t nOfPts)
 {
-    checker.setNumOfPoints(nOfPts);
+    m_pointChecker.setNumOfPoints(nOfPts);
 }
 
 void Room::RemoveCamera(size_t index)
@@ -264,61 +270,18 @@ void Room::TurnOffCamera(size_t index)
 
 void Room::CaptureAnimationStart()
 {
-    actualAnimation = new Animation(m_roomDimensions);
+    m_actualAnimation = new Animation(m_roomDimensions);
 
     m_captureAnimation = true;
 }
 
-void Room::setPipe(bool pipe)
-{
-    if(pipe)
-    {
-        if(!server->listen(QString("webcamcap")))
-        {
-            if(server->removeServer(QString("webcamcap")))
-            {
-                if(!server->listen(QString("webcamcap")))
-                {
-                    qDebug() << "Server down somehow!";
-                    m_usePipe = false;
-                    return;
-                }
-            }
-            else
-            {
-                qDebug() << "Server down somehow!";
-                m_usePipe = false;
-                return;
-            }
 
-
-        }
-        qDebug() << "server connected";
-        m_usePipe = true;
-
-    }
-    else
-    {
-
-        server->close();
-
-        if(socket != nullptr)
-        {
-            socket->disconnectFromServer();
-            delete socket;
-            socket = nullptr;
-        }
-
-        qDebug() << "Server closed";
-        m_usePipe = false;
-    }
-}
 
 Animation *Room::CaptureAnimationStop()
 {
-    animations.push_back(actualAnimation);
+    m_animations.push_back(m_actualAnimation);
 
-    Animation * ret = actualAnimation;
+    Animation * ret = m_actualAnimation;
     ret->PostProcess();
 
     m_captureAnimation = false;
@@ -332,13 +295,13 @@ void Room::RecordingStart()
 
     if(m_activeCamerasCount > 1)
     {
-        timer.start();
+        m_frameTimer.start();
 
         emit startWork();
     }
     else if(m_activeCamerasCount == 1)
     {
-        timer.start();
+        m_frameTimer.start();
         emit startWork2D();
     }
 }
@@ -376,12 +339,12 @@ void Room::ResultReady(QVector<Line> lines)
     {
         if(obj == workers[i])
         {
-            if(haveResults[i])
+            if(m_haveResults[i])
             {
                 std::cout << "bad sync" << std::endl;
             }
 
-            haveResults[i] = true;
+            m_haveResults[i] = true;
             for(size_t j = 0; j < m_cameraTopology.size(); j++)
             {
                 if(m_cameraTopology[j].m_index1 == i)
@@ -394,7 +357,7 @@ void Room::ResultReady(QVector<Line> lines)
                     m_cameraTopology[j].b = lines;
                 }
 
-                results[i] = lines;
+                m_resultLines[i] = lines;
             }
 
             break;
@@ -403,20 +366,19 @@ void Room::ResultReady(QVector<Line> lines)
 
     for(size_t i = 0; i < workers.size(); i++)
     {
-        if(!haveResults[i])
+        if(!m_haveResults[i])
         {
             return;
         }
     }
 
-    points.clear();
+    m_points3D.clear();
 
     Intersections();
 
-    if(m_usePipe)
-    {
-        sendMessage(labeledPoints);
-    }
+
+    m_server->sendMessage(m_labeledPoints);
+
 /*
     for(size_t i = 0; i < points.size(); i++)
     {
@@ -426,49 +388,9 @@ void Room::ResultReady(QVector<Line> lines)
     //std::cout << timer.elapsed() << std::endl;
 
 
-    timer.restart();
-    allLines.wakeAll();
+    m_frameTimer.restart();
+    m_linesWaitCondition.wakeAll();
     QCoreApplication::processEvents();
-}
-
-void Room::sendMessage(std::vector<Pnt> &Points)
-{
-    std::stringstream ss;
-
-    ss << " " << Points.size();
-
-    for(size_t i = 0; i < Points.size(); i++)
-    {
-        ss << " " << Points[i];
-    }
-
-    ss << std::endl;
-
-
-    std::string msg = ss.str();
-
-    //std::cout << msg << std::endl;
-
-    sendMessageString(msg);
-}
-
-void Room::sendMessageString(std::string str)
-{
-    QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    out.setVersion(QDataStream::Qt_4_0);
-    out << (quint16)0;
-
-    out << QString::fromStdString(str);
-
-    out.device()->seek(0);
-    out << (quint16)(block.size() - sizeof(quint16));
-
-    if(socket != nullptr && socket->isOpen() && socket->isWritable())
-    {
-        socket->write(block);
-        socket->flush();
-    }
 }
 
 void Room::Intersection(Edge &camsEdge)
@@ -497,32 +419,32 @@ void Room::Intersections()
 
     for(size_t i = 0; i < m_cameraTopology.size(); i++)
     {
-        points.insert(points.end(), m_cameraTopology[i].points.begin(), m_cameraTopology[i].points.end());
+        m_points3D.insert(m_points3D.end(), m_cameraTopology[i].points.begin(), m_cameraTopology[i].points.end());
         m_cameraTopology[i].points.clear();
     }
 
     //weld points
     if(m_activeCamerasCount >= 3)
     {
-        weldPoints(points);
+        weldPoints(m_points3D);
     }
 
-    labeledPoints = checker.solvePointIDs(points);
+    m_labeledPoints = m_pointChecker.solvePointIDs(m_points3D);
 
-    NormaliseCoords(labeledPoints, m_roomDimensions);
+    NormaliseCoords(m_labeledPoints, m_roomDimensions);
 
-    m_openGLWindow->setFrame(labeledPoints, results);
+    m_openGLWindow->setFrame(m_labeledPoints, m_resultLines);
 
     QCoreApplication::processEvents();
 
     if(m_captureAnimation)
     {
-        actualAnimation->AddFrame(Frame(timer.elapsed(),labeledPoints, results));
+        m_actualAnimation->AddFrame(Frame(m_frameTimer.elapsed(),m_labeledPoints, m_resultLines));
     }
 
     for(size_t i = 0; i < workers.size(); i++)
     {
-        haveResults[i] = false;
+        m_haveResults[i] = false;
     }
 }
 
@@ -545,43 +467,24 @@ void Room::record2D()
 {
     while(m_record)
     {
-        points2D = m_cameras[m_lastActiveCamIndex]->RecordNextFrame2D();
+        m_points2D = m_cameras[m_lastActiveCamIndex]->RecordNextFrame2D();
 
-        labeledPoints = checker.solvePointIDs(points2D);
-        m_openGLWindow->setFrame(labeledPoints);
+        m_labeledPoints = m_pointChecker.solvePointIDs(m_points2D);
+        m_openGLWindow->setFrame(m_labeledPoints);
 
         QCoreApplication::processEvents();
 
-        if(m_usePipe)
-        {
-            sendMessage(labeledPoints);
-        }
+
+        m_server->sendMessage(m_labeledPoints);
+
 
         if(m_captureAnimation)
         {
-            actualAnimation->AddFrame({timer.elapsed(),labeledPoints});
+            m_actualAnimation->AddFrame({m_frameTimer.elapsed(),m_labeledPoints});
         }
 
-        timer.restart();
+        m_frameTimer.restart();
     }
-}
-
-void Room::handleConnection()
-{
-    qDebug() << "connect";
-
-    socket = server->nextPendingConnection();
-
-    if(socket != nullptr)
-    {
-        connect(socket, SIGNAL(disconnected()), this, SLOT(handleDisconnected()));
-    }
-}
-
-void Room::handleDisconnected()
-{
-    delete socket;
-    socket = nullptr;
 }
 
 const QString projectNameKey("projectName");
@@ -631,8 +534,7 @@ void Room::fromVariantMap(OpenGLWindow *opengl , QVariantMap &varMap)
     m_activeCamerasCount = 0;
     m_lastActiveCamIndex = 0;
 
-    server = new QLocalServer();
-    server->setMaxPendingConnections(1);
+    m_server = new LocalServer;
 
     QVariantList list = varMap[camerasKey].toList();
 
@@ -645,7 +547,6 @@ void Room::fromVariantMap(OpenGLWindow *opengl , QVariantMap &varMap)
         AddCamera(cam);
     }
 
-    connect(server, SIGNAL(newConnection()), this, SLOT(handleConnection()));
 }
 
 /*

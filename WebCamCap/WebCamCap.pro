@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     pointchecker.cpp \
     matrix.tpp \
     munkres.cpp \
-    Gui/aboutwidget.cpp
+    Gui/aboutwidget.cpp \
+    localserver.cpp
 
 HEADERS  += capturecamera.h \
     line.h \
@@ -53,7 +54,8 @@ HEADERS  += capturecamera.h \
     pointchecker.h \
     matrix.h \
     munkres.h \
-    Gui/aboutwidget.h
+    Gui/aboutwidget.h \
+    localserver.h
 
 FORMS    +=  Gui/mainwindow.ui \
     Gui/animplayer.ui \

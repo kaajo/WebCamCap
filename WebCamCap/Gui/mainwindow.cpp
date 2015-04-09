@@ -567,11 +567,11 @@ void MainWindow::on_LivePipe_stateChanged(int arg1)
 
     if(arg1 == 0)
     {
-        project->setPipe(false);
+        project->server()->setServerUsed(false);
     }
     else
     {
-        project->setPipe(true);
+        project->server()->setServerUsed(true);
     }
 }
 
