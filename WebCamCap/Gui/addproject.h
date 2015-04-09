@@ -36,17 +36,16 @@ class AddProject : public QDialog
 {
     Q_OBJECT
 
-    Room *newProject;
-    std::vector<CaptureCamera*> newCameras;
+    Room *m_newProject = nullptr;
+    std::vector<CaptureCamera*> m_newCameras;
 
-    bool calibNoMarkers, calibMarkers;
+    bool m_calibNoMarkers = false;
+    bool m_calibMarkers = false;
 
 public:
     explicit AddProject(QWidget *parent = 0);
 
     Room * resolveProject();
-
-    Room* getProject() const {return newProject;}
     void EditProject(Room * PROJECT);
 
 

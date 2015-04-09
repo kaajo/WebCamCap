@@ -37,16 +37,16 @@ class worker : public QObject
 {
   Q_OBJECT
 
-    volatile bool running;
+    volatile bool m_running = false;
 
-    CaptureCamera *cam;
-    QMutex mutex;
-    QWaitCondition *line;
+    CaptureCamera *m_camera = nullptr;
+    QMutex m_mutex;
+    QWaitCondition *m_line = nullptr;
 
-    QVector<Line> result;
+    QVector<Line> m_result;
 
 public:
-    explicit worker(QWaitCondition *q, CaptureCamera *cam,QObject *parent = 0);
+    explicit worker(QWaitCondition *q, CaptureCamera *m_camera,QObject *parent = 0);
     ~worker(){do_Work(); emit finished();}
 
 signals:

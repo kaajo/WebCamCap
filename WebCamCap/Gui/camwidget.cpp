@@ -1,23 +1,6 @@
 /*
- *
- * Copyright (C) 2014  Miroslav Krajicek, Faculty of Informatics Masaryk University (https://github.com/kaajo).
- * All Rights Reserved.
- *
- * This file is part of WebCamCap.
- *
- * WebCamCap is free software: you can redistribute it and/or modify
- * it under the terms of the GNU LGPL version 3 as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * WebCamCap is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU LGPL version 3
- * along with WebCamCap. If not, see <http://www.gnu.org/licenses/lgpl-3.0.txt>.
- *
+ * Source Code from:
+ * http://www.robot-home.it/blog/en/software/tutorial-opencv-qt-opengl-widget-per-visualizzare-immagini-da-opencv-in-una-gui-con-qt/
  */
 
 #include "camwidget.h"
@@ -29,14 +12,6 @@
 CQtOpenCVViewerGl::CQtOpenCVViewerGl(QWidget *parent) :
     QGLWidget(parent)
 {
-    mSceneChanged = false;
-
-    mOutH = 0;
-    mOutW = 0;
-    mImgRatio = 4.0f/3.0f;
-
-    mPosX = 0;
-    mPosY = 0;
 }
 
 void CQtOpenCVViewerGl::initializeGL()

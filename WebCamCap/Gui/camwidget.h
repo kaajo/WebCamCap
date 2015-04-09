@@ -1,23 +1,6 @@
 /*
- *
- * Copyright (C) 2014  Miroslav Krajicek, Faculty of Informatics Masaryk University (https://github.com/kaajo).
- * All Rights Reserved.
- *
- * This file is part of WebCamCap.
- *
- * WebCamCap is free software: you can redistribute it and/or modify
- * it under the terms of the GNU LGPL version 3 as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * WebCamCap is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU LGPL version 3
- * along with WebCamCap. If not, see <http://www.gnu.org/licenses/lgpl-3.0.txt>.
- *
+ * Source Code from:
+ * http://www.robot-home.it/blog/en/software/tutorial-opencv-qt-opengl-widget-per-visualizzare-immagini-da-opencv-in-una-gui-con-qt/
  */
 
 #ifndef CAMWIDGET_H
@@ -49,19 +32,19 @@ protected:
     void        renderImage();
 
 private:
-    bool        mSceneChanged;          /// Indicates when OpenGL view is to be redrawn
+    bool        mSceneChanged = false;          /// Indicates when OpenGL view is to be redrawn
 
     QImage      mRenderQtImg;           /// Qt image to be rendered
     cv::Mat     mOrigImage;             /// original OpenCV image to be shown
 
     QColor      mBgColor;		/// Background color
 
-    int         mOutH;                  /// Resized Image height
-    int         mOutW;                  /// Resized Image width
-    float       mImgRatio;             /// height/width ratio
+    int         mOutH = 0;                  /// Resized Image height
+    int         mOutW = 0;                  /// Resized Image width
+    float       mImgRatio = 4.0f/3.0f;             /// height/width ratio
 
-    int         mPosX;                  /// Top left X position to render image in the center of widget
-    int         mPosY;                  /// Top left Y position to render image in the center of widget
+    int         mPosX = 0;                  /// Top left X position to render image in the center of widget
+    int         mPosY = 0;                  /// Top left Y position to render image in the center of widget
 
     cv::Mat m;
 

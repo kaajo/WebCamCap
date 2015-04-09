@@ -653,7 +653,7 @@ int CaptureCamera::CalibWithMarkers(int numOfMarkers)
             }
         }
 
-        m_thresholdValue = thresholdLow + (thresholdUp + thresholdLow)/8;
+        m_thresholdValue = thresholdLow + (thresholdUp - thresholdLow)/8;
 
         m_QtWidgetViewer->setThreshold(m_thresholdValue);
     }

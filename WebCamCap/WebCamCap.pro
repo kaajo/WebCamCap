@@ -28,7 +28,6 @@ SOURCES += main.cpp\
     frame.cpp \
     Gui/addproject.cpp \
     Gui/mainwindow.cpp \
-    Gui/animplayer.cpp \
     room.cpp \
     capturethread.cpp \
     Gui/camwidget.cpp \
@@ -46,7 +45,6 @@ HEADERS  += capturecamera.h \
     frame.h \
     Gui/addproject.h \
     Gui/mainwindow.h \
-    Gui/animplayer.h \
     room.h \
     capturethread.h \
     Gui/camwidget.h \
@@ -58,7 +56,6 @@ HEADERS  += capturecamera.h \
     localserver.h
 
 FORMS    +=  Gui/mainwindow.ui \
-    Gui/animplayer.ui \
     Gui/camwidget.ui \
     Gui/addcamera.ui \
     Gui/addproject.ui \

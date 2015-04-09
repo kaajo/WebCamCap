@@ -37,24 +37,21 @@ AddProject::AddProject(QWidget *parent) :
     ui(new Ui::AddProject)
 {
     ui->setupUi(this);
-    newProject = nullptr;
 
     this->setWindowTitle("New project");
-
-    calibNoMarkers = calibMarkers = false;
 }
 
 Room *AddProject::resolveProject()
 {
-    newProject = new Room(nullptr, vec3(ui->width->text().toInt(), ui->length->text().toInt(), ui->height->text().toInt() ),
+    m_newProject = new Room(nullptr, vec3(ui->width->text().toInt(), ui->length->text().toInt(), ui->height->text().toInt() ),
                         ui->epsilon->text().toFloat(), ui->name->text());
 
-    for(size_t i = 0; i < newCameras.size(); i++)
+    for(size_t i = 0; i < m_newCameras.size(); i++)
     {
-        newProject->AddCamera(newCameras[i]);
+        m_newProject->AddCamera(m_newCameras[i]);
     }
 
-    return newProject;
+    return m_newProject;
 }
 
 AddProject::~AddProject()
@@ -64,7 +61,14 @@ AddProject::~AddProject()
 
 void AddProject::on_buttonBox_accepted()
 {
-
+    if(!m_calibMarkers || !m_calibNoMarkers)
+    {
+        QMessageBox::warning(this, "No calibration", "Calibrate cameras first please");
+    }
+    else
+    {
+        accept();
+    }
 }
 
 void AddProject::EditProject(Room *Project)
@@ -76,7 +80,7 @@ void AddProject::EditProject(Room *Project)
         cameras[i]->TurnOff();
         cameras[i]->Hide();
 
-        newCameras.push_back(cameras[i]);
+        m_newCameras.push_back(cameras[i]);
 
         addCamToTable(cameras[i]);
     }
@@ -95,11 +99,6 @@ void AddProject::EditProject(Room *Project)
 
 void AddProject::addCamToTable(CaptureCamera *temp)
 {
-    /*CaptureCamera* newCam = new CaptureCamera();
-    newCam->fromVariantMap(temp->toVariantMap());
-
-    newCameras.push_back(newCam);
-*/
     int row = ui->CameraTable->rowCount();
     ui->CameraTable->insertRow(row);
 
@@ -129,7 +128,7 @@ void AddProject::on_CameraTable_cellChanged(int row, int column)
 {
     QTableWidgetItem *item = ui->CameraTable->item(row, column);
 
-    if(row >= (int) newCameras.size())
+    if(row >= (int) m_newCameras.size())
     {
         return;
     }
@@ -148,22 +147,22 @@ void AddProject::on_CameraTable_cellChanged(int row, int column)
                                             ui->CameraTable->item(row,3)->text().toFloat()));
         break;*/
     case 4:
-            newCameras[row]->setAngle(item->text().toFloat());
+            m_newCameras[row]->setAngle(item->text().toFloat());
         break;
     case 5:
-            newCameras[row]->setName(item->text());
+            m_newCameras[row]->setName(item->text());
         break;
     case 6:
         if(item->checkState() == Qt::Checked)
-            newCameras[row]->TurnOn();
+            m_newCameras[row]->TurnOn();
         else
-            newCameras[row]->TurnOff();
+            m_newCameras[row]->TurnOff();
         break;
     case 7:
         if(item->checkState() == Qt::Checked)
-            newCameras[row]->Show();
+            m_newCameras[row]->Show();
         else
-            newCameras[row]->Hide();
+            m_newCameras[row]->Hide();
         break;
     default:
         break;
@@ -174,7 +173,7 @@ void AddProject::on_deleteCamera_pressed()
 {
     QItemSelectionModel *selection = ui->CameraTable->selectionModel();
 
-    if(selection->hasSelection())
+    if(selection != nullptr && selection->hasSelection())
     {
         QModelIndexList indexes = selection->selectedRows();
 
@@ -184,9 +183,9 @@ void AddProject::on_deleteCamera_pressed()
             index = indexes.at(i).row();
             ui->CameraTable->removeRow(index);
 
-            newCameras[index]->Hide();
-            newCameras[index]->TurnOff();
-            newCameras.erase(newCameras.begin()+index);
+            m_newCameras[index]->Hide();
+            m_newCameras[index]->TurnOff();
+            m_newCameras.erase(m_newCameras.begin()+index);
         }
     }
 }
@@ -201,7 +200,7 @@ void AddProject::on_AddCamera_clicked()
     {
         CaptureCamera *temp = addcamera.getCam();
         //temp->setDimensions(NewProject->getDimensions());
-        newCameras.push_back(temp);
+        m_newCameras.push_back(temp);
 
         addCamToTable(temp);
     }
@@ -215,13 +214,13 @@ void AddProject::on_name_textEdited(const QString &arg1)
 
 void AddProject::on_CalibNoMarkers_clicked()
 {
-    for(size_t i = 0; i < newCameras.size(); i++)
+    for(size_t i = 0; i < m_newCameras.size(); i++)
     {
-        newCameras[i]->CalibNoMarkers();
-        ui->progressBar->setValue((100*(i+1))/newCameras.size());
+        m_newCameras[i]->CalibNoMarkers();
+        ui->progressBar->setValue((100*(i+1))/m_newCameras.size());
     }
 
-    calibNoMarkers = true;
+    m_calibNoMarkers = true;
 }
 
 void AddProject::on_CalibWithMarkers_clicked()
@@ -229,13 +228,13 @@ void AddProject::on_CalibWithMarkers_clicked()
     ui->TextWithMarkers->setText(QString::fromStdString(""));
     int numOfMarkers = ui->numLEDs->text().toInt();
 
-    for(size_t i = 0; i < newCameras.size(); i++)
+    for(size_t i = 0; i < m_newCameras.size(); i++)
     {
-        ui->TextWithMarkers->append(newCameras[i]->getName() + ": ");
-        ui->TextWithMarkers->append(QString::number(newCameras[i]->CalibWithMarkers(numOfMarkers)));
+        ui->TextWithMarkers->append(m_newCameras[i]->getName() + ": ");
+        ui->TextWithMarkers->append(QString::number(m_newCameras[i]->CalibWithMarkers(numOfMarkers)));
     }
 
-    calibMarkers = true;
+    m_calibMarkers = true;
 }
 
 void AddProject::on_editCamera_clicked()

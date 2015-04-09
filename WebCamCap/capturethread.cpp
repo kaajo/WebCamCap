@@ -28,31 +28,30 @@ using glm::vec3;
 worker::worker(QWaitCondition *q, CaptureCamera *cam, QObject *parent) :
   QObject(parent)
 {
-    running = false;
-    line = q;
-    this->cam = cam;
+    m_line = q;
+    m_camera = cam;
 }
 
 void worker::do_Work()
 {
   forever
   {
-      mutex.lock();
-      if (!running)
+      m_mutex.lock();
+      if (!m_running)
       {
-          mutex.unlock();
+          m_mutex.unlock();
           break;
       }
 
-      result = cam->RecordNextFrame();
+      m_result = m_camera->RecordNextFrame();
 
-      emit ResultReady(result);
+      emit ResultReady(m_result);
 
-      if(!line->wait(&mutex,1000))
+      if(!m_line->wait(&m_mutex,1000))
       {
          qDebug() << "signal lost";
       }
-      mutex.unlock();
+      m_mutex.unlock();
 
       QCoreApplication::processEvents();
   }
@@ -62,12 +61,12 @@ void worker::do_Work()
 
 void worker::StopWork()
 {
-    QMutexLocker l(&mutex);
-    running = false;
+    QMutexLocker l(&m_mutex);
+    m_running = false;
 }
 
 void worker::StartWork()
 {
-    running = true;
+    m_running = true;
     do_Work();
 }
