@@ -41,19 +41,14 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    int index;
+    bool m_captureAnimation = false;
+    bool m_record = false;
+    Room *m_project = nullptr;
 
-    bool captureAnimation;
-    bool record;
-    Room *project = nullptr;
+    QList<QString> m_recentProjects;
+    QList<QAction*> m_recentProjectsQActions;
 
-    std::vector<std::vector<Line> > lines;
-    std::vector<glm::vec3> points;
-
-    QList<QString> recentProjects;
-    QList <QAction*> recentProjectsQActions;
-
-    QIcon playIcon, editIcon, saveIcon;
+    QIcon m_saveIcon = QIcon(":/Pictures/SaveIcon.png");
 
     QSettings m_settings;
 
@@ -120,7 +115,7 @@ private:
     int NotSavedMessage();
     void handleMainWProject(Room *p);
 
-    void editProject(Room * project);
+    void editProject(Room * m_project);
 
     void noProjectOpenedWarning();
 

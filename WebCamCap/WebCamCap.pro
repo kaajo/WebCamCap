@@ -63,8 +63,5 @@ FORMS    +=  Gui/mainwindow.ui \
 
 QMAKE_CXXFLAGS += -std=c++11 -pedantic -Wall -Wextra
 
-OTHER_FILES += \
-    Pictures/main_icon.jpg \
-    Pictures/PlayIcon.png \
-    Pictures/EditIcon.png \
-    Pictures/SaveIcon.png
+RESOURCES += \
+    Pictures/Resources.qrc

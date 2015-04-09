@@ -43,20 +43,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle("");
 
     /* SETUP ICONS */
-    QIcon icon(QDir::currentPath() + "/Pictures/main_icon.jpg");
+    QIcon icon(":/Pictures/main_icon.jpg");
     this->setWindowIcon(icon);
-
-    QIcon play(QDir::currentPath() + "/Pictures/PlayIcon.png");
-    QIcon edit(QDir::currentPath() + "/Pictures/EditIcon.png");
-    QIcon save(QDir::currentPath() + "/Pictures/SaveIcon.png");
-
-    index = 0;
-
-    playIcon = play;
-    editIcon = edit;
-    saveIcon = save;
-
-    project = nullptr;
 
     loadLog();
 
@@ -65,10 +53,6 @@ MainWindow::MainWindow(QWidget *parent) :
     QDesktopWidget window;
     QRect screen = window.screenGeometry( window.screenNumber(this));
     move(screen.width()/2 - this->width()/2, screen.height()/2 - this->height()/2);
-
-    record = captureAnimation = false;
-
-    //ui->AnimationsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 
     ui->CamerasWindows->setWidgetResizable(true);
     scrollWidget = new QWidget;
@@ -102,14 +86,14 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     event->accept();
 
-    if(project != nullptr)
+    if(m_project != nullptr)
     {
-        delete(project);
+        delete(m_project);
     }
 
-    for(int i = 0; i < recentProjectsQActions.size(); i++)
+    for(int i = 0; i < m_recentProjectsQActions.size(); i++)
     {
-        delete(recentProjectsQActions.at(i));
+        delete(m_recentProjectsQActions.at(i));
     }
 
     saveLog();
@@ -119,7 +103,7 @@ void MainWindow::on_newProject_triggered()
 {
     int msg;
 
-    if(project != nullptr && !project->getSaved())
+    if(m_project != nullptr && !m_project->getSaved())
     {
         msg = NotSavedMessage();
 
@@ -131,7 +115,7 @@ void MainWindow::on_newProject_triggered()
         {
             on_saveProject_triggered();
 
-            if(!project->getSaved())
+            if(!m_project->getSaved())
             {
                 return;
             }
@@ -144,7 +128,7 @@ void MainWindow::on_newProject_triggered()
 
     if(ok)
     {
-        delete(project);
+        delete(m_project);
 
 
 
@@ -152,7 +136,7 @@ void MainWindow::on_newProject_triggered()
 
         handleMainWProject(temp);
 
-        this->project = temp;
+        this->m_project = temp;
     }
 }
 
@@ -160,13 +144,13 @@ void MainWindow::OpenRecentProjects()
 {
     QObject * sender = QObject::sender();
 
-    for(int i = 0; i < recentProjectsQActions.size(); i++)
+    for(int i = 0; i < m_recentProjectsQActions.size(); i++)
     {
-        if(recentProjectsQActions.at(i) == sender)
+        if(m_recentProjectsQActions.at(i) == sender)
         {
             int msg;
 
-            if(project != nullptr && !project->getSaved())
+            if(m_project != nullptr && !m_project->getSaved())
             {
                 msg = NotSavedMessage();
 
@@ -178,14 +162,14 @@ void MainWindow::OpenRecentProjects()
                 {
                     on_saveProject_triggered();
 
-                    if(!project->getSaved())
+                    if(!m_project->getSaved())
                     {
                         return;
                     }
                 }
             }
 
-            QFile file(recentProjects[i]);
+            QFile file(m_recentProjects[i]);
             file.open(QFile::OpenModeFlag::ReadOnly);
 
             QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
@@ -206,7 +190,7 @@ void MainWindow::on_openProject_triggered()
 {
     int msg;
 
-    if(project != nullptr && !project->getSaved())
+    if(m_project != nullptr && !m_project->getSaved())
     {
         msg = NotSavedMessage();
 
@@ -218,7 +202,7 @@ void MainWindow::on_openProject_triggered()
         {
             on_saveProject_triggered();
 
-            if(!project->getSaved())
+            if(!m_project->getSaved())
             {
                 return;
             }
@@ -233,7 +217,7 @@ void MainWindow::on_openProject_triggered()
 
         if(!searchForRecentProjects(filename))
         {
-            recentProjects.push_back(filename);
+            m_recentProjects.push_back(filename);
         }
 
         QFile file(filename);
@@ -255,23 +239,23 @@ void MainWindow::on_openProject_triggered()
 
 void MainWindow::on_editProject_triggered()
 {
-    if(project != nullptr)
+    if(m_project != nullptr)
     {
-        editProject(project);
+        editProject(m_project);
     }
 }
 
 void MainWindow::on_saveProject_triggered()
 {
-    if(project != nullptr)
+    if(m_project != nullptr)
     {
-        QString filename = QFileDialog::getSaveFileName(this,tr("Save Project"),project->getName()+".json" , tr(".json Files (*.json)"));
+        QString filename = QFileDialog::getSaveFileName(this,tr("Save Project"),m_project->getName()+".json" , tr(".json Files (*.json)"));
 
         if(filename != "")
         {
             if(!searchForRecentProjects(filename))
             {
-                recentProjects.push_back(filename);
+                m_recentProjects.push_back(filename);
 
                 /*if(!project->getSaved())
                 {
@@ -287,7 +271,7 @@ void MainWindow::on_saveProject_triggered()
                 return;
             }
 
-            QVariantMap map = project->toVariantMap();
+            QVariantMap map = m_project->toVariantMap();
 
             QJsonDocument doc = QJsonDocument::fromVariant(map);
 
@@ -305,7 +289,7 @@ void MainWindow::on_saveProject_triggered()
 
 void MainWindow::on_nahravanie_clicked(bool checked)
 {
-    if(project == nullptr)
+    if(m_project == nullptr)
     {
         ui->nahravanie->setChecked(false);
         return;
@@ -314,40 +298,40 @@ void MainWindow::on_nahravanie_clicked(bool checked)
     if(checked)
     {
         ui->nahravanie->setText("Stop");
-        record = true;
+        m_record = true;
 
-        if(project != nullptr)
+        if(m_project != nullptr)
         {
-            project->RecordingStart();
+            m_project->RecordingStart();
         }
     }
     else
     {
         ui->nahravanie->setText("Record");
-        project->RecordingStop();
-        record = false;
+        m_project->RecordingStop();
+        m_record = false;
     }
 
 }
 
 void MainWindow::createRollOutMenu()
 {
-    for(int i = 0; i < recentProjects.size(); i++)
+    for(int i = 0; i < m_recentProjects.size(); i++)
     {
-        QAction* temp = new QAction(recentProjects[i],this);
+        QAction* temp = new QAction(m_recentProjects[i],this);
 
-        recentProjectsQActions.push_back(temp);
-        connect(recentProjectsQActions.at(i),  SIGNAL(triggered()), this, SLOT(OpenRecentProjects() ));
+        m_recentProjectsQActions.push_back(temp);
+        connect(m_recentProjectsQActions.at(i),  SIGNAL(triggered()), this, SLOT(OpenRecentProjects() ));
     }
 
-    ui->menuRecent_Projects->addActions(recentProjectsQActions);
+    ui->menuRecent_Projects->addActions(m_recentProjectsQActions);
 }
 
 bool MainWindow::searchForRecentProjects(QString filestring)
 {
-    for(int i = 0; i < recentProjects.size();i++)
+    for(int i = 0; i < m_recentProjects.size();i++)
     {
-        if(recentProjects[i] == filestring)
+        if(m_recentProjects[i] == filestring)
         {
             return true;
         }
@@ -360,9 +344,9 @@ void MainWindow::saveLog()
 {
     QList<QVariant> var;
 
-    for(int i = 0; i < recentProjects.size(); i++)
+    for(int i = 0; i < m_recentProjects.size(); i++)
     {
-        var.push_back(QVariant(recentProjects[i]));
+        var.push_back(QVariant(m_recentProjects[i]));
     }
 
     m_settings.setValue("lastFiles", QVariant(var));
@@ -381,7 +365,7 @@ void MainWindow::loadLog()
 
         if(QFile::exists(temp))
         {
-            recentProjects.push_back(temp);
+            m_recentProjects.push_back(temp);
         }
     }
 }
@@ -419,12 +403,12 @@ void MainWindow::editProject(Room *project)
     NewProjectDialog.EditProject(project);
     NewProjectDialog.setModal(true);
 
-    if(this->project !=  nullptr)
+    if(this->m_project !=  nullptr)
     {
-        for(size_t i = 0; i < this->project->getcameras().size(); i++)
+        for(size_t i = 0; i < this->m_project->getcameras().size(); i++)
         {
-            this->project->HideCameraVideo(i);
-            this->project->TurnOffCamera(i);
+            this->m_project->HideCameraVideo(i);
+            this->m_project->TurnOffCamera(i);
         }
     }
 
@@ -432,15 +416,15 @@ void MainWindow::editProject(Room *project)
 
     if(ok)
     {
-        if(this->project != nullptr)
+        if(this->m_project != nullptr)
         {
-            auto cams = this->project->getcameras();
+            auto cams = this->m_project->getcameras();
 
             for(size_t i = 0; i < cams.size(); i++)
             {
                 scrollWidget->layout()->removeWidget(cams[i]->getWidget());
             }
-            delete this->project;
+            delete this->m_project;
         }
 
 
@@ -448,7 +432,7 @@ void MainWindow::editProject(Room *project)
 
         handleMainWProject(temp);
 
-        this->project = temp;
+        this->m_project = temp;
     }
 }
 
@@ -459,29 +443,29 @@ void MainWindow::noProjectOpenedWarning()
 
 void MainWindow::on_playButton_pressed()
 {
-    if(project == nullptr)
+    if(m_project == nullptr)
     {
         return;
     }
 
-    if(!captureAnimation)
+    if(!m_captureAnimation)
     {
-        captureAnimation = true;
-        project->CaptureAnimationStart();
+        m_captureAnimation = true;
+        m_project->CaptureAnimationStart();
     }
 }
 
 void MainWindow::on_stopButton_pressed()
 {
-    if(project == nullptr)
+    if(m_project == nullptr)
     {
         return;
     }
 
-    if(captureAnimation)
+    if(m_captureAnimation)
     {
-        Animation * ActualAnimation = project->CaptureAnimationStop();
-        captureAnimation = false;
+        Animation * ActualAnimation = m_project->CaptureAnimationStop();
+        m_captureAnimation = false;
 
         m_animations.push_back(ActualAnimation);
 
@@ -494,12 +478,8 @@ void MainWindow::on_stopButton_pressed()
         ui->AnimationsTable->setItem(row, 1, x);
         x= new QTableWidgetItem(QString::number(ActualAnimation->getLength()));
         ui->AnimationsTable->setItem(row,2,x);
-        x= new QTableWidgetItem(playIcon, "");
+        x= new QTableWidgetItem(m_saveIcon, "");
         ui->AnimationsTable->setItem(row, 3, x);
-        x= new QTableWidgetItem(editIcon, "");
-        ui->AnimationsTable->setItem(row, 4, x);
-        x= new QTableWidgetItem(saveIcon, "");
-        ui->AnimationsTable->setItem(row, 5, x);
     }
 }
 
@@ -516,14 +496,6 @@ void MainWindow::on_AnimationsTable_cellClicked(int row, int column)
     switch (column)
     {
     case 3:
-        //play
-        ui->AnimationsTable->item(row, column)->setSelected(false);
-        break;
-    case 4:
-        //edit animation
-        ui->AnimationsTable->item(row, column)->setSelected(false);
-        break;
-    case 5:
         //save animation
         ui->AnimationsTable->item(row, column)->setSelected(false);
         m_animations[row]->Save((ui->AnimationsTable->item(row, 0)->text() + ".wcc").toStdString());
@@ -559,7 +531,7 @@ void MainWindow::on_JointsCheck_stateChanged(int arg1)
 
 void MainWindow::on_LivePipe_stateChanged(int arg1)
 {
-    if(project == nullptr)
+    if(m_project == nullptr)
     {
         ui->LivePipe->setChecked(false);
         return;
@@ -567,22 +539,22 @@ void MainWindow::on_LivePipe_stateChanged(int arg1)
 
     if(arg1 == 0)
     {
-        project->server()->setServerUsed(false);
+        m_project->server()->setServerUsed(false);
     }
     else
     {
-        project->server()->setServerUsed(true);
+        m_project->server()->setServerUsed(true);
     }
 }
 
 void MainWindow::on_NumberOfPoints_editingFinished()
 {
-    if(project == nullptr)
+    if(m_project == nullptr)
     {
         return;
     }
 
-    project->setNumberOfPoints(ui->NumberOfPoints->text().toInt());
+    m_project->setNumberOfPoints(ui->NumberOfPoints->text().toInt());
 }
 
 void MainWindow::on_actionAbout_triggered()
