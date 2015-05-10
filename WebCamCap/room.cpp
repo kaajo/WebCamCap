@@ -341,7 +341,7 @@ void Room::ResultReady(QVector<Line> lines)
         {
             if(m_haveResults[i])
             {
-                std::cout << "bad sync" << std::endl;
+                qDebug() << "bad sync camera " << i;
             }
 
             m_haveResults[i] = true;
@@ -386,7 +386,6 @@ void Room::ResultReady(QVector<Line> lines)
     }
 */
     //std::cout << timer.elapsed() << std::endl;
-
 
     m_frameTimer.restart();
     m_linesWaitCondition.wakeAll();

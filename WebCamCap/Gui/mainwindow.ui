@@ -214,7 +214,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Live Game</string>
+     <string>Live App</string>
     </property>
    </widget>
    <widget class="QScrollArea" name="CamerasWindows">

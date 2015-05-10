@@ -112,7 +112,7 @@ float Line::LineAngle(vec2 v1, vec2 v2)
 
 vec3 Line::Intersection(Line &l1, Line &l2, float Epsilon)
 {
-    vec3 point1, point2;
+    vec3 point1 = vec3(0.0f, 0.0f, 0.0f), point2 = vec3(0.0f, 0.0f, 0.0f);
 
     Line::ClosestPointsOnTwoLines(l1, l2, point1, point2);
     if(Epsilon > Line::DistanceTwoPoints(point1, point2))

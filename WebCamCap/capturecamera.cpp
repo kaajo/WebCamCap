@@ -96,7 +96,7 @@ CaptureCamera::CaptureCamera(vec2 resolution, vec3 pos, vec3 roomDimensions, QSt
 
     contourColor = Scalar(0, 0, 255);
 
-    backgroundExtractor = new BackgroundSubtractorMOG(50, 10, 0.3, 0.4);
+    backgroundExtractor = new BackgroundSubtractorMOG(50, 10, 0.3, 0.2);
     useBackgroundSub = backgroudSubstractor;
 
     m_QtWidgetViewer = new CamWidget;
@@ -550,14 +550,16 @@ void CaptureCamera::CalibNoMarkers()
             waitKey(66);
         }
 
-        std::cout << m_name.toStdString() << " calibrated in " << i << " iterations" << std::endl;
-
         Mat temp;
 
         for(size_t i = 0; i < 50; i++)
         {
             camera >> temp;
-            backgroundExtractor->operator ()(frame, MOGMask);
+
+            if(useBackgroundSub)
+            {
+                backgroundExtractor->operator ()(temp, MOGMask);
+            }
 
             if(i < 15)
             {
@@ -575,6 +577,8 @@ void CaptureCamera::CalibNoMarkers()
 
             waitKey(20);
         }
+
+        std::cout << m_name.toStdString() << " calibrated in " << i << " iterations" << std::endl;
     }
 }
 
@@ -585,7 +589,7 @@ int CaptureCamera::CalibWithMarkers(int numOfMarkers)
     if(m_turnedOn)
     {
 
-        size_t thresholdUp, thresholdLow;
+        size_t thresholdUp = 255, thresholdLow = 0;
 
         for(size_t i = 0; i < 15; i++)
         {
@@ -593,7 +597,7 @@ int CaptureCamera::CalibWithMarkers(int numOfMarkers)
             waitKey(10);
         }
 
-        size_t nLines;
+        int nLines;
 
         //step 1, find first value which gives some Lines
         while(m_thresholdValue > 20)
@@ -653,7 +657,7 @@ int CaptureCamera::CalibWithMarkers(int numOfMarkers)
             }
         }
 
-        m_thresholdValue = thresholdLow + (thresholdUp - thresholdLow)/8;
+        m_thresholdValue = (thresholdLow + thresholdUp)/2;
 
         m_QtWidgetViewer->setThreshold(m_thresholdValue);
     }
@@ -678,6 +682,8 @@ const QString roineededKey("roineeded");
 const QString useBackgroundSubstractorKey("backgroundSubstractor");
 const QString resolutionKeyX("resolutionX");
 const QString resolutionKeyY("resolutionY");
+const QString distortionKoefKey("distortionKoef");
+const QString intrinsicMatrixKey("intrinsicMatrix");
 
 QVariantMap CaptureCamera::toVariantMap()
 {
@@ -701,6 +707,45 @@ QVariantMap CaptureCamera::toVariantMap()
     retVal[resolutionKeyX] = m_resolution.x;
     retVal[resolutionKeyY] = m_resolution.y;
 
+    if(!m_distortionCoeffs.empty())
+    {
+        QVariantMap distortionCoeffsMap;
+
+        distortionCoeffsMap["x"] = m_distortionCoeffs.cols;
+        distortionCoeffsMap["y"] = m_distortionCoeffs.rows;
+
+        for(int x = 0; x < m_distortionCoeffs.cols; ++x)
+            for(int y = 0; y < m_distortionCoeffs.rows; ++y)
+            {
+                auto xstring = QString::number(x);
+                auto ystring = QString::number(y);
+
+                distortionCoeffsMap[xstring+ystring] = m_distortionCoeffs.at<double>(x,y);
+            }
+
+        retVal[distortionKoefKey] = distortionCoeffsMap;
+    }
+
+    if(!m_IntrinsicMatrix.empty())
+    {
+        QVariantMap intrinsicMatrixMap;
+
+        intrinsicMatrixMap["x"] = m_IntrinsicMatrix.cols;
+        intrinsicMatrixMap["y"] = m_IntrinsicMatrix.rows;
+
+        for(int x = 0; x < m_IntrinsicMatrix.cols; ++x)
+            for(int y = 0; y < m_IntrinsicMatrix.rows; ++y)
+            {
+                auto xstring = QString::number(x);
+                auto ystring = QString::number(y);
+
+                intrinsicMatrixMap[xstring+ystring] = m_IntrinsicMatrix.at<float>(x,y);
+            }
+
+
+        retVal[intrinsicMatrixKey] = intrinsicMatrixMap;
+    }
+
     return retVal;
 }
 
@@ -713,13 +758,67 @@ void CaptureCamera::fromVariantMap(QVariantMap varMap)
     m_roomDimensions = vec3(varMap[roomDimensionsKeyX].toFloat(), varMap[roomDimensionsKeyY].toFloat(), varMap[roomDimensionsKeyZ].toFloat());
     m_resolution =  vec2(varMap[resolutionKeyX].toFloat(), varMap[resolutionKeyY].toFloat());
 
+    if(varMap.contains(distortionKoefKey))
+    {
+        QVariantMap distortionCoeffsMap = varMap[distortionKoefKey].toMap();
+
+        cv::Mat distortionMat;
+
+        int x = distortionCoeffsMap["x"].toInt();
+        int y = distortionCoeffsMap["y"].toInt();
+
+        if(!(x == 0 || y == 0))
+        {
+            distortionMat.create(y,x, CV_64F);
+
+            qDebug() << "loading distortion coefs";
+
+            for(int i = 0; i < x; ++i)
+                for(int j = 0; j < y; ++j)
+                {
+                    QString xstring = QString::number(i);
+                    QString ystring = QString::number(j);
+
+                    distortionMat.at<double>(i,j) = distortionCoeffsMap[xstring+ystring].toDouble();
+                }
+
+            setDistortionCoeffs(distortionMat);
+        }
+    }
+
     computeNewParameters();
+
+    if(varMap.contains(intrinsicMatrixKey))
+    {
+        QVariantMap intrinsicMatrixMap = varMap[intrinsicMatrixKey].toMap();
+
+        cv::Mat intrinsicMatrix;
+
+        int x = intrinsicMatrixMap["x"].toInt();
+        int y = intrinsicMatrixMap["y"].toInt();
+
+        if(!(x == 0 || y == 0))
+        {
+            intrinsicMatrix.create(y,x, CV_32F);
+
+            for(int i = 0; i < x; ++i)
+                for(int j = 0; j < y; ++j)
+                {
+                    QString xstring = QString::number(i);
+                    QString ystring = QString::number(j);
+
+                    intrinsicMatrix.at<float>(i,j) = intrinsicMatrixMap[xstring+ystring].toFloat();
+                }
+
+            setCameraMatrix(intrinsicMatrix);
+        }
+    }
 
     std::cout << "Vector to middle: " << m_directionVectorToCenter << std::endl;
 
     contourColor = Scalar(0, 0, 255);
 
-    backgroundExtractor = new BackgroundSubtractorMOG(50, 10, 0.3, 0.4);
+    backgroundExtractor = new BackgroundSubtractorMOG(50, 10, 0.3, 0.2);
     useBackgroundSub = varMap[useBackgroundSubstractorKey].toFloat();
 
     m_QtWidgetViewer = new CamWidget;

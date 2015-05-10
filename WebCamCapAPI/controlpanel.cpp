@@ -189,12 +189,21 @@ void ControlPanel::connected()
 {
     m_reconnectTimer->stop();
     m_movementTimer->start();
+
+    auto palete = ui->onlineStatusLabel->palette();
+    palete.setColor(QPalette::WindowText, Qt::GlobalColor::green);
+    ui->onlineStatusLabel->setPalette(palete);
+    ui->onlineStatusLabel->setText("Online");
 }
 
 void ControlPanel::disconnected()
 {
     m_reconnectTimer->start();
-    qDebug() << "disconnected";
+
+    auto palete = ui->onlineStatusLabel->palette();
+    palete.setColor(QPalette::WindowText, Qt::GlobalColor::red);
+    ui->onlineStatusLabel->setPalette(palete);
+    ui->onlineStatusLabel->setText("Offline");
 }
 
 void ControlPanel::on_positions_stateChanged(int arg1)

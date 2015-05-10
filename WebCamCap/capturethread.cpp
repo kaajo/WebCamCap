@@ -49,7 +49,7 @@ void worker::do_Work()
 
       if(!m_line->wait(&m_mutex,1000))
       {
-         qDebug() << "signal lost";
+         qDebug() << "signal lost in thread: " << this->thread();
       }
       m_mutex.unlock();
 
