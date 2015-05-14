@@ -96,22 +96,22 @@ public:
     void fromVariantMap(OpenGLWindow *opengl ,QVariantMap &varMap);
     QVariantMap toVariantMap();
 
-    void AddCamera(CaptureCamera *cam);
-    void RemoveCamera(size_t index);
+    void addCamera(CaptureCamera *cam);
+    void removeCamera(size_t index);
     //void Save(std::ofstream &file);
 
-    void MakeTopology();
+    void makeTopology();
     void resolveTopologyDuplicates();
 
-    void TurnOnCamera(size_t index);
-    void TurnOffCamera(size_t index);
-    void ShowCameraVideo(size_t index){m_cameras[index]->Show();}
-    void HideCameraVideo(size_t index){m_cameras[index]->Hide();}
+    void turnOnCamera(size_t index);
+    void turnOffCamera(size_t index);
+    void showCameraVideo(size_t index){m_cameras[index]->Show();}
+    void hideCameraVideo(size_t index){m_cameras[index]->Hide();}
 
-    void CaptureAnimationStart();
-    Animation *CaptureAnimationStop();
-    void RecordingStart();
-    void RecordingStop();
+    void captureAnimationStart();
+    Animation *captureAnimationStop();
+    void recordingStart();
+    void recordingStop();
 
     void setDimensions(glm::vec3 dims);
     void setName(QString name){this->m_name = name;}
@@ -140,12 +140,12 @@ signals:
     void startWork2D();
 
 private slots:
-    void ResultReady(QVector<Line> lines);
+    void resultReady(QVector<Line> lines);
     void record2D();
 
 private:
-    void Intersections();
-    void NormaliseCoords(std::vector<Pnt> &m_points3D, glm::vec3 roomSize);
+    void intersections();
+    void normaliseCoords(std::vector<Pnt> &m_points3D, glm::vec3 roomSize);
 
     void weldPoints(std::vector<glm::vec3> &m_points3D);
 

@@ -40,7 +40,7 @@ Line::Line(vec3 pos, vec3 vec)
     m_directionVector = vec;
 }
 
-void Line::ClosestPointsOnTwoLines(Line l1, Line l2, vec3 &closestPointLine1, vec3 &closestPointLine2)
+void Line::closestPointsOnTwoLines(Line l1, Line l2, vec3 &closestPointLine1, vec3 &closestPointLine2)
 {
     float a = dot(l1.m_directionVector, l1.m_directionVector);
     float b = dot(l1.m_directionVector, l2.m_directionVector);
@@ -61,11 +61,11 @@ void Line::ClosestPointsOnTwoLines(Line l1, Line l2, vec3 &closestPointLine1, ve
         closestPointLine1 = l1.m_position + l1.m_directionVector * s;
         closestPointLine2 = l2.m_position + l2.m_directionVector * t;
 
-        //std::cout << DistanceTwoPoints(closestPointLine1, closestPointLine2) << std::endl;
+        std::cout << "distance of 2 lines: " << distanceTwoPoints(closestPointLine1, closestPointLine2) << std::endl;
     }
 }
 
-vec3 Line::IntersectionLinePlane(Line L, Line Plane)
+vec3 Line::intersectionLinePlane(Line L, Line Plane)
 {
     float d = Plane.m_directionVector.x * -Plane.m_position.x + Plane.m_directionVector.y * -Plane.m_position.y  + Plane.m_directionVector.z * -Plane.m_position.z;
 
@@ -75,14 +75,14 @@ vec3 Line::IntersectionLinePlane(Line L, Line Plane)
     return L.m_position + t * L.m_directionVector;
 }
 
-float Line::DistanceTwoPoints(vec3 point1, vec3 point2)
+float Line::distanceTwoPoints(vec3 point1, vec3 point2)
 {
     vec3 vector = point2 - point1;
 
     return glm::sqrt( vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
 }
 
-float Line::DistancePointPlane(vec3 Point, Line Plane)
+float Line::distancePointPlane(vec3 Point, Line Plane)
 {
     float    sb, sn, sd;
 
@@ -91,36 +91,38 @@ float Line::DistancePointPlane(vec3 Point, Line Plane)
     sb = sn / sd;
 
     vec3 intersection = Point + sb * Plane.m_directionVector;
-    return DistanceTwoPoints(Point, intersection);
+    return distanceTwoPoints(Point, intersection);
 }
 
-vec3 Line::AveragePoint(vec3 point1, vec3 point2)
+vec3 Line::averagePoint(vec3 point1, vec3 point2)
 {
     return vec3((point1.x + point2.x)/2,(point1.y + point2.y)/2,(point1.z + point2.z)/2);
 }
 
-float Line::LineAngle(Line l1, Line l2)
+float Line::lineAngle(Line l1, Line l2)
 {
     return acos( dot(l1.m_directionVector, l2.m_directionVector)/sqrt(glm::length2(l1.m_directionVector) * glm::length2(l2.m_directionVector)) );
 }
 
-float Line::LineAngle(vec2 v1, vec2 v2)
+float Line::lineAngle(vec2 v1, vec2 v2)
 {
     return atan2(v2.y,v2.x) - atan2(v1.y, v1.x);
     //CCW is positive
 }
 
-vec3 Line::Intersection(Line &l1, Line &l2, float Epsilon)
+vec3 Line::intersection(Line &l1, Line &l2, float Epsilon)
 {
     vec3 point1 = vec3(0.0f, 0.0f, 0.0f), point2 = vec3(0.0f, 0.0f, 0.0f);
 
-    Line::ClosestPointsOnTwoLines(l1, l2, point1, point2);
-    if(Epsilon > Line::DistanceTwoPoints(point1, point2))
+    Line::closestPointsOnTwoLines(l1, l2, point1, point2);
+    if(Epsilon > Line::distanceTwoPoints(point1, point2))
     {
         l2.m_numberOfIntersections += 1;
         l2.found = true;
 
-        return Line::AveragePoint(point1, point2);
+        std::cout << "3D virtual position: " << Line::averagePoint(point1, point2);
+
+        return Line::averagePoint(point1, point2);
     }
     else
     {

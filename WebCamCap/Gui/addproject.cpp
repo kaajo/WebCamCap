@@ -48,7 +48,7 @@ Room *AddProject::resolveProject()
 
     for(size_t i = 0; i < m_newCameras.size(); i++)
     {
-        m_newProject->AddCamera(m_newCameras[i]);
+        m_newProject->addCamera(m_newCameras[i]);
     }
 
     return m_newProject;

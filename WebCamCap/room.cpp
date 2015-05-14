@@ -69,7 +69,7 @@ Room::Room(OpenGLWindow *opengl, vec3 dimensions, float eps, QString name)
 
 Room::~Room()
 {
-    RecordingStop();
+    recordingStop();
 
     for(size_t i = 0; i < m_cameras.size(); i++)
     {
@@ -94,7 +94,7 @@ Room::~Room()
     delete m_server;
 }
 
-void Room::AddCamera(CaptureCamera *cam)
+void Room::addCamera(CaptureCamera *cam)
 {
     m_cameras.push_back(cam);
 
@@ -116,9 +116,9 @@ void Room::AddCamera(CaptureCamera *cam)
 
 
     connect( this, SIGNAL(startWork2D()), this, SLOT(record2D()));
-    connect( this, SIGNAL(startWork()), workers[workers.size()-1], SLOT(StartWork()));
-    connect( this, SIGNAL(stopWork()), workers[workers.size()-1], SLOT(StopWork()));
-    connect(workers[workers.size()-1],SIGNAL(ResultReady(QVector<Line>)),this,SLOT(ResultReady(QVector<Line>)), Qt::QueuedConnection);
+    connect( this, SIGNAL(startWork()), workers[workers.size()-1], SLOT(startWork()));
+    connect( this, SIGNAL(stopWork()), workers[workers.size()-1], SLOT(stopWork()));
+    connect(workers[workers.size()-1],SIGNAL(resultReady(QVector<Line>)),this,SLOT(resultReady(QVector<Line>)), Qt::QueuedConnection);
 
     connect(workers[workers.size()-1], SIGNAL(finished()), workerthreads[workers.size()-1], SLOT(quit()));
     connect(workers[workers.size()-1], SIGNAL(finished()), workers[workers.size()-1], SLOT(deleteLater()));
@@ -126,7 +126,7 @@ void Room::AddCamera(CaptureCamera *cam)
 
     workerthreads[workerthreads.size()-1]->start();
 
-    MakeTopology();
+    makeTopology();
 }
 
 void Room::setDimensions(vec3 dims)
@@ -152,7 +152,7 @@ void Room::setNumberOfPoints(size_t nOfPts)
     m_pointChecker.setNumOfPoints(nOfPts);
 }
 
-void Room::RemoveCamera(size_t index)
+void Room::removeCamera(size_t index)
 {
     if(m_cameras[index]->getTurnedOn())
     {
@@ -169,15 +169,15 @@ void Room::RemoveCamera(size_t index)
         }
     }
 
-    HideCameraVideo(index);
-    TurnOffCamera(index);
+    hideCameraVideo(index);
+    turnOffCamera(index);
     m_cameras.erase(m_cameras.begin()+index);
     m_saved = false;
 
-    MakeTopology();
+    makeTopology();
 }
 
-void Room::MakeTopology()
+void Room::makeTopology()
 {
     m_cameraTopology.clear();
 
@@ -203,7 +203,7 @@ void Room::MakeTopology()
             dir2 = m_cameras[j]->getDirVector();
             intr2 = m_cameras[j]->cameraMatrix();
 
-            temp_angle = Line::LineAngle(vec2(dir1.x, dir1.y),vec2(dir2.x, dir2.y));
+            temp_angle = Line::lineAngle(vec2(dir1.x, dir1.y),vec2(dir2.x, dir2.y));
 
             if(glm::abs(temp_angle) < min)
             {
@@ -244,14 +244,14 @@ void Room::resolveTopologyDuplicates()
     }
 }
 
-void Room::TurnOnCamera(size_t index)
+void Room::turnOnCamera(size_t index)
 {
     m_cameras[index]->TurnOn();
     m_activeCamerasCount++;
     m_saved = false;
 }
 
-void Room::TurnOffCamera(size_t index)
+void Room::turnOffCamera(size_t index)
 {
     m_cameras[index]->TurnOff();
     m_activeCamerasCount--;
@@ -268,7 +268,7 @@ void Room::TurnOffCamera(size_t index)
     m_saved = false;
 }
 
-void Room::CaptureAnimationStart()
+void Room::captureAnimationStart()
 {
     m_actualAnimation = new Animation(m_roomDimensions);
 
@@ -277,19 +277,19 @@ void Room::CaptureAnimationStart()
 
 
 
-Animation *Room::CaptureAnimationStop()
+Animation *Room::captureAnimationStop()
 {
     m_animations.push_back(m_actualAnimation);
 
     Animation * ret = m_actualAnimation;
-    ret->PostProcess();
+    ret->postProcess();
 
     m_captureAnimation = false;
 
     return ret;
 }
 
-void Room::RecordingStart()
+void Room::recordingStart()
 {
     m_record = true;
 
@@ -306,7 +306,7 @@ void Room::RecordingStart()
     }
 }
 
-void Room::RecordingStop()
+void Room::recordingStop()
 {
     m_record = false;
     emit stopWork();
@@ -329,7 +329,7 @@ void Room::Save(std::ofstream &file)
 }
 */
 
-void Room::ResultReady(QVector<Line> lines)
+void Room::resultReady(QVector<Line> lines)
 {
     waitKey(1);
 
@@ -374,7 +374,7 @@ void Room::ResultReady(QVector<Line> lines)
 
     m_points3D.clear();
 
-    Intersections();
+    intersections();
 
 
     m_server->sendMessage(m_labeledPoints);
@@ -400,7 +400,7 @@ void Room::Intersection(Edge &camsEdge)
      {
          for(int j = 0; j < camsEdge.b.size(); j++)
          {
-             tempPoint = Line::Intersection(camsEdge.a[i], camsEdge.b[j], camsEdge.m_maxError);
+             tempPoint = Line::intersection(camsEdge.a[i], camsEdge.b[j], camsEdge.m_maxError);
 
              if(tempPoint != vec3(0,0,0))
              {
@@ -412,7 +412,7 @@ void Room::Intersection(Edge &camsEdge)
     camsEdge.b.clear();
 }
 
-void Room::Intersections()
+void Room::intersections()
 {
     QtConcurrent::map(m_cameraTopology, Room::Intersection);
 
@@ -430,7 +430,7 @@ void Room::Intersections()
 
     m_labeledPoints = m_pointChecker.solvePointIDs(m_points3D);
 
-    NormaliseCoords(m_labeledPoints, m_roomDimensions);
+    normaliseCoords(m_labeledPoints, m_roomDimensions);
 
     m_openGLWindow->setFrame(m_labeledPoints, m_resultLines);
 
@@ -438,7 +438,7 @@ void Room::Intersections()
 
     if(m_captureAnimation)
     {
-        m_actualAnimation->AddFrame(Frame(m_frameTimer.elapsed(),m_labeledPoints, m_resultLines));
+        m_actualAnimation->addFrame(Frame(m_frameTimer.elapsed(),m_labeledPoints, m_resultLines));
     }
 
     for(size_t i = 0; i < workers.size(); i++)
@@ -447,7 +447,7 @@ void Room::Intersections()
     }
 }
 
-void Room::NormaliseCoords(std::vector<Pnt> &points, glm::vec3 roomSize)
+void Room::normaliseCoords(std::vector<Pnt> &points, glm::vec3 roomSize)
 {
     for(Pnt &pnt: points)
     {
@@ -479,7 +479,7 @@ void Room::record2D()
 
         if(m_captureAnimation)
         {
-            m_actualAnimation->AddFrame({m_frameTimer.elapsed(),m_labeledPoints});
+            m_actualAnimation->addFrame({m_frameTimer.elapsed(),m_labeledPoints});
         }
 
         m_frameTimer.restart();
@@ -543,7 +543,7 @@ void Room::fromVariantMap(OpenGLWindow *opengl , QVariantMap &varMap)
 
         cam->fromVariantMap(camera.toMap());
 
-        AddCamera(cam);
+        addCamera(cam);
     }
 
 }

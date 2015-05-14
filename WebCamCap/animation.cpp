@@ -29,12 +29,12 @@ Animation::Animation(glm::vec3 roomdims, std::string name)
     m_name = name;
 }
 
-void Animation::AddFrame(Frame k)
+void Animation::addFrame(Frame k)
 {
     m_frames.push_back(k);
 }
 
-void Animation::Save(std::string file)
+void Animation::save(std::string file)
 {
     std::ofstream outputFile;
     outputFile.open(file, std::ios_base::out | std::ios_base::trunc);
@@ -52,7 +52,7 @@ void Animation::Save(std::string file)
     outputFile.close();
 }
 
-void Animation::PostProcess()
+void Animation::postProcess()
 {
     //count framerate
     int sum = 0;

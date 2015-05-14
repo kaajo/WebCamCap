@@ -70,9 +70,9 @@ private slots:
 
     void on_FrameRows_editingFinished();
 
-    void on_pushButton_clicked();
-
     void on_readYAML_clicked();
+
+    void on_calibButton_clicked();
 
 private:
     Ui::AddCamera *ui;

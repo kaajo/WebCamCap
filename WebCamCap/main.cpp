@@ -58,8 +58,6 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     app = &a;
 
-    qDebug() << sizeof(glm::vec3);
-
     MainWindow w;
     w.show();
 

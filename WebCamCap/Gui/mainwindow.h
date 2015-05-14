@@ -74,7 +74,7 @@ private slots:
 
     void on_newProject_triggered();
 
-    void OpenRecentProjects();
+    void openRecentProjects();
 
     void on_openProject_triggered();
 
@@ -112,7 +112,7 @@ private:
     void saveLog();
     void loadLog();
     void setProjectStats();
-    int NotSavedMessage();
+    int notSavedMessage();
     void handleMainWProject(Room *p);
 
     void editProject(Room * m_project);

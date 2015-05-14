@@ -151,12 +151,12 @@ public slots:
 
 private:
     
-    void GetUndisortedPosition();
-    void UseFilter();
-    void MiddleOfContours();
-    void CreateLines();
-    void ComputeDirVector();
-    void NormalizeContours();
+    void getUndisortedPosition();
+    void useFilter();
+    void middleOfContours();
+    void createLines();
+    void computeDirVector();
+    void normalizeContours();
     void createExtrinsicMatrix();
 
     void computeAllDirections();

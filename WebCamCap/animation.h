@@ -35,9 +35,9 @@ class Animation
 public:
     Animation(glm::vec3 roomdims, std::string name = "Animation Default");
 
-    void AddFrame(Frame k);
-    void Save(std::string file);
-    void PostProcess();
+    void addFrame(Frame k);
+    void save(std::string file);
+    void postProcess();
 
     std::string getName() const {return m_name;}
     float getFrameRate() const {return m_frameRate;}

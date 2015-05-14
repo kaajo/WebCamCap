@@ -59,13 +59,13 @@ void worker::do_Work()
   qDebug() << "Stopping capture thread";
 }
 
-void worker::StopWork()
+void worker::stopWork()
 {
     QMutexLocker l(&m_mutex);
     m_running = false;
 }
 
-void worker::StartWork()
+void worker::startWork()
 {
     m_running = true;
     do_Work();

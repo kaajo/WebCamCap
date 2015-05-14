@@ -48,14 +48,14 @@ public:
     Line();
     Line(glm::vec3 pos, glm::vec3 vec);
 
-    static void ClosestPointsOnTwoLines(Line l1, Line l2, glm::vec3 &closestPointLine1, glm::vec3 &closestPointLine2);
-    static glm::vec3 IntersectionLinePlane(Line l1, Line Plane);
-    static float DistanceTwoPoints(glm::vec3 point1, glm::vec3 point2);
-    static float DistancePointPlane(glm::vec3 point, Line Plane);
-    static glm::vec3 AveragePoint(glm::vec3 point1, glm::vec3 point2);
-    static float LineAngle(Line l1, Line l2);
-    static float LineAngle(glm::vec2 v1, glm::vec2 v2);
-    static glm::vec3 Intersection(Line &l1, Line &l2, float Epsilon);
+    static void closestPointsOnTwoLines(Line l1, Line l2, glm::vec3 &closestPointLine1, glm::vec3 &closestPointLine2);
+    static glm::vec3 intersectionLinePlane(Line l1, Line Plane);
+    static float distanceTwoPoints(glm::vec3 point1, glm::vec3 point2);
+    static float distancePointPlane(glm::vec3 point, Line Plane);
+    static glm::vec3 averagePoint(glm::vec3 point1, glm::vec3 point2);
+    static float lineAngle(Line l1, Line l2);
+    static float lineAngle(glm::vec2 v1, glm::vec2 v2);
+    static glm::vec3 intersection(Line &l1, Line &l2, float Epsilon);
 };
 
 std::ostream& operator << (std::ostream &stream,const glm::vec3 &position);

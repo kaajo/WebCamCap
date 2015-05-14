@@ -127,11 +127,11 @@ QVector<Line> CaptureCamera::RecordNextFrame()
 
     camera >> frame;
 
-    UseFilter();
+    useFilter();
 
 
-    MiddleOfContours();
-    CreateLines();
+    middleOfContours();
+    createLines();
 
     circle(frame, cv::Point(frame.cols/2, frame.rows/2), 1, CV_RGB(0,255,0), 2);
 
@@ -158,8 +158,8 @@ std::vector<vec2> CaptureCamera::RecordNextFrame2D()
 
     camera >> frame;
 
-    UseFilter();
-    MiddleOfContours();
+    useFilter();
+    middleOfContours();
 
     circle(frame, cv::Point(frame.cols/2, frame.rows/2), 1, CV_RGB(0,255,0), 2);
 
@@ -168,16 +168,16 @@ std::vector<vec2> CaptureCamera::RecordNextFrame2D()
         emit imageRead(frame);
     }
 
-    NormalizeContours();
+    normalizeContours();
 
     return centerOfContour;
 }
 
-void CaptureCamera::UseFilter()
+void CaptureCamera::useFilter()
 {
     if(!m_distortionCoeffs.empty() && !m_IntrinsicMatrix.empty())
     {
-        GetUndisortedPosition();
+        getUndisortedPosition();
     }
 
     if(ROI)
@@ -223,7 +223,7 @@ void CaptureCamera::UseFilter()
     drawContours(frame, contours, -1, contourColor , CV_FILLED);
 }
 
-void CaptureCamera::GetUndisortedPosition()
+void CaptureCamera::getUndisortedPosition()
 {
     Mat framein;
 
@@ -232,7 +232,7 @@ void CaptureCamera::GetUndisortedPosition()
     cv::undistort(framein, frame, m_IntrinsicMatrix, m_distortionCoeffs);
 }
 
-void CaptureCamera::MiddleOfContours()
+void CaptureCamera::middleOfContours()
 {
     centerOfContour.clear();
 
@@ -250,7 +250,7 @@ void CaptureCamera::MiddleOfContours()
     }
 }
 
-void CaptureCamera::CreateLines()
+void CaptureCamera::createLines()
 {
     lines.clear();
 
@@ -297,12 +297,12 @@ void CaptureCamera::CreateLines()
 
 }
 
-void CaptureCamera::ComputeDirVector()
+void CaptureCamera::computeDirVector()
 {
     m_directionVectorToCenter = vec3(m_roomDimensions.x/2 - m_globalPosition.x , m_roomDimensions.y/2 - m_globalPosition.y , m_roomDimensions.z/2 - m_globalPosition.z);
 }
 
-void CaptureCamera::NormalizeContours()
+void CaptureCamera::normalizeContours()
 {
     for(size_t i = 0; i < centerOfContour.size(); i++)
     {
@@ -405,7 +405,7 @@ void CaptureCamera::computeAllDirections()
 
 void CaptureCamera::computeNewParameters()
 {
-    ComputeDirVector();
+    computeDirVector();
 
     createExtrinsicMatrix();
 
@@ -602,9 +602,9 @@ int CaptureCamera::CalibWithMarkers(int numOfMarkers)
         //step 1, find first value which gives some Lines
         while(m_thresholdValue > 20)
         {
-            UseFilter();
-            MiddleOfContours();
-            CreateLines();
+            useFilter();
+            middleOfContours();
+            createLines();
 
             if(lines.size() == 0)
             {
@@ -630,9 +630,9 @@ int CaptureCamera::CalibWithMarkers(int numOfMarkers)
         //some difference in light intensity (rotation of LED)
         m_thresholdValue -= 10;
 
-        UseFilter();
-        MiddleOfContours();
-        CreateLines();
+        useFilter();
+        middleOfContours();
+        createLines();
 
         nLines = lines.size();
 
@@ -645,9 +645,9 @@ int CaptureCamera::CalibWithMarkers(int numOfMarkers)
         {
             --m_thresholdValue;
 
-            UseFilter();
-            MiddleOfContours();
-            CreateLines();
+            useFilter();
+            middleOfContours();
+            createLines();
 
             if(nLines < lines.size())
             {

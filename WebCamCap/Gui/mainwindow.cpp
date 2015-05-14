@@ -105,7 +105,7 @@ void MainWindow::on_newProject_triggered()
 
     if(m_project != nullptr && !m_project->getSaved())
     {
-        msg = NotSavedMessage();
+        msg = notSavedMessage();
 
         if(msg == QMessageBox::Cancel)
         {
@@ -140,7 +140,7 @@ void MainWindow::on_newProject_triggered()
     }
 }
 
-void MainWindow::OpenRecentProjects()
+void MainWindow::openRecentProjects()
 {
     QObject * sender = QObject::sender();
 
@@ -152,7 +152,7 @@ void MainWindow::OpenRecentProjects()
 
             if(m_project != nullptr && !m_project->getSaved())
             {
-                msg = NotSavedMessage();
+                msg = notSavedMessage();
 
                 if(msg == QMessageBox::Cancel)
                 {
@@ -192,7 +192,7 @@ void MainWindow::on_openProject_triggered()
 
     if(m_project != nullptr && !m_project->getSaved())
     {
-        msg = NotSavedMessage();
+        msg = notSavedMessage();
 
         if(msg == QMessageBox::Cancel)
         {
@@ -302,13 +302,13 @@ void MainWindow::on_nahravanie_clicked(bool checked)
 
         if(m_project != nullptr)
         {
-            m_project->RecordingStart();
+            m_project->recordingStart();
         }
     }
     else
     {
         ui->nahravanie->setText("Record");
-        m_project->RecordingStop();
+        m_project->recordingStop();
         m_record = false;
     }
 
@@ -321,7 +321,7 @@ void MainWindow::createRollOutMenu()
         QAction* temp = new QAction(m_recentProjects[i],this);
 
         m_recentProjectsQActions.push_back(temp);
-        connect(m_recentProjectsQActions.at(i),  SIGNAL(triggered()), this, SLOT(OpenRecentProjects() ));
+        connect(m_recentProjectsQActions.at(i),  SIGNAL(triggered()), this, SLOT(openRecentProjects() ));
     }
 
     ui->menuRecent_Projects->addActions(m_recentProjectsQActions);
@@ -370,7 +370,7 @@ void MainWindow::loadLog()
     }
 }
 
-int MainWindow::NotSavedMessage()
+int MainWindow::notSavedMessage()
 {
     QMessageBox msgBox;
     msgBox.setWindowTitle(" ");
@@ -407,8 +407,8 @@ void MainWindow::editProject(Room *project)
     {
         for(size_t i = 0; i < this->m_project->getcameras().size(); i++)
         {
-            this->m_project->HideCameraVideo(i);
-            this->m_project->TurnOffCamera(i);
+            this->m_project->hideCameraVideo(i);
+            this->m_project->turnOffCamera(i);
         }
     }
 
@@ -451,7 +451,7 @@ void MainWindow::on_playButton_pressed()
     if(!m_captureAnimation)
     {
         m_captureAnimation = true;
-        m_project->CaptureAnimationStart();
+        m_project->captureAnimationStart();
     }
 }
 
@@ -464,7 +464,7 @@ void MainWindow::on_stopButton_pressed()
 
     if(m_captureAnimation)
     {
-        Animation * ActualAnimation = m_project->CaptureAnimationStop();
+        Animation * ActualAnimation = m_project->captureAnimationStop();
         m_captureAnimation = false;
 
         m_animations.push_back(ActualAnimation);
@@ -498,7 +498,7 @@ void MainWindow::on_AnimationsTable_cellClicked(int row, int column)
     case 3:
         //save animation
         ui->AnimationsTable->item(row, column)->setSelected(false);
-        m_animations[row]->Save((ui->AnimationsTable->item(row, 0)->text() + ".wcc").toStdString());
+        m_animations[row]->save((ui->AnimationsTable->item(row, 0)->text() + ".wcc").toStdString());
         break;
     default:
         break;

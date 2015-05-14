@@ -54,8 +54,8 @@ signals:
     void ResultReady(QVector<Line> points2D);
 
 public slots:
-  void StopWork();
-  void StartWork();
+  void stopWork();
+  void startWork();
 
 private slots:
   void do_Work();

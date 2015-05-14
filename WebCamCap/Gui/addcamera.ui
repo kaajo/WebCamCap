@@ -438,7 +438,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="calibButton">
    <property name="geometry">
     <rect>
      <x>340</x>

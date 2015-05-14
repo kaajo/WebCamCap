@@ -148,10 +148,10 @@ void AddCamera::on_Play_ID_clicked(bool checked)
 
 void AddCamera::recording()
 {
-    m_tooHighValueWarning = false;
-
     while(m_cameraRecording)
     {
+        m_tooHighValueWarning = false;
+
         QCoreApplication::processEvents();
 
         m_videoCaptureTemp >> m_frame;
@@ -213,26 +213,6 @@ void AddCamera::on_FrameRows_editingFinished()
     m_videoCaptureTemp.set(CV_CAP_PROP_FRAME_HEIGHT, ui->FrameRows->text().toInt());
 }
 
-void AddCamera::on_pushButton_clicked()
-{
-    QStringList arguments;
-
-    QString usbid = ui->deviceUSB_ID->text();
-    if(usbid == "")
-    {
-        usbid = "0";
-    }
-
-    arguments << usbid;
-    arguments << "-w" << "7" << "-h" << "5" << "-pt" << "chessboard" << "-n" << "50";
-    arguments << "-o" << ui->Name->text() + ".yaml";
-
-    m_calibApplication = new QProcess(this);
-    m_calibApplication->start(QDir::currentPath() + "/Calib",  arguments);
-
-    connect(m_calibApplication, SIGNAL(finished(int)), this, SLOT(readYaml(int)));
-}
-
 void AddCamera::on_readYAML_clicked()
 {
 
@@ -244,4 +224,33 @@ void AddCamera::on_readYAML_clicked()
 
         readConfigFile(filename);
     }
+}
+
+void AddCamera::on_calibButton_clicked()
+{
+    QStringList arguments;
+
+    QString usbid = ui->deviceUSB_ID->text();
+    if(usbid == "")
+    {
+        usbid = "0";
+    }
+
+    arguments << usbid;
+    arguments << "-w" << "7" << "-h" << "5" << "-pt" << "chessboard" << "-n" << "25";
+    arguments << "-o" << ui->Name->text() + ".yaml";
+
+    QString path = QDir::currentPath() + "/Calib/Calib";
+
+    QFile file(path);
+
+    if(!file.exists())
+    {
+        qDebug() << "calib program does not exist";
+    }
+
+    m_calibApplication = new QProcess(this);
+    m_calibApplication->start(path,  arguments);
+
+    connect(m_calibApplication, SIGNAL(finished(int)), this, SLOT(readYaml(int)));
 }
