@@ -29,7 +29,7 @@
 
 class Frame
 {
-    int m_elapsedTime;
+    int m_elapsedTime = 0;
     std::vector<Point> m_points;
     QVector<QVector<Line> > m_lines;
 

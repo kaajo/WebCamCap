@@ -51,7 +51,7 @@ public:
 
 signals:
     void finished();
-    void ResultReady(QVector<Line> points2D);
+    void resultReady(QVector<Line> points2D);
 
 public slots:
   void stopWork();

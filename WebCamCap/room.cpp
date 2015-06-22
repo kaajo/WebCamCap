@@ -374,8 +374,12 @@ void Room::resultReady(QVector<Line> lines)
 
     m_points3D.clear();
 
+    QTime timer;
+    timer.start();
+
     intersections();
 
+    qDebug() << "triangulacia" << timer.elapsed();
 
     m_server->sendMessage(m_labeledPoints);
 

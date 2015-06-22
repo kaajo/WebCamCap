@@ -61,7 +61,7 @@ void Line::closestPointsOnTwoLines(Line l1, Line l2, vec3 &closestPointLine1, ve
         closestPointLine1 = l1.m_position + l1.m_directionVector * s;
         closestPointLine2 = l2.m_position + l2.m_directionVector * t;
 
-        std::cout << "distance of 2 lines: " << distanceTwoPoints(closestPointLine1, closestPointLine2) << std::endl;
+        //std::cout << "distance of 2 lines: " << distanceTwoPoints(closestPointLine1, closestPointLine2) << std::endl;
     }
 }
 

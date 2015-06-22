@@ -25,6 +25,8 @@
 #include <GL/glut.h>
 #include <signal.h>
 
+#include <QVector3D>
+
 QCoreApplication *app;
 
 bool clean = false;

@@ -28,9 +28,12 @@
 #include <QVBoxLayout>
 #include <QMatrix4x4>
 
+#include <QTime>
+
 using namespace cv;
 using glm::vec2;
 using glm::vec3;
+
 
 cv::Mat CaptureCamera::distortionCoeffs() const
 {
@@ -128,9 +131,9 @@ QVector<Line> CaptureCamera::RecordNextFrame()
     camera >> frame;
 
     useFilter();
-
-
+    
     middleOfContours();
+
     createLines();
 
     circle(frame, cv::Point(frame.cols/2, frame.rows/2), 1, CV_RGB(0,255,0), 2);
@@ -153,12 +156,10 @@ std::vector<vec2> CaptureCamera::RecordNextFrame2D()
         return blank;
     }
 
-    QTime timer;
-    timer.start();
-
     camera >> frame;
 
     useFilter();
+
     middleOfContours();
 
     circle(frame, cv::Point(frame.cols/2, frame.rows/2), 1, CV_RGB(0,255,0), 2);

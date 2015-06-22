@@ -45,7 +45,7 @@ void worker::do_Work()
 
       m_result = m_camera->RecordNextFrame();
 
-      emit ResultReady(m_result);
+      emit resultReady(m_result);
 
       if(!m_line->wait(&m_mutex,1000))
       {

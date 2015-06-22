@@ -39,7 +39,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="RoomSettings">
     <attribute name="title">
@@ -87,7 +87,7 @@
       <item>
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Length:</string>
+         <string>Length (y):</string>
         </property>
        </widget>
       </item>
@@ -97,7 +97,7 @@
       <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Width:</string>
+         <string>Width (x):</string>
         </property>
        </widget>
       </item>
@@ -107,7 +107,7 @@
       <item>
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Height:</string>
+         <string>Height (z):</string>
         </property>
        </widget>
       </item>
