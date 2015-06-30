@@ -23,9 +23,9 @@
 #include "frame.h"
 
 
-Frame::Frame(int elapsed, std::vector<Point> pts, QVector<QVector<Line> > lines)
+Frame::Frame(int elapsed, std::vector<Point> markers, QVector<QVector<Line> > lines)
 {
-    m_points = pts;
+    m_points = markers;
     m_lines = lines;
     m_elapsedTime = elapsed;
 }

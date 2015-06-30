@@ -3,6 +3,8 @@
  * http://www.robot-home.it/blog/en/software/tutorial-opencv-qt-opengl-widget-per-visualizzare-immagini-da-opencv-in-una-gui-con-qt/
  */
 
+#include <opencv2/imgcodecs.hpp>
+
 #include "camwidget.h"
 #include "ui_camwidget.h"
 

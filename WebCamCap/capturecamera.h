@@ -28,8 +28,10 @@
 
 #include <fstream>
 
-#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/cudabgsegm.hpp>
+#include <opencv2/highgui.hpp>
 #include <opencv2/opencv.hpp>
+#include <opencv2/imgcodecs.hpp>
 
 class CaptureCamera: public QObject
 {
@@ -68,7 +70,7 @@ class CaptureCamera: public QObject
     //background substract
     bool useBackgroundSub;
     cv::Mat MOGMask;
-    cv::BackgroundSubtractorMOG* backgroundExtractor;
+    cv::Ptr<cv::BackgroundSubtractorMOG2> backgroundExtractor;
 
     //ADVANCED for image process
     cv::Mat dilateKernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3,3));

@@ -11,10 +11,10 @@ TEMPLATE = lib
 
 DEFINES += WEBCAMCAPGUI_LIBRARY
 
-SOURCES += webcamcapgui.cpp \
+SOURCES += \
     openglscene.cpp
 
-HEADERS += webcamcapgui.h\
+HEADERS +=\
         webcamcapgui_global.h \
     openglscene.h
 

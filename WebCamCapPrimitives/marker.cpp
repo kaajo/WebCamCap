@@ -1,14 +1,14 @@
 #include "marker.h"
 
 
-QVector3D Marker::direction() const
+QVector3D Marker::position() const
 {
-    return m_direction;
+    return m_position;
 }
 
-void Marker::setDirection(const QVector3D &direction)
+void Marker::setPosition(const QVector3D &position)
 {
-    m_direction = direction;
+    m_position = position;
 }
 
 int Marker::id() const
@@ -21,13 +21,28 @@ void Marker::setId(int id)
     m_id = id;
 }
 
+Marker Marker::operator -(Marker &point)
+{
+    return {m_id, m_position - point.position()};
+}
+
+Marker Marker::operator *(float &val)
+{
+    return {m_id, m_position * val};
+}
+
+Marker Marker::operator +(Marker point)
+{
+    return {m_id, m_position + point.position()};
+}
+
 Marker::Marker()
 {
 
 }
 
-Marker::Marker(int id, QVector3D directionVector)
+Marker::Marker(int id, QVector3D positionVector)
 {
     m_id = id;
-    m_direction = directionVector;
+    m_position = positionVector;
 }

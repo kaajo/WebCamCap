@@ -1,7 +1,9 @@
 #ifndef WCCMAINWINDOW_H
 #define WCCMAINWINDOW_H
 
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
+
+#include "src/markercamera.h"
 
 namespace Ui {
 class WccMainWindow;

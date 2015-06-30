@@ -15,14 +15,18 @@ SOURCES += \
     line.cpp \
     marker.cpp \
     camerasettings.cpp \
-    roomsettings.cpp
+    roomsettings.cpp \
+    frame.cpp \
+    animation.cpp
 
 HEADERS +=\
         webcamcapprimitives_global.h \
     line.h \
     marker.h \
     camerasettings.h \
-    roomsettings.h
+    roomsettings.h \
+    frame.h \
+    animation.h
 
 CONFIG += link_pkgconfig
 

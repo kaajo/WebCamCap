@@ -10,14 +10,18 @@ TEMPLATE = lib
 
 DEFINES += WEBCAMCAPINTERFACES_LIBRARY
 
-SOURCES += webcamcapinterfaces.cpp \
+SOURCES += \
     ivirtualroom.cpp \
-    icamera.cpp
+    icamera.cpp \
+    icameratopology.cpp \
+    iserver.cpp
 
-HEADERS += webcamcapinterfaces.h\
+HEADERS +=\
         webcamcapinterfaces_global.h \
     ivirtualroom.h \
-    icamera.h
+    icamera.h \
+    icameratopology.h \
+    iserver.h
 
 QMAKE_CXXFLAGS += -std=c++11 -pedantic -Wall -Wextra
 
@@ -36,12 +40,3 @@ else:unix: LIBS += -L$$OUT_PWD/../WebCamCapPrimitives/ -lWebCamCapPrimitives
 
 INCLUDEPATH += $$PWD/../WebCamCapPrimitives
 DEPENDPATH += $$PWD/../WebCamCapPrimitives
-
-
-
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../WebCamCapGui/release/ -lWebCamCapGui
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../WebCamCapGui/debug/ -lWebCamCapGui
-else:unix: LIBS += -L$$OUT_PWD/../WebCamCapGui/ -lWebCamCapGui
-
-INCLUDEPATH += $$PWD/../WebCamCapGui
-DEPENDPATH += $$PWD/../WebCamCapGui

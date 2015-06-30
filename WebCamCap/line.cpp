@@ -120,7 +120,7 @@ vec3 Line::intersection(Line &l1, Line &l2, float Epsilon)
         l2.m_numberOfIntersections += 1;
         l2.found = true;
 
-        std::cout << "3D virtual position: " << Line::averagePoint(point1, point2);
+        //std::cout << "3D virtual position: " << Line::averagePoint(point1, point2);
 
         return Line::averagePoint(point1, point2);
     }

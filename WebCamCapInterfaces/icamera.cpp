@@ -1,5 +1,14 @@
 #include "icamera.h"
 
+ICamera::ICamera(CameraSettings *settings, QObject *parent) : QObject(parent)
+{
+    setSettings(settings);
+}
+
+ICamera::~ICamera()
+{
+
+}
 
 CameraSettings *ICamera::settings() const
 {
@@ -8,10 +17,12 @@ CameraSettings *ICamera::settings() const
 
 void ICamera::setSettings(CameraSettings *settings)
 {
-    m_settings = settings;
-}
+    if(m_settings)
+    {
+        delete m_settings;
+    }
 
-ICamera::ICamera(QObject *parent) : QObject(parent)
-{
+    m_settings = settings;
+
     connect(m_settings, &CameraSettings::changed, this, &ICamera::settingsChanged);
 }

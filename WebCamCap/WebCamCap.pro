@@ -15,7 +15,7 @@ TEMPLATE = app
 
 CONFIG += link_pkgconfig
 
-PKGCONFIG += opencv gl glu
+PKGCONFIG += opencv gl glu tbb
 
 UI_DIR +=  Gui
 UI_HEADERS_DIR += Gui

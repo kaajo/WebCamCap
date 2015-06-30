@@ -1,5 +1,9 @@
 #include "line.h"
 
+#include <QString>
+#include <QVariant>
+#include <QVariantMap>
+
 Line::Line()
 {
 }
@@ -7,6 +11,28 @@ Line::Line()
 Line::Line(QVector3D position, QVector3D direction) : m_position(position) , m_direction(direction)
 {
 
+}
+
+const QString positionKey("position");
+const QString directionKey("direction");
+const QString nOfIntersectionsKey("numberOfIntersections");
+
+QVariantMap Line::toVariantMap() const
+{
+    QVariantMap varMap;
+
+    varMap[positionKey] = m_position;
+    varMap[directionKey] = m_direction;
+    varMap[nOfIntersectionsKey] = (uint) m_numberOfIntersections;
+
+    return varMap;
+}
+
+void Line::fromVariantMap(QVariantMap &varMap)
+{
+    m_position = varMap.value(positionKey).value<QVector3D>();
+    m_direction = varMap.value(directionKey).value<QVector3D>();
+    m_numberOfIntersections = varMap.value(nOfIntersectionsKey).toUInt();
 }
 
 bool Line::closestPointsTwoLines(Line line1, Line line2, QVector3D &closestPointLine1, QVector3D &closestPointLine2)
@@ -59,7 +85,7 @@ float Line::lineAngle(QVector2D v1, QVector2D v2)
     return atan2(v2.y(), v2.x()) - atan2(v1.y(), v1.x());
 }
 
-QVector3D Line::intersection(Line &l1, Line &l2, float Epsilon)
+bool Line::intersection(Line &l1, Line &l2, float Epsilon,  QVector3D &point)
 {
     QVector3D point1, point2;
 
@@ -69,8 +95,9 @@ QVector3D Line::intersection(Line &l1, Line &l2, float Epsilon)
         l1.m_numberOfIntersections += 1;
         l2.m_numberOfIntersections += 1;
 
-        return Line::averagePoint(point1, point2);
+        point = Line::averagePoint(point1, point2);
+        return true;
     }
 
-    ////////////////////////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    return false;
 }

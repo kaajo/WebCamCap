@@ -30,6 +30,8 @@
 
 #include <QTime>
 
+#include <opencv2/imgcodecs.hpp>
+
 using namespace cv;
 using glm::vec2;
 using glm::vec3;
@@ -99,7 +101,7 @@ CaptureCamera::CaptureCamera(vec2 resolution, vec3 pos, vec3 roomDimensions, QSt
 
     contourColor = Scalar(0, 0, 255);
 
-    backgroundExtractor = new BackgroundSubtractorMOG(50, 10, 0.3, 0.2);
+    backgroundExtractor = createBackgroundSubtractorMOG2(50, 10);
     useBackgroundSub = backgroudSubstractor;
 
     m_QtWidgetViewer = new CamWidget;
@@ -189,7 +191,7 @@ void CaptureCamera::useFilter()
 
     if(useBackgroundSub)
     {
-        backgroundExtractor->operator ()(frame, MOGMask);
+        //backgroundExtractor->operator ()(frame, MOGMask);
         frame.copyTo(frameTemp,MOGMask);
     }
     else
@@ -559,7 +561,7 @@ void CaptureCamera::CalibNoMarkers()
 
             if(useBackgroundSub)
             {
-                backgroundExtractor->operator ()(temp, MOGMask);
+                //backgroundExtractor->operator ()(temp, MOGMask);
             }
 
             if(i < 15)
@@ -653,7 +655,7 @@ int CaptureCamera::CalibWithMarkers(int numOfMarkers)
             if(nLines < lines.size())
             {
                 thresholdLow = m_thresholdValue;
-                std::cout << "distance: " << "calibrated lower value" << thresholdLow << std::endl;
+                //std::cout << "distance: " << "calibrated lower value" << thresholdLow << std::endl;
                 break;
             }
         }
@@ -819,7 +821,7 @@ void CaptureCamera::fromVariantMap(QVariantMap varMap)
 
     contourColor = Scalar(0, 0, 255);
 
-    backgroundExtractor = new BackgroundSubtractorMOG(50, 10, 0.3, 0.2);
+    backgroundExtractor = createBackgroundSubtractorMOG2(50, 10);
     useBackgroundSub = varMap[useBackgroundSubstractorKey].toFloat();
 
     m_QtWidgetViewer = new CamWidget;

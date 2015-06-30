@@ -1,13 +1,15 @@
 #ifndef OPENGLSCENE_H
 #define OPENGLSCENE_H
 
+#include "webcamcapgui_global.h"
+
 #include <QColor>
 #include <QVector>
 #include <QVector2D>
 #include <QVector3D>
 #include <QGLWidget>
 
-class OpenGlScene : public QGLWidget
+class WEBCAMCAPGUISHARED_EXPORT OpenGlScene : public QGLWidget
 {
     static OpenGlScene *m_scene;
 
