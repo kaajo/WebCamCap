@@ -1,7 +1,17 @@
 #include "openglscene.h"
 
+#include <GL/glu.h>
+
+OpenGlScene* OpenGlScene::m_scene = nullptr;
+
 OpenGlScene::OpenGlScene(QWidget *parent) : QGLWidget(parent)
 {
+    updateGL();
+}
+
+void OpenGlScene::setRoomDimensions(QVector3D &roomDims)
+{
+    m_roomDims = roomDims;
 }
 
 OpenGlScene *OpenGlScene::getInstance()
@@ -34,35 +44,26 @@ void OpenGlScene::initializeGL()
 
 void OpenGlScene::paintGL()
 {
-    /*
+
     glClearColor(0.15f, 0.15f, 0.15f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glLoadIdentity();
 
     gluLookAt(
-                -roomDims.x*zoom, 200*zoom, roomDims.y*zoom,
-                 roomDims.x/2.0f, roomDims.z/2.0f , -roomDims.y/2.0f,
+                -m_roomDims.x()*zoom, 200*zoom, m_roomDims.y()*zoom,
+                 m_roomDims.x()/2.0f, m_roomDims.z()/2.0f , -m_roomDims.y()/2.0f,
                  0, 1, 0
-                    );
+             );
 
-    glTranslatef(roomDims.x/2.0f, roomDims.z/2.0f, -roomDims.y/2.0f);
-    glRotatef(camRot.x, 1, 0, 0);
-    glRotatef(camRot.y, 0, 1, 0);
-    glTranslatef(-roomDims.x/2.0f, -roomDims.z/2.0f, roomDims.y/2.0f);
+    glTranslatef(m_roomDims.x()/2.0f, m_roomDims.z()/2.0f, -m_roomDims.y()/2.0f);
+    glRotatef(camRot.x(), 1, 0, 0);
+    glRotatef(camRot.y(), 0, 1, 0);
+    glTranslatef(-m_roomDims.x()/2.0f, -m_roomDims.z()/2.0f, m_roomDims.y()/2.0f);
 
-    if(mdrawJoints)
-    {
-        drawJoints();
-    }
+    paintScene();
+    paintFrame();
 
-    if(mdrawLines)
-    {
-        drawLines();
-    }
-
-    drawFloor();
-    */
 }
 
 void OpenGlScene::resizeGL(int w, int h)
@@ -71,6 +72,40 @@ void OpenGlScene::resizeGL(int w, int h)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     //gluPerspective(60, (float) w/ (float) h, 0.1, 10000);
-
     glMatrixMode(GL_MODELVIEW);
+}
+
+void OpenGlScene::setFrame(Frame &frame)
+{
+    m_actualFrame = frame;
+
+    updateGL();
+}
+
+void OpenGlScene::paintScene()
+{
+    glColor3f(0.2, 0.1, 0.7);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0,0); glVertex3d(0, -1, 0);
+    glTexCoord2f(1,0); glVertex3d(m_roomDims.x(), -1, 0);
+    glTexCoord2f(1,1); glVertex3d(m_roomDims.x(), -1, -m_roomDims.y());
+    glTexCoord2f(0,1); glVertex3d(0, -1, -m_roomDims.y());
+    glEnd();
+}
+
+void OpenGlScene::paintFrame()
+{
+    glPushMatrix();
+    for(int i = 0; i < m_actualFrame.markers().size(); i++)
+    {
+        //glColor3ub(randomColors[m_actualFrame.markers()[i].id()][0],randomColors[m_actualFrame.markers()[i].id()][1],randomColors[m_actualFrame.markers()[i].id()][2]);
+
+        qglColor(randomColors[m_actualFrame.markers()[i].id()]);
+
+        glTranslatef(m_actualFrame.markers()[i].position().x()*m_roomDims.x(), m_actualFrame.markers()[i].position().z()*m_roomDims.z(), -m_actualFrame.markers()[i].position().y()*m_roomDims.y());
+        gluSphere(m_quadric, 3,8,8);
+        glTranslatef(-m_actualFrame.markers()[i].position().x()*m_roomDims.x(), -m_actualFrame.markers()[i].position().z()*m_roomDims.z(), m_actualFrame.markers()[i].position().y()*m_roomDims.y());
+
+    }
+    glPopMatrix();
 }

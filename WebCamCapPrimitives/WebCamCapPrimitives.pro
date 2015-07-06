@@ -30,7 +30,7 @@ HEADERS +=\
 
 CONFIG += link_pkgconfig
 
-PKGCONFIG += opencv gl glu
+PKGCONFIG += opencv
 
 QMAKE_CXXFLAGS += -std=c++11 -pedantic -Wall -Wextra
 

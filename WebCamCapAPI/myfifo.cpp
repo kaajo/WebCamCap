@@ -25,6 +25,7 @@
 #include <sstream>
 
 #include <QDebug>
+#include <QDataStream>
 
 MyFifo::MyFifo()
 {

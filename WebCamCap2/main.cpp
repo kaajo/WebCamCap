@@ -1,17 +1,20 @@
-#include "wccmainwindow.h"
+#include "gui/wccmainwindow.h"
 
 #include <QtWidgets/QApplication>
 
-#include "line.h"
+#include <QDebug>
 
 int main(int argc, char *argv[])
 {
+    QApplication a(argc, argv);
+    WccMainWindow w;
+
     qRegisterMetaType<QVector<Line>>("QVector<Line>");
     qRegisterMetaType<Line>("Line");
 
-    QApplication a(argc, argv);
-    WccMainWindow w;
-    w.show();
+    qDebug() << "WebCamCap2 is running under Qt version: " << qVersion();
 
+
+    w.show();
     return a.exec();
 }

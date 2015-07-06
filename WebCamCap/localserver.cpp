@@ -1,6 +1,8 @@
 #include "localserver.h"
 #include "sstream"
 
+#include <QDataStream>
+
 QLocalServer *LocalServer::getServer() const
 {
     return m_server;

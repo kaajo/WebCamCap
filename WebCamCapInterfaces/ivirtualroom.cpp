@@ -1,5 +1,6 @@
 #include "ivirtualroom.h"
 
+
 IVirtualRoom::IVirtualRoom(QObject *parent) :
     QObject(parent)
 {
@@ -7,7 +8,7 @@ IVirtualRoom::IVirtualRoom(QObject *parent) :
 
 IVirtualRoom::~IVirtualRoom()
 {
-
+    
 }
 
 RoomSettings *IVirtualRoom::settings()
@@ -29,27 +30,7 @@ void IVirtualRoom::setSettings(RoomSettings *settings)
     settingsChange(RoomSettings::RoomSettingsType::ALL);
 }
 
-bool IVirtualRoom::addServer(IServer *server)
+ICameraTopology *IVirtualRoom::cameraTopology() const
 {
-    QString name = server->name();
-
-    auto it = std::find_if(m_servers.begin(), m_servers.end(), [name](IServer *s){return s->name() == name;});
-
-    if(it == m_servers.end())
-    {
-        m_servers.push_back(server);
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return m_cameraTopology;
 }
-
-bool IVirtualRoom::removeServer(QString name)
-{
-    auto it = std::find_if(m_servers.begin(), m_servers.end(), [name](IServer *s){return s->name() == name;});
-
-    return true;
-}
-

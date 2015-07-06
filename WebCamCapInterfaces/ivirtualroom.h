@@ -19,8 +19,6 @@ class WEBCAMCAPINTERFACESSHARED_EXPORT IVirtualRoom : public QObject
 protected:
     RoomSettings *m_settings = nullptr;
     ICameraTopology *m_cameraTopology = nullptr;
-
-    QVector<IServer*> m_servers;
     QVector<Animation> m_animations;
 
 public:
@@ -30,11 +28,14 @@ public:
     RoomSettings *settings();
     void setSettings(RoomSettings *settings);
 
-    bool addServer(IServer *server);
-    bool removeServer(QString name);
+    ICameraTopology *cameraTopology() const;
+
+    virtual void recordScene(bool record) = 0;
+    virtual void recordAnimation(bool record) = 0;
 
     virtual QVariantMap toVariantMap() = 0;
     virtual void fromVariantMap(QVariantMap varMap) = 0;
+
 signals:
     void startRecording();
     void stopRecording();

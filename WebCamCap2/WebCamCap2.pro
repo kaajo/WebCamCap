@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets network concurrent
+QT       += core gui widgets network concurrent opengl
 
 greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
 
@@ -16,12 +16,12 @@ CONFIG += link_pkgconfig
 PKGCONFIG += opencv gl glu tbb
 
 SOURCES += main.cpp\
-        wccmainwindow.cpp \
+    gui/wccmainwindow.cpp \
     src/localserver.cpp \
     src/markercamera.cpp \
     src/virtualroom.cpp
 
-HEADERS  += wccmainwindow.h \
+HEADERS  += gui/wccmainwindow.h \
     src/localserver.h \
     src/markercamera.h \
     src/virtualroom.h
@@ -43,3 +43,13 @@ else:unix: LIBS += -L$$OUT_PWD/../WebCamCapPrimitives/ -lWebCamCapPrimitives
 
 INCLUDEPATH += $$PWD/../WebCamCapPrimitives
 DEPENDPATH += $$PWD/../WebCamCapPrimitives
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../WebCamCapGui/release/ -lWebCamCapGui
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../WebCamCapGui/debug/ -lWebCamCapGui
+else:unix: LIBS += -L$$OUT_PWD/../WebCamCapGui/ -lWebCamCapGui
+
+INCLUDEPATH += $$PWD/../WebCamCapGui
+DEPENDPATH += $$PWD/../WebCamCapGui
+
+RESOURCES += \
+    WebCamCap2.qrc

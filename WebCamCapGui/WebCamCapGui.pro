@@ -25,6 +25,9 @@ unix {
     INSTALLS += target
 }
 
+CONFIG += link_pkgconfig
+
+PKGCONFIG += gl glu
 
 
 win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../WebCamCapPrimitives/release/ -lWebCamCapPrimitives
