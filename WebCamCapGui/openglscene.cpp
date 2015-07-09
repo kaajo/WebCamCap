@@ -1,17 +1,20 @@
 #include "openglscene.h"
 
 #include <GL/glu.h>
+#include <QGL>
 
 OpenGlScene* OpenGlScene::m_scene = nullptr;
 
-OpenGlScene::OpenGlScene(QWidget *parent) : QGLWidget(parent)
+OpenGlScene::OpenGlScene(QWidget *parent) : QOpenGLWidget(parent)
 {
-    updateGL();
+    update();
 }
 
 void OpenGlScene::setRoomDimensions(QVector3D &roomDims)
 {
     m_roomDims = roomDims;
+
+    update();
 }
 
 OpenGlScene *OpenGlScene::getInstance()
@@ -71,7 +74,7 @@ void OpenGlScene::resizeGL(int w, int h)
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //gluPerspective(60, (float) w/ (float) h, 0.1, 10000);
+    gluPerspective(60, (float) w/ (float) h, 0.1, 10000);
     glMatrixMode(GL_MODELVIEW);
 }
 
@@ -79,7 +82,7 @@ void OpenGlScene::setFrame(Frame &frame)
 {
     m_actualFrame = frame;
 
-    updateGL();
+    update();
 }
 
 void OpenGlScene::paintScene()
@@ -98,9 +101,9 @@ void OpenGlScene::paintFrame()
     glPushMatrix();
     for(int i = 0; i < m_actualFrame.markers().size(); i++)
     {
-        //glColor3ub(randomColors[m_actualFrame.markers()[i].id()][0],randomColors[m_actualFrame.markers()[i].id()][1],randomColors[m_actualFrame.markers()[i].id()][2]);
+        glColor3ub(randomColors[m_actualFrame.markers()[i].id()].red(),randomColors[m_actualFrame.markers()[i].id()].green(),randomColors[m_actualFrame.markers()[i].id()].blue());
 
-        qglColor(randomColors[m_actualFrame.markers()[i].id()]);
+        //glColor(randomColors[m_actualFrame.markers()[i].id()]);
 
         glTranslatef(m_actualFrame.markers()[i].position().x()*m_roomDims.x(), m_actualFrame.markers()[i].position().z()*m_roomDims.z(), -m_actualFrame.markers()[i].position().y()*m_roomDims.y());
         gluSphere(m_quadric, 3,8,8);

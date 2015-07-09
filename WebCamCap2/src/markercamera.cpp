@@ -28,8 +28,6 @@ QVector<Line> MarkerCamera::nextFrame()
     applyFilters();
     createLineForComponents();
 
-    cv::circle(m_actualFrame, cv::Point(m_actualFrame.cols/2, m_actualFrame.rows/2), 1, CV_RGB(0,255,0), 2);
-
     if(m_settings->showWindow())
     {
         emit imageShow(m_actualFrame);
@@ -128,6 +126,8 @@ void MarkerCamera::settingsChanged(CameraSettings::CameraSettingsType type)
 
 void MarkerCamera::calibBackground()
 {
+    qDebug() << "calib";
+
     if(m_settings->turnedOn())
     {
         int i = 0, maxIters = 10;
@@ -152,7 +152,7 @@ void MarkerCamera::calibBackground()
             cv::waitKey(1);
         }
 
-        cv::UMat temp;
+        cv::Mat temp;
 
         for(size_t i = 0; i < 20; i++)
         {
@@ -167,12 +167,10 @@ void MarkerCamera::calibBackground()
             {
                 for(int j = 0; j < temp.cols; j++)
                 {
-                    /*
-                    if(temp.at<Vec3b>(i,j)[0] > frameBackground.at<Vec3b>(i,j)[0] || temp.at<Vec3b>(i,j)[1] > frameBackground.at<Vec3b>(i,j)[1] || temp.at<Vec3b>(i,j)[2] > frameBackground.at<Vec3b>(i,j)[2])
+                    if(temp.at<cv::Vec3b>(i,j)[0] > m_background.at<cv::Vec3b>(i,j)[0] || temp.at<cv::Vec3b>(i,j)[1] > m_background.at<cv::Vec3b>(i,j)[1] || temp.at<cv::Vec3b>(i,j)[2] > m_background.at<cv::Vec3b>(i,j)[2])
                     {
-                        frameBackground.at<Vec3b>(i,j) = temp.at<Vec3b>(i,j);
+                        m_background.at<cv::Vec3b>(i,j) = temp.at<cv::Vec3b>(i,j);
                     }
-                    */
                 }
             }
 

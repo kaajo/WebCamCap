@@ -1,13 +1,9 @@
 #include "roomsettings.h"
 
 
-RoomSettings::RoomSettings(QString name, QVector3D roomDims, double maxError , QObject *parent) :
+RoomSettings::RoomSettings(QObject *parent) :
     QObject(parent)
 {
-    m_name = name;
-    m_roomDimensions = roomDims;
-    m_maxError = maxError;
-
     connect(this, &RoomSettings::changed, this, &RoomSettings::setSave);
 }
 

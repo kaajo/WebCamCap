@@ -19,14 +19,20 @@ SOURCES += main.cpp\
     gui/wccmainwindow.cpp \
     src/localserver.cpp \
     src/markercamera.cpp \
-    src/virtualroom.cpp
+    src/virtualroom.cpp \
+    gui/addcamera.cpp \
+    gui/projectwizard.cpp
 
 HEADERS  += gui/wccmainwindow.h \
     src/localserver.h \
     src/markercamera.h \
-    src/virtualroom.h
+    src/virtualroom.h \
+    gui/addcamera.h \
+    gui/projectwizard.h
 
-FORMS    += wccmainwindow.ui
+FORMS    += gui/wccmainwindow.ui \
+    gui/addcamera.ui \
+    gui/projectwizard.ui
 
 QMAKE_CXXFLAGS += -std=c++11 -pedantic -Wall -Wextra
 

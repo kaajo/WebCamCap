@@ -1,6 +1,8 @@
 #include "wccmainwindow.h"
 #include "ui_wccmainwindow.h"
 
+#include "projectwizard.h"
+#include "addcamera.h"
 #include "openglscene.h"
 
 #include <QDebug>
@@ -29,6 +31,7 @@ WccMainWindow::WccMainWindow(QWidget *parent) :
 
     m_ui->AnimationsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
 
+    ///scrollArea needs widget with layout inside
     m_scrollWidget = new QWidget;
     m_scrollWidget->setLayout(new QVBoxLayout);
     m_ui->cameraScrollArea->setWidget(m_scrollWidget);
@@ -65,7 +68,28 @@ bool WccMainWindow::removeServer(QString name)
 
 void WccMainWindow::newProject()
 {
+    RoomSettings *settings= new RoomSettings;
 
+    ProjectWizard *wizard = new ProjectWizard();
+    wizard->setSettings(settings);
+
+    wizard->exec();
+
+    /*
+
+    QWizard *wizard = new QWizard();
+    BasicProjectParametersPage *page  = new BasicProjectParametersPage();
+    page->setSettings(settings);
+    AddCamerasPage *page2 = new AddCamerasPage();
+
+    wizard->addPage(page);
+    page->setSettings(settings);
+    page->connectWizard();
+
+    wizard->addPage(page2);
+    page2->setRoomSettings(settings);
+
+    wizard->exec();*/
 }
 
 void WccMainWindow::openProject()
@@ -90,5 +114,4 @@ void WccMainWindow::addNewServer()
 
 void WccMainWindow::showAboutPage()
 {
-
 }

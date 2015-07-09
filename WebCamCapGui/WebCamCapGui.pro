@@ -12,11 +12,13 @@ TEMPLATE = lib
 DEFINES += WEBCAMCAPGUI_LIBRARY
 
 SOURCES += \
-    openglscene.cpp
+    openglscene.cpp \
+    qtopencvviewergl.cpp
 
 HEADERS +=\
         webcamcapgui_global.h \
-    openglscene.h
+    openglscene.h \
+    qtopencvviewergl.h
 
 QMAKE_CXXFLAGS += -std=c++11 -pedantic -Wall -Wextra
 

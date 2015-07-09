@@ -1,3 +1,25 @@
+/*
+ *
+ * Copyright (C) 2015  Miroslav Krajicek (https://github.com/kaajo).
+ * All Rights Reserved.
+ *
+ * This file is part of WebCamCap.
+ *
+ * WebCamCap is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU LGPL version 3 as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * WebCamCap is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU LGPL version 3
+ * along with WebCamCap. If not, see <http://www.gnu.org/licenses/lgpl-3.0.txt>.
+ *
+ */
+
 #ifndef CAMERASETTINGS_H
 #define CAMERASETTINGS_H
 
@@ -7,6 +29,8 @@
 
 #include <QVector2D>
 #include <QVector3D>
+#include <QVector4D>
+#include <QMatrix4x4>
 #include <QVector>
 #include <QObject>
 #include <QVariantMap>
@@ -25,17 +49,21 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT CameraSettings : public QObject
     QVector2D m_resolution;
     cv::UMat m_distortionCoeffs;
     QVector3D m_roomDimensions;
+    cv::Mat m_roiMask;
+
+    ///flags
 
     bool m_turnedOn = false;
     bool useBackgroundSub = false;
     bool m_showWindow = true;
-    bool ROI = false;
+    bool m_useRoi = false;
     bool m_saved = false;
-    cv::Mat ROIMask;
 
-    cv::Mat m_rotationMatrix;
-    cv::Mat m_projectionMatrix;
-    cv::Mat m_CameraMatrix;
+    ///computed parameters
+
+    QVector4D m_directionVector;
+    double m_anglePerPixel;
+    QMatrix4x4 m_rotationMatrix; //used for rotated lines (pixels)
     cv::Mat m_IntrinsicMatrix;
 
     QVector<QVector<QVector3D>> m_pixelLines;
@@ -91,11 +119,11 @@ public:
     bool showWindow() const;
     void setShowWindow(bool showWindow);
 
-    bool getROI() const;
-    void setROI(bool value);
+    bool getuseRoi() const;
+    void setuseRoi(bool value);
 
-    cv::Mat getROIMask() const;
-    void setROIMask(const cv::Mat &value);
+    cv::Mat getRoiMask() const;
+    void setRoiMask(const cv::Mat &value);
 
     QVector2D resolution() const;
     void setResolution(const QVector2D &resolution);
@@ -111,7 +139,13 @@ private slots:
     void setSave(CameraSettingsType type);
 
 private:
-    void computeParameters();
+    void computeAllParameters();
+    // order to compute all parameters
+    void computeDirectionVector();
+    void computeAnglePerPixel();
+    void computeMatrices();
+    void computePixelLines();
+
 
 };
 
