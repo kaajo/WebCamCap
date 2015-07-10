@@ -29,7 +29,7 @@ class VirtualRoom : public IVirtualRoom
 {
     Q_OBJECT
 public:
-    explicit VirtualRoom(QObject *parent = 0);
+    explicit VirtualRoom(RoomSettings* settings, QObject *parent = 0);
     virtual ~VirtualRoom();
 
     virtual void recordScene(bool record) override;

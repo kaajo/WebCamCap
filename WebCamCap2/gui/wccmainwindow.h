@@ -40,7 +40,7 @@ class WccMainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    IVirtualRoom *currentProject = nullptr;
+    IVirtualRoom *m_currentProject = nullptr;
 
     QVector<IServer*> m_servers;
 
@@ -54,6 +54,7 @@ private:
 
     bool addServer(IServer *server);
     bool removeServer(QString name);
+    void setProject(IVirtualRoom *project);
 
 private slots:
     void newProject();

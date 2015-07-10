@@ -10,7 +10,10 @@
 MarkerCamera::MarkerCamera(CameraSettings *settings, QObject *parent) :
     ICamera(settings, parent)
 {
-
+    if(m_settings->turnedOn())
+    {
+        turnOn(true);
+    }
 }
 
 QVector<Line> MarkerCamera::nextFrame()
@@ -66,7 +69,7 @@ void MarkerCamera::showPreviewInWindow(bool show)
 
 bool MarkerCamera::turnOn(bool turnOn)
 {
-    if(m_settings->turnedOn() == turnOn)
+    if(m_settings->turnedOn() == m_camera.isOpened())
     {
         return false;
     }
@@ -75,6 +78,8 @@ bool MarkerCamera::turnOn(bool turnOn)
     {
         if(m_camera.open(m_settings->videoUsbId()))
         {
+
+
             m_settings->setTurnedOn(turnOn);
 
             if(m_settings->resolution().x() != 0 && m_settings->resolution().y() != 0)
@@ -121,14 +126,27 @@ void MarkerCamera::fromVariantMap(QVariantMap varMap)
 
 void MarkerCamera::settingsChanged(CameraSettings::CameraSettingsType type)
 {
-
+    switch (type) {
+    case CameraSettings::CameraSettingsType::TURNEDON:
+        if(m_settings->turnedOn())
+        {
+            turnOn(true);
+        }
+        else
+        {
+            turnOn(false);
+        }
+        break;
+    default:
+        break;
+    }
 }
 
 void MarkerCamera::calibBackground()
 {
     qDebug() << "calib";
 
-    if(m_settings->turnedOn())
+    if(m_settings->turnedOn() && m_camera.isOpened())
     {
         int i = 0, maxIters = 10;
         cv::Scalar meanValue, lastMeanValue;

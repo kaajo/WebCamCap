@@ -44,7 +44,7 @@ protected:
     QVector<Animation> m_animations;
 
 public:
-    explicit IVirtualRoom(QObject *parent = 0);
+    explicit IVirtualRoom(RoomSettings *settings, QObject *parent = 0);
     virtual ~IVirtualRoom();
 
     RoomSettings *settings();
@@ -64,6 +64,7 @@ signals:
     void startRecording2D();
 
 public slots:
+
 
 private slots:
     virtual void settingsChange(RoomSettings::RoomSettingsType type) = 0;

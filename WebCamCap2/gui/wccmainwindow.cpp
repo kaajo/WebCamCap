@@ -66,6 +66,18 @@ bool WccMainWindow::removeServer(QString name)
     return true;
 }
 
+void WccMainWindow::setProject(IVirtualRoom *project)
+{
+    this->setEnabled(true);
+
+    if(m_currentProject)
+    {
+        ///handle save, deactivate etc
+    }
+
+    m_currentProject = project;
+}
+
 void WccMainWindow::newProject()
 {
     RoomSettings *settings= new RoomSettings;
@@ -73,23 +85,12 @@ void WccMainWindow::newProject()
     ProjectWizard *wizard = new ProjectWizard();
     wizard->setSettings(settings);
 
-    wizard->exec();
+    int accepted = wizard->exec();
 
-    /*
-
-    QWizard *wizard = new QWizard();
-    BasicProjectParametersPage *page  = new BasicProjectParametersPage();
-    page->setSettings(settings);
-    AddCamerasPage *page2 = new AddCamerasPage();
-
-    wizard->addPage(page);
-    page->setSettings(settings);
-    page->connectWizard();
-
-    wizard->addPage(page2);
-    page2->setRoomSettings(settings);
-
-    wizard->exec();*/
+    if(accepted == ProjectWizard::Accepted)
+    {
+        m_currentProject = wizard->project();
+    }
 }
 
 void WccMainWindow::openProject()

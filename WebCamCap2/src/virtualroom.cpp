@@ -1,8 +1,13 @@
 #include "virtualroom.h"
 
-VirtualRoom::VirtualRoom(QObject *parent) :
-    IVirtualRoom(parent)
+#include "polygoncameratopology.h"
+
+VirtualRoom::VirtualRoom(RoomSettings *settings, QObject *parent) :
+    IVirtualRoom(settings, parent)
 {
+    setSettings(settings);
+
+    m_cameraTopology = new PolygonCameraTopology();
 }
 
 VirtualRoom::~VirtualRoom()

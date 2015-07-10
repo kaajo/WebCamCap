@@ -1,9 +1,10 @@
 #include "ivirtualroom.h"
 
 
-IVirtualRoom::IVirtualRoom(QObject *parent) :
+IVirtualRoom::IVirtualRoom(RoomSettings *settings, QObject *parent) :
     QObject(parent)
 {
+
 }
 
 IVirtualRoom::~IVirtualRoom()

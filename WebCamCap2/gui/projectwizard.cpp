@@ -2,6 +2,7 @@
 #include "ui_projectwizard.h"
 
 #include "addcamera.h"
+#include "../src/virtualroom.h"
 
 #include <tr1/functional>
 
@@ -9,6 +10,16 @@
 #include <QMessageBox>
 #include <QtConcurrent/QtConcurrentMap>
 
+
+IVirtualRoom *ProjectWizard::project() const
+{
+    return m_project;
+}
+
+void ProjectWizard::setProject(IVirtualRoom *project)
+{
+    m_project = project;
+}
 ProjectWizard::ProjectWizard(QWidget *parent) :
     QWizard(parent),
     m_ui(new Ui::ProjectWizard)
@@ -136,7 +147,10 @@ void ProjectWizard::handleCellChanged(int row, int column)
 
 void ProjectWizard::handleAccepted()
 {
-
+    if(! m_project)
+    {
+        m_project = new VirtualRoom(m_roomSettings);
+    }
 }
 
 void ProjectWizard::addCamera()

@@ -53,6 +53,9 @@ public:
 
     explicit RoomSettings(QObject *parent = 0);
 
+    QVariantMap toVariantMap();
+    void fromVariantMap(QVariantMap map);
+
     QString name() const;
     void setName(const QString &name);
 

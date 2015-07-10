@@ -52,7 +52,7 @@ public:
     explicit ICameraTopology(QObject *parent = 0);
     virtual ~ICameraTopology();
 
-    virtual void addCamera(ICamera *camera) = 0;
+    virtual void addCameras(QVector<ICamera *> cameras) = 0;
     virtual void removeCamera(ICamera *camera) = 0;
 
     ICamera *getCamera(QString name);

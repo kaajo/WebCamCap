@@ -13,6 +13,18 @@ CameraSettings::CameraSettings(QString name, int videoUsbId , float diagonalFov 
     computeAllParameters();
 }
 
+QVariantMap CameraSettings::toVariantMap()
+{
+    QVariantMap retVal;
+
+    return retVal;
+}
+
+void CameraSettings::fromVariantMap(QVariantMap map)
+{
+
+}
+
 QVector2D CameraSettings::resolution() const
 {
     return m_resolution;

@@ -36,6 +36,9 @@ public:
     Marker();
     Marker(int id, QVector3D positionVector);
 
+    QVariantMap toVariantMap();
+    void fromVariantMap(QVariantMap map);
+
     QVector3D position() const;
     void setPosition(const QVector3D &position);
 

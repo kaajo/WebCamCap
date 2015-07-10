@@ -26,6 +26,7 @@
 #include "roomsettings.h"
 #include "camerasettings.h"
 #include "../src/markercamera.h"
+#include "ivirtualroom.h"
 
 #include <QWizard>
 
@@ -41,12 +42,17 @@ class ProjectWizard : public QWizard
     QMap<int, CameraSettings*> m_tableRowToSettings;
     QVector<ICamera*> m_cameras;
 
+    IVirtualRoom *m_project = nullptr;
+
 public:
     explicit ProjectWizard(QWidget *parent = 0);
     ~ProjectWizard();
 
     RoomSettings *settings() const;
     void setSettings(RoomSettings *settings);
+
+    IVirtualRoom *project() const;
+    void setProject(IVirtualRoom *project);
 
 private:
     Ui::ProjectWizard *m_ui;

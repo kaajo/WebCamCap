@@ -21,14 +21,16 @@ SOURCES += main.cpp\
     src/markercamera.cpp \
     src/virtualroom.cpp \
     gui/addcamera.cpp \
-    gui/projectwizard.cpp
+    gui/projectwizard.cpp \
+    src/polygoncameratopology.cpp
 
 HEADERS  += gui/wccmainwindow.h \
     src/localserver.h \
     src/markercamera.h \
     src/virtualroom.h \
     gui/addcamera.h \
-    gui/projectwizard.h
+    gui/projectwizard.h \
+    src/polygoncameratopology.h
 
 FORMS    += gui/wccmainwindow.ui \
     gui/addcamera.ui \
