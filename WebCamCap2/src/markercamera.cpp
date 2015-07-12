@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QtConcurrent/QtConcurrent>
 #include <QtConcurrent/QtConcurrentMap>
+#include <QMutexLocker>
 
 MarkerCamera::MarkerCamera(CameraSettings *settings, QObject *parent) :
     ICamera(settings, parent)
@@ -142,6 +143,43 @@ void MarkerCamera::settingsChanged(CameraSettings::CameraSettingsType type)
     }
 }
 
+void MarkerCamera::stopWork()
+{
+    QMutexLocker l(&m_mutex);
+    m_running = false;
+}
+
+void MarkerCamera::startWork()
+{
+    m_running = true;
+    doWork();
+}
+
+void MarkerCamera::doWork()
+{
+    forever
+    {
+        m_mutex.lock();
+        if (!m_running)
+        {
+            m_mutex.unlock();
+            break;
+        }
+
+        emit results(nextFrame());
+
+        if(!m_waitCondition->wait(&m_mutex,1000))
+        {
+           qDebug() << "signal lost in thread: " << this->thread();
+        }
+        m_mutex.unlock();
+
+        QCoreApplication::processEvents();
+    }
+
+    qDebug() << "Stopping capture thread";
+}
+
 void MarkerCamera::calibBackground()
 {
     qDebug() << "calib";
@@ -226,6 +264,10 @@ void MarkerCamera::calibThreshold()
                 --m_thresholdValue;
                 continue;
             }
+            else
+            {
+                break;
+            }
         }
 
         //some difference in light intensity (rotation of LED)
@@ -257,12 +299,15 @@ void MarkerCamera::calibThreshold()
         }
 
         m_thresholdValue = (thresholdLow + thresholdUp)/2;
+
+        qDebug() << "final threshold: " << m_thresholdValue;
     }
 }
 
 Line MarkerCamera::qtConcurrentpickLine(MarkerCamera *camera, const Contour &contour)
 {
     auto centerMoment = cv::moments(contour);
+
     QVector2D center(centerMoment.m10/centerMoment.m00, centerMoment.m01/centerMoment.m00);
 
     cv::circle(camera->m_actualFrame, cv::Point(center.x(), center.y()), 1, CV_RGB(0,0,255), 2);
@@ -285,8 +330,8 @@ void MarkerCamera::applyFilters()
 
     QtConcurrent::blockingFilter(m_contours, [](const Contour &contour)
     {
-        double contArea = cv::contourArea(contour);
-        return contArea > 500 || contArea < 10;
+        double contArea = contour.size();
+        return contArea < 500 && contArea > 5;
     });
 
     cv::drawContours(m_actualFrame, m_contours, -1, m_settings->contourColor , CV_FILLED);

@@ -10,7 +10,10 @@ int main(int argc, char *argv[])
 
     qRegisterMetaType<QVector<Line>>("QVector<Line>");
     qRegisterMetaType<Line>("Line");
+    qRegisterMetaType<Frame>("Frame");
+    qRegisterMetaType<Animation*>("Animation*");
     qRegisterMetaType<cv::UMat>("cv::UMat");
+    qRegisterMetaType<QVector<Line>>("QVector<Line>");
 
     qDebug() << "WebCamCap2 is running under Qt version: " << qVersion();
 

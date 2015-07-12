@@ -38,15 +38,7 @@ class WEBCAMCAPINTERFACESSHARED_EXPORT ICameraTopology : public QObject
     Q_OBJECT
 
 protected:
-    class TopologyEdge
-    {
-    public:
-        ICamera *m_camera1 = nullptr;
-        ICamera *m_camera2 = nullptr;
-    };
-
     QVector<ICamera*> m_cameras;
-    QVector<TopologyEdge> m_topology;
 
 public:
     explicit ICameraTopology(QObject *parent = 0);

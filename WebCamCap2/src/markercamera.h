@@ -26,6 +26,7 @@
 #include "icamera.h"
 
 #include <QVector2D>
+#include <QMutex>
 #include <opencv2/core.hpp>
 
 typedef std::vector<cv::Point> Contour;
@@ -45,6 +46,10 @@ class MarkerCamera : public ICamera
 
     std::vector<Contour> m_contours;
 
+    QMutex m_mutex;
+
+    bool m_running = false;
+
 public:
     explicit MarkerCamera(CameraSettings *settings, QObject *parent = 0);
 
@@ -60,6 +65,11 @@ public:
     virtual void fromVariantMap(QVariantMap varMap) override;
 private:
     virtual void settingsChanged(CameraSettings::CameraSettingsType type) override;
+
+    virtual void stopWork() override;
+    virtual void startWork() override;
+
+    void doWork();
 
     void calibBackground();
     void calibThreshold();

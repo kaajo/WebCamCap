@@ -64,6 +64,8 @@ private slots:
 
     void addNewServer();
     void showAboutPage();
+
+    void addAnimationToTable(Animation *animation);
 };
 
 #endif // WCCMAINWINDOW_H

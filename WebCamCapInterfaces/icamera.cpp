@@ -1,5 +1,10 @@
 #include "icamera.h"
 
+
+void ICamera::setWaitCondition(QWaitCondition *waitCondition)
+{
+    m_waitCondition = waitCondition;
+}
 ICamera::ICamera(CameraSettings *settings, QObject *parent) : QObject(parent)
 {
     setSettings(settings);
@@ -7,7 +12,7 @@ ICamera::ICamera(CameraSettings *settings, QObject *parent) : QObject(parent)
 
 ICamera::~ICamera()
 {
-
+    emit finished();
 }
 
 CameraSettings *ICamera::settings() const

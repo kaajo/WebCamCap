@@ -30,6 +30,7 @@
 
 #include <opencv2/core/core.hpp>
 
+#include <QWaitCondition>
 #include <QVector>
 #include <QVariantMap>
 #include <QObject>
@@ -40,6 +41,7 @@ class WEBCAMCAPINTERFACESSHARED_EXPORT ICamera : public QObject
 
 protected:
     CameraSettings *m_settings = nullptr;
+    QWaitCondition *m_waitCondition = nullptr;
 
 public:
     explicit ICamera(CameraSettings *settings, QObject *parent = 0);
@@ -57,16 +59,23 @@ public:
 
     CameraSettings *settings() const;
     void setSettings(CameraSettings *settings);
+    void setWaitCondition(QWaitCondition *waitCondition);
 
     virtual QVariantMap toVariantMap() const = 0;
     virtual void fromVariantMap(QVariantMap varMap) = 0;
+
+
 signals:
     void imageShow(cv::UMat image);
+    void results(QVector<Line>);
+    void finished();
 
 public slots:
     virtual void showPreviewInWindow(bool show) = 0;
     virtual bool turnOn(bool turnOn) = 0;
     virtual void setThreshold(size_t threshold) = 0;
+    virtual void stopWork() = 0;
+    virtual void startWork() = 0;
 
 private slots:
     virtual void settingsChanged(CameraSettings::CameraSettingsType type) = 0;

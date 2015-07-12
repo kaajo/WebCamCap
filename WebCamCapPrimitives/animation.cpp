@@ -21,7 +21,7 @@ void Animation::fromVariantMap(QVariantMap map)
 
 }
 
-void Animation::addFrame(Frame &frame)
+void Animation::addFrame(Frame frame)
 {
     m_frames.append(frame);
 

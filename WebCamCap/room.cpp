@@ -418,7 +418,7 @@ void Room::Intersection(Edge &camsEdge)
 
 void Room::intersections()
 {
-    QtConcurrent::map(m_cameraTopology, Room::Intersection);
+    QtConcurrent::blockingMap(m_cameraTopology, Room::Intersection);
 
     for(size_t i = 0; i < m_cameraTopology.size(); i++)
     {

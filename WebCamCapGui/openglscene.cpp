@@ -2,6 +2,7 @@
 
 #include <GL/glu.h>
 #include <QGL>
+#include <QDebug>
 
 OpenGlScene* OpenGlScene::m_scene = nullptr;
 
@@ -78,8 +79,10 @@ void OpenGlScene::resizeGL(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 }
 
-void OpenGlScene::setFrame(Frame &frame)
+void OpenGlScene::setFrame(Frame frame)
 {
+    qDebug() << "new frame in OpenGL scene";
+
     m_actualFrame = frame;
 
     update();

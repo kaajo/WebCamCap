@@ -22,7 +22,10 @@ SOURCES += main.cpp\
     src/virtualroom.cpp \
     gui/addcamera.cpp \
     gui/projectwizard.cpp \
-    src/polygoncameratopology.cpp
+    src/polygoncameratopology.cpp \
+    src/munkres.cpp \
+    src/pointchecker.cpp \
+    src/matrix.tpp
 
 HEADERS  += gui/wccmainwindow.h \
     src/localserver.h \
@@ -30,7 +33,11 @@ HEADERS  += gui/wccmainwindow.h \
     src/virtualroom.h \
     gui/addcamera.h \
     gui/projectwizard.h \
-    src/polygoncameratopology.h
+    src/polygoncameratopology.h \
+    src/munkres.h \
+    src/pointchecker.h \
+    src/matrix.h \
+    src/std_2d_vector.h
 
 FORMS    += gui/wccmainwindow.ui \
     gui/addcamera.ui \

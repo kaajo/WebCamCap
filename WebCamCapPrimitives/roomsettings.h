@@ -66,13 +66,15 @@ public:
     void setMaxError(double maxError);
 
     bool recordScene() const;
-    void setRecordScene(bool recordScene);
-
     bool recordAnimation() const;
-    void setRecordAnimation(bool recordAnimation);
 
     bool saved() const;
     void save();
+
+public slots:
+    void setRecordScene(bool recordScene);
+    void setRecordAnimation(bool recordAnimation);
+
 
 signals:
     void changed(RoomSettingsType type);

@@ -30,7 +30,7 @@
 #include "roomsettings.h"
 #include "icameratopology.h"
 
-#include <QVector>
+#include <QLinkedList>
 #include <QVariantMap>
 #include <QObject>
 
@@ -41,7 +41,7 @@ class WEBCAMCAPINTERFACESSHARED_EXPORT IVirtualRoom : public QObject
 protected:
     RoomSettings *m_settings = nullptr;
     ICameraTopology *m_cameraTopology = nullptr;
-    QVector<Animation> m_animations;
+    QLinkedList<Animation*> m_animations;
 
 public:
     explicit IVirtualRoom(RoomSettings *settings, QObject *parent = 0);
@@ -52,19 +52,15 @@ public:
 
     ICameraTopology *cameraTopology() const;
 
-    virtual void recordScene(bool record) = 0;
-    virtual void recordAnimation(bool record) = 0;
-
     virtual QVariantMap toVariantMap() = 0;
     virtual void fromVariantMap(QVariantMap varMap) = 0;
 
 signals:
-    void startRecording();
-    void stopRecording();
-    void startRecording2D();
+    void animationRecorded(Animation *animation);
 
 public slots:
 
+private:
 
 private slots:
     virtual void settingsChange(RoomSettings::RoomSettingsType type) = 0;

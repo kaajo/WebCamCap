@@ -150,6 +150,7 @@ void ProjectWizard::handleAccepted()
     if(! m_project)
     {
         m_project = new VirtualRoom(m_roomSettings);
+        m_project->cameraTopology()->addCameras(m_cameras);
     }
 }
 
@@ -254,7 +255,6 @@ void ProjectWizard::calibMarkers()
 {
     for(int i = 0; i < m_cameras.size(); i++)
     {
-        m_cameras[i]->calibrate(ICamera::CameraCalibrationType::BACKGROUND);
-        m_ui->progressBar->setValue((100*(i+1))/m_cameras.size());
+        m_cameras[i]->calibrate(ICamera::CameraCalibrationType::THRESHOLD);
     }
 }

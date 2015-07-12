@@ -1,5 +1,10 @@
 #include "camerasettings.h"
 
+
+QVector4D CameraSettings::getDirectionVector() const
+{
+    return m_directionVector;
+}
 CameraSettings::CameraSettings(QString name, int videoUsbId , float diagonalFov ,
                                QVector3D globalPosition , QVector3D roomDimensions,  QObject *parent)
     : QObject(parent)

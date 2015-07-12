@@ -25,6 +25,7 @@
 
 #include "webcamcapprimitives_global.h"
 
+#include <glm/glm.hpp>
 #include <QVector3D>
 
 class WEBCAMCAPPRIMITIVESSHARED_EXPORT Marker
@@ -35,6 +36,7 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT Marker
 public:
     Marker();
     Marker(int id, QVector3D positionVector);
+    Marker(int id, glm::vec3 positionVector);
 
     QVariantMap toVariantMap();
     void fromVariantMap(QVariantMap map);

@@ -67,7 +67,7 @@ public:
     void resizeGL(int w, int h);
 
 public slots:
-    void setFrame(Frame &frame);
+    void setFrame(Frame frame);
 
 private:
     void paintScene();

@@ -132,6 +132,8 @@ public:
 
     QVector3D pixelLineDirectionVector(int x, int y);
 
+    QVector4D getDirectionVector() const;
+
 signals:
     void changed(CameraSettingsType type);
 

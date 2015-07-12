@@ -73,6 +73,8 @@ void WccMainWindow::setProject(IVirtualRoom *project)
     if(m_currentProject)
     {
         ///handle save, deactivate etc
+        ///
+        m_currentProject->disconnect();
     }
 
     m_currentProject = project;
@@ -89,7 +91,12 @@ void WccMainWindow::newProject()
 
     if(accepted == ProjectWizard::Accepted)
     {
-        m_currentProject = wizard->project();
+        setProject(wizard->project());
+
+        connect(m_ui->recordScene, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordScene);
+        connect(m_ui->recordAnimation, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordAnimation);
+        connect(m_currentProject->cameraTopology(), &ICameraTopology::frameReady, OpenGlScene::getInstance(), &OpenGlScene::setFrame);
+        connect(m_currentProject, &IVirtualRoom::animationRecorded, this, &WccMainWindow::addAnimationToTable);
     }
 }
 
@@ -115,4 +122,9 @@ void WccMainWindow::addNewServer()
 
 void WccMainWindow::showAboutPage()
 {
+}
+
+void WccMainWindow::addAnimationToTable(Animation *animation)
+{
+
 }

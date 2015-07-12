@@ -23,17 +23,16 @@
 #ifndef VIRTUALROOM_H
 #define VIRTUALROOM_H
 
+#include "animation.h"
 #include "ivirtualroom.h"
 
 class VirtualRoom : public IVirtualRoom
 {
     Q_OBJECT
+
 public:
     explicit VirtualRoom(RoomSettings* settings, QObject *parent = 0);
-    virtual ~VirtualRoom();
-
-    virtual void recordScene(bool record) override;
-    virtual void recordAnimation(bool record) override;
+    virtual ~VirtualRoom();  
 
     virtual QVariantMap toVariantMap() override;
     virtual void fromVariantMap(QVariantMap varMap) override;
@@ -43,6 +42,11 @@ public slots:
 
 private:
     virtual void settingsChange(RoomSettings::RoomSettingsType type) override;
+    void recordScene(bool record);
+    void recordAnimation(bool record);
+
+private slots:
+    void handleFrameFromTopology(Frame frame);
 
 };
 
