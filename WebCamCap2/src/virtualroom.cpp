@@ -7,9 +7,7 @@ VirtualRoom::VirtualRoom(RoomSettings *settings, QObject *parent) :
 {
     setSettings(settings);
 
-    m_cameraTopology = new PolygonCameraTopology(settings);
-
-    connect(m_cameraTopology, &ICameraTopology::frameReady, this, &VirtualRoom::handleFrameFromTopology);
+    m_cameraTopology = new PolygonCameraTopology(settings->roomDimensions(), settings->maxError());
 }
 
 VirtualRoom::~VirtualRoom()
@@ -44,11 +42,6 @@ void VirtualRoom::recordAnimation(bool record)
     }
 }
 
-void VirtualRoom::handleFrameFromTopology(Frame frame)
-{
-
-}
-
 QVariantMap VirtualRoom::toVariantMap()
 {
 
@@ -68,6 +61,11 @@ void VirtualRoom::settingsChange(RoomSettings::RoomSettingsType type)
     case RoomSettings::RoomSettingsType::RECORDANIMATION:
         recordAnimation(m_settings->recordAnimation());
         break;
+    case RoomSettings::RoomSettingsType::DIMENSIONS:
+        m_cameraTopology->setRoomDimensions(m_settings->roomDimensions());
+        break;
+    case RoomSettings::RoomSettingsType::MAXERROR:
+        m_cameraTopology->setMaxError(m_settings->maxError());
     default:
         break;
     }

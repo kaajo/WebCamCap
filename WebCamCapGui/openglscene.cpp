@@ -104,7 +104,7 @@ void OpenGlScene::paintFrame()
     glPushMatrix();
     for(int i = 0; i < m_actualFrame.markers().size(); i++)
     {
-        glColor3ub(randomColors[m_actualFrame.markers()[i].id()].red(),randomColors[m_actualFrame.markers()[i].id()].green(),randomColors[m_actualFrame.markers()[i].id()].blue());
+        glColor3ub(m_randomColors[m_actualFrame.markers()[i].id()].red(),m_randomColors[m_actualFrame.markers()[i].id()].green(),m_randomColors[m_actualFrame.markers()[i].id()].blue());
 
         //glColor(randomColors[m_actualFrame.markers()[i].id()]);
 
@@ -114,4 +114,32 @@ void OpenGlScene::paintFrame()
 
     }
     glPopMatrix();
+
+    glColor3f(1.0f,0.5f,0.0f);
+
+    const auto &lines = m_actualFrame.lines();
+
+    for(int i = 0; i < lines.size(); i++)
+    {
+        for(int j = 0; j < lines[i].size(); j++)
+        {
+            drawLine(lines[i][j]);
+        }
+    }
+}
+
+void OpenGlScene::drawLine(const Line &l) const
+{
+    glBegin(GL_LINES);
+    glVertex3f(l.position().x(), l.position().z(), -l.position().y());
+    glVertex3f(l.position().x()+2*l.direction().x(), l.position().z()+2*l.direction().z(), -1*(l.position().y()+2*l.direction().y()));
+    glEnd();
+}
+
+void OpenGlScene::generateRandomColors()
+{
+    for(size_t i = 0; i < 100; i++)
+    {
+        m_randomColors.push_back({qrand() % 255, qrand() % 255, qrand() % 255});
+    }
 }

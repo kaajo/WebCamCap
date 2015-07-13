@@ -3,7 +3,6 @@
 
 #include "icameratopology.h"
 
-#include "roomsettings.h"
 #include "pointchecker.h"
 
 #include <QWaitCondition>
@@ -27,15 +26,12 @@ class PolygonCameraTopology : public ICameraTopology
 {
     Q_OBJECT
 
-    RoomSettings *m_roomSettings;
-
     size_t m_turnedOnCamerasCounter = 0;
     size_t m_resultsCounter = 0;
 
     QVector<QThread*> m_cameraThreads;
     QVector<TopologyEdge> m_topology;
 
-    static double m_maxError;
     static QMap<ICamera*, QVector<Line>> m_resultLines;
 
     QWaitCondition * m_waitCondition = nullptr;
@@ -46,7 +42,7 @@ class PolygonCameraTopology : public ICameraTopology
 
 public:
 
-    PolygonCameraTopology(RoomSettings *settings, QObject *parent = 0);
+    PolygonCameraTopology(QVector3D roomDims, double maxError, QObject *parent = 0);
 
     virtual QVariantMap toVariantMap() override;
     virtual void fromVariantMap(QVariantMap varMap) override;
@@ -72,7 +68,6 @@ private:
 
 private slots:
     void handleCameraSettingsChange(CameraSettings::CameraSettingsType type);
-    void handleRoomSettingsChange(RoomSettings::RoomSettingsType type);
     void handleCameraResults(QVector<Line> lines);
 
 };

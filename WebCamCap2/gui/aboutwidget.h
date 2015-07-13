@@ -1,6 +1,6 @@
 /*
  *
- * Copyright (C) 2015  Miroslav Krajicek (https://github.com/kaajo).
+ * Copyright (C) 2014  Miroslav Krajicek, Faculty of Informatics Masaryk University (https://github.com/kaajo).
  * All Rights Reserved.
  *
  * This file is part of WebCamCap.
@@ -20,33 +20,28 @@
  *
  */
 
-#ifndef VIRTUALROOM_H
-#define VIRTUALROOM_H
+#ifndef ABOUTWIDGET_H
+#define ABOUTWIDGET_H
 
-#include "animation.h"
-#include "ivirtualroom.h"
+#include <QDialog>
 
-class VirtualRoom : public IVirtualRoom
+
+namespace Ui {
+class AboutWidget;
+}
+
+class AboutWidget : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit VirtualRoom(RoomSettings* settings, QObject *parent = 0);
-    virtual ~VirtualRoom();  
-
-    virtual QVariantMap toVariantMap() override;
-    virtual void fromVariantMap(QVariantMap varMap) override;
-signals:
-
-public slots:
-
-private:
-    virtual void settingsChange(RoomSettings::RoomSettingsType type) override;
-    void recordScene(bool record);
-    void recordAnimation(bool record);
+    explicit AboutWidget(QWidget *parent =0);
+    ~AboutWidget();
 
 private slots:
 
+private:
+    Ui::AboutWidget *ui;
 };
 
-#endif // VIRTUALROOM_H
+#endif // ABOUTWIDGET_H

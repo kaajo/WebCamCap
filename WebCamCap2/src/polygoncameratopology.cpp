@@ -3,15 +3,10 @@
 #include <QDebug>
 #include <QtConcurrent>
 
-double PolygonCameraTopology::m_maxError;
 QMap<ICamera*, QVector<Line>> PolygonCameraTopology::m_resultLines;
 
-PolygonCameraTopology::PolygonCameraTopology(RoomSettings *settings, QObject *parent) : ICameraTopology(parent)
+PolygonCameraTopology::PolygonCameraTopology(QVector3D roomDims, double maxError, QObject *parent) : ICameraTopology(roomDims, maxError ,parent)
 {
-    m_roomSettings = settings;
-
-    connect(m_roomSettings, &RoomSettings::changed, this, &PolygonCameraTopology::handleRoomSettingsChange);
-
     m_waitCondition = new QWaitCondition;
 }
 
@@ -151,7 +146,7 @@ void PolygonCameraTopology::intersections()
 
     auto labeledPoints = m_pointChecker.solvePointIDs(pointsFlatten);
 
-    normaliseCoords(labeledPoints, m_roomSettings->roomDimensions());
+    normaliseCoords(labeledPoints, m_roomDimensions);
 
     emit frameReady(Frame(m_frameTimer.elapsed(), labeledPoints, m_resultLines.values().toVector()));
 
@@ -201,22 +196,6 @@ void PolygonCameraTopology::handleCameraSettingsChange(CameraSettings::CameraSet
         {
             --m_turnedOnCamerasCounter;
         }
-        break;
-    default:
-        break;
-    }
-}
-
-void PolygonCameraTopology::handleRoomSettingsChange(RoomSettings::RoomSettingsType type)
-{
-    auto roomSettings = qobject_cast<RoomSettings*>(sender());
-
-    switch (type) {
-    case RoomSettings::RoomSettingsType::MAXERROR:
-        m_maxError = roomSettings->maxError();
-        break;
-    case RoomSettings::RoomSettingsType::DIMENSIONS:
-        //m_roomDims = roomSettings->roomDimensions();
         break;
     default:
         break;

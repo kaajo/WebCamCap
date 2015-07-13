@@ -41,7 +41,7 @@ class WEBCAMCAPGUISHARED_EXPORT OpenGlScene : public QOpenGLWidget
     QVector3D m_roomDims = QVector3D(100,100,100);
 
     //paint props
-    QVector<QColor> randomColors;
+    QVector<QColor> m_randomColors;
     bool mdrawJoints = true;
     bool mdrawLines = true;
 
@@ -72,6 +72,10 @@ public slots:
 private:
     void paintScene();
     void paintFrame();
+
+    void drawLine(const Line &line) const;
+
+    void generateRandomColors();
 
 };
 

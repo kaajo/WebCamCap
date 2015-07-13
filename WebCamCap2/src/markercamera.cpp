@@ -230,7 +230,7 @@ void MarkerCamera::calibBackground()
                 }
             }
 
-            cv::waitKey(20);
+            cv::waitKey(15);
         }
 
         qDebug() << m_settings->name() << " calibrated in " << i << " iterations";
@@ -306,9 +306,22 @@ void MarkerCamera::calibThreshold()
 
 Line MarkerCamera::qtConcurrentpickLine(MarkerCamera *camera, const Contour &contour)
 {
+/*
     auto centerMoment = cv::moments(contour);
 
     QVector2D center(centerMoment.m10/centerMoment.m00, centerMoment.m01/centerMoment.m00);
+*/
+    double m00 = contour.size(), m10 = 0.0 , m01 = 0.0;
+
+    for(const cv::Point &pnt : contour)
+    {
+        m10 += pnt.x;
+        m01 += pnt.y;
+    }
+
+    QVector2D center(m10/m00, m01/m00);
+
+    //qDebug() << center << " vs. " << center2;
 
     cv::circle(camera->m_actualFrame, cv::Point(center.x(), center.y()), 1, CV_RGB(0,0,255), 2);
 

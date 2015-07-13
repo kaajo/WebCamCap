@@ -1,6 +1,8 @@
 #include "wccmainwindow.h"
 #include "ui_wccmainwindow.h"
 
+#include "aboutwidget.h"
+#include "camerawidget.h"
 #include "projectwizard.h"
 #include "addcamera.h"
 #include "openglscene.h"
@@ -35,6 +37,10 @@ WccMainWindow::WccMainWindow(QWidget *parent) :
     m_scrollWidget = new QWidget;
     m_scrollWidget->setLayout(new QVBoxLayout);
     m_ui->cameraScrollArea->setWidget(m_scrollWidget);
+
+    m_scrollWidget->layout()->addWidget(new CameraWidget());
+    m_scrollWidget->layout()->addWidget(new CameraWidget());
+    m_scrollWidget->layout()->addWidget(new CameraWidget());
 }
 
 WccMainWindow::~WccMainWindow()
@@ -122,6 +128,9 @@ void WccMainWindow::addNewServer()
 
 void WccMainWindow::showAboutPage()
 {
+    AboutWidget *aboutWidget = new AboutWidget(this);
+
+    aboutWidget->exec();
 }
 
 void WccMainWindow::addAnimationToTable(Animation *animation)

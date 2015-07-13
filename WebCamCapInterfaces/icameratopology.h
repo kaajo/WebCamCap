@@ -28,6 +28,7 @@
 #include "frame.h"
 #include "icamera.h"
 
+#include <QVector3D>
 #include <QString>
 #include <QVector>
 #include <QVariantMap>
@@ -38,10 +39,12 @@ class WEBCAMCAPINTERFACESSHARED_EXPORT ICameraTopology : public QObject
     Q_OBJECT
 
 protected:
+    static double m_maxError;
+    QVector3D m_roomDimensions;
     QVector<ICamera*> m_cameras;
 
 public:
-    explicit ICameraTopology(QObject *parent = 0);
+    explicit ICameraTopology(QVector3D roomDims, double maxError, QObject *parent = 0);
     virtual ~ICameraTopology();
 
     virtual void addCameras(QVector<ICamera *> cameras) = 0;
@@ -51,6 +54,13 @@ public:
 
     virtual QVariantMap toVariantMap() = 0;
     virtual void fromVariantMap(QVariantMap varMap) = 0;
+
+    QVector3D getRoomDimensions() const;
+    void setRoomDimensions(const QVector3D &roomDimensions);
+
+    static double getMaxError();
+    static void setMaxError(double maxError);
+
 signals:
     void frameReady(Frame frame);
 

@@ -2,6 +2,7 @@
 
 #include <QtWidgets/QApplication>
 #include <QDebug>
+#include <opencv2/core/ocl.hpp>
 
 int main(int argc, char *argv[])
 {
@@ -16,6 +17,8 @@ int main(int argc, char *argv[])
     qRegisterMetaType<QVector<Line>>("QVector<Line>");
 
     qDebug() << "WebCamCap2 is running under Qt version: " << qVersion();
+
+    qDebug() << cv::ocl::haveOpenCL();
 
     w.show();
     return a.exec();

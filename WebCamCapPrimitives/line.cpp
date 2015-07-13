@@ -4,13 +4,23 @@
 #include <QVariant>
 #include <QVariantMap>
 
+
+QVector3D Line::direction() const
+{
+    return m_direction;
+}
+
+void Line::setDirection(const QVector3D &direction)
+{
+    m_direction = direction;
+}
 Line::Line()
 {
 }
 
 Line::Line(QVector3D position, QVector3D direction) : m_position(position) , m_direction(direction)
 {
-
+    
 }
 
 const QString positionKey("position");
@@ -100,4 +110,9 @@ bool Line::intersection(Line &l1, Line &l2, float Epsilon,  QVector3D &point)
     }
 
     return false;
+}
+
+QVector3D Line::position() const
+{
+    return m_position;
 }

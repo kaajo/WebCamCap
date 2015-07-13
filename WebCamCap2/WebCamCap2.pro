@@ -25,7 +25,9 @@ SOURCES += main.cpp\
     src/polygoncameratopology.cpp \
     src/munkres.cpp \
     src/pointchecker.cpp \
-    src/matrix.tpp
+    src/matrix.tpp \
+    gui/aboutwidget.cpp \
+    gui/camerawidget.cpp
 
 HEADERS  += gui/wccmainwindow.h \
     src/localserver.h \
@@ -37,11 +39,15 @@ HEADERS  += gui/wccmainwindow.h \
     src/munkres.h \
     src/pointchecker.h \
     src/matrix.h \
-    src/std_2d_vector.h
+    src/std_2d_vector.h \
+    gui/aboutwidget.h \
+    gui/camerawidget.h
 
 FORMS    += gui/wccmainwindow.ui \
     gui/addcamera.ui \
-    gui/projectwizard.ui
+    gui/projectwizard.ui \
+    gui/aboutwidget.ui \
+    gui/camerawidget.ui
 
 QMAKE_CXXFLAGS += -std=c++11 -pedantic -Wall -Wextra
 
@@ -66,5 +72,5 @@ else:unix: LIBS += -L$$OUT_PWD/../WebCamCapGui/ -lWebCamCapGui
 INCLUDEPATH += $$PWD/../WebCamCapGui
 DEPENDPATH += $$PWD/../WebCamCapGui
 
-RESOURCES += \
-    WebCamCap2.qrc
+#RESOURCES += \
+  #  WebCamCap2.qrc
