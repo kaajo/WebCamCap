@@ -37,8 +37,7 @@ class MarkerCamera : public ICamera
 
     cv::VideoCapture m_camera;
     cv::UMat m_actualFrame, m_filteredFrame;
-
-    size_t m_thresholdValue = 255;
+    cv::Mat m_signalFrame;
     cv::Mat m_background;
 
     QVector<Line> m_lines;

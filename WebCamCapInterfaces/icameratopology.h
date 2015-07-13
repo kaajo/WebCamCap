@@ -61,6 +61,8 @@ public:
     static double getMaxError();
     static void setMaxError(double maxError);
 
+    QVector<ICamera *> getCameras() const;
+
 signals:
     void frameReady(Frame frame);
 

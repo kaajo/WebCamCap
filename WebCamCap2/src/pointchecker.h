@@ -32,7 +32,7 @@ class PointChecker
     size_t wrongFrameDuration = 0;
     size_t maxWrongFrameDuration; ///not using
     size_t maxIndex = 0;
-    size_t numOfPoints = 1;
+    int numOfPoints = 1;
 
     QQueue<size_t> lastRemovedIDs;
 

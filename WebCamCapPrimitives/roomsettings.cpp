@@ -1,5 +1,7 @@
 #include "roomsettings.h"
 
+#include <QString>
+#include <QVariantMap>
 
 RoomSettings::RoomSettings(QObject *parent) :
     QObject(parent)
@@ -80,4 +82,37 @@ void RoomSettings::save()
 void RoomSettings::setSave(RoomSettings::RoomSettingsType /*type*/)
 {
     m_saved = false;
+}
+
+//########################################################################
+
+const QString nameKey("name");
+const QString dimensionsKey("dimensions");
+const QString maxErrorKey("maxError");
+
+QVariantMap RoomSettings::toVariantMap()
+{
+    QVariantMap varMap;
+
+    varMap[nameKey] = m_name;
+    varMap[dimensionsKey] = m_roomDimensions;
+    varMap[maxErrorKey] = m_maxError;
+
+    emit changed(RoomSettingsType::ALL);
+
+    return varMap;
+}
+
+bool RoomSettings::fromVariantMap(QVariantMap map)
+{
+    if(! map.contains(nameKey) || ! map.contains(dimensionsKey) || ! map.contains(maxErrorKey))
+    {
+        return false;
+    }
+
+    m_name = map[nameKey].toString();
+    m_roomDimensions = map[dimensionsKey].value<QVector3D>();
+    m_maxError = map[maxErrorKey].toDouble();
+
+    return true;
 }

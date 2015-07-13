@@ -4,16 +4,6 @@
 #include <QVariant>
 #include <QVariantMap>
 
-
-QVector3D Line::direction() const
-{
-    return m_direction;
-}
-
-void Line::setDirection(const QVector3D &direction)
-{
-    m_direction = direction;
-}
 Line::Line()
 {
 }
@@ -21,28 +11,6 @@ Line::Line()
 Line::Line(QVector3D position, QVector3D direction) : m_position(position) , m_direction(direction)
 {
     
-}
-
-const QString positionKey("position");
-const QString directionKey("direction");
-const QString nOfIntersectionsKey("numberOfIntersections");
-
-QVariantMap Line::toVariantMap() const
-{
-    QVariantMap varMap;
-
-    varMap[positionKey] = m_position;
-    varMap[directionKey] = m_direction;
-    varMap[nOfIntersectionsKey] = (uint) m_numberOfIntersections;
-
-    return varMap;
-}
-
-void Line::fromVariantMap(QVariantMap &varMap)
-{
-    m_position = varMap.value(positionKey).value<QVector3D>();
-    m_direction = varMap.value(directionKey).value<QVector3D>();
-    m_numberOfIntersections = varMap.value(nOfIntersectionsKey).toUInt();
 }
 
 bool Line::closestPointsTwoLines(Line line1, Line line2, QVector3D &closestPointLine1, QVector3D &closestPointLine2)
@@ -115,4 +83,46 @@ bool Line::intersection(Line &l1, Line &l2, float Epsilon,  QVector3D &point)
 QVector3D Line::position() const
 {
     return m_position;
+}
+
+QVector3D Line::direction() const
+{
+    return m_direction;
+}
+
+void Line::setDirection(const QVector3D &direction)
+{
+    m_direction = direction;
+}
+
+//################################################################################
+
+const QString positionKey("position");
+const QString directionKey("direction");
+const QString nOfIntersectionsKey("numberOfIntersections");
+
+QVariantMap Line::toVariantMap() const
+{
+    QVariantMap varMap;
+
+    varMap[positionKey] = m_position;
+    varMap[directionKey] = m_direction;
+    varMap[nOfIntersectionsKey] = (uint) m_numberOfIntersections;
+
+    return varMap;
+}
+
+bool Line::fromVariantMap(QVariantMap &map)
+{
+    if(! map.contains(positionKey) || ! map.contains(directionKey) ||
+       ! map.contains(nOfIntersectionsKey))
+    {
+        return false;
+    }
+
+    m_position = map.value(positionKey).value<QVector3D>();
+    m_direction = map.value(directionKey).value<QVector3D>();
+    m_numberOfIntersections = map.value(nOfIntersectionsKey).toUInt();
+
+    return true;
 }

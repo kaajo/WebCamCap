@@ -54,7 +54,7 @@ public:
     explicit RoomSettings(QObject *parent = 0);
 
     QVariantMap toVariantMap();
-    void fromVariantMap(QVariantMap map);
+    bool fromVariantMap(QVariantMap map);
 
     QString name() const;
     void setName(const QString &name);
@@ -75,12 +75,11 @@ public slots:
     void setRecordScene(bool recordScene);
     void setRecordAnimation(bool recordAnimation);
 
-
 signals:
-    void changed(RoomSettingsType type);
+    void changed(RoomSettings::RoomSettingsType type);
 
 private slots:
-    void setSave(RoomSettingsType type);
+    void setSave(RoomSettings::RoomSettingsType type);
 
 };
 

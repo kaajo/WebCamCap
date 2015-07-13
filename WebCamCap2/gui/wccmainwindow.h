@@ -23,14 +23,15 @@
 #ifndef WCCMAINWINDOW_H
 #define WCCMAINWINDOW_H
 
-#include <QtWidgets/QMainWindow>
-
 #include "ivirtualroom.h"
 
 #include "src/virtualroom.h"
 #include "src/markercamera.h"
 
 #include "iserver.h"
+
+#include <QVBoxLayout>
+#include <QtWidgets/QMainWindow>
 
 namespace Ui {
 class WccMainWindow;
@@ -44,7 +45,7 @@ class WccMainWindow : public QMainWindow
 
     QVector<IServer*> m_servers;
 
-    QWidget *m_scrollWidget;
+    QVBoxLayout *m_scrollLayout;
 public:
     explicit WccMainWindow(QWidget *parent = 0);
     ~WccMainWindow();
@@ -55,6 +56,9 @@ private:
     bool addServer(IServer *server);
     bool removeServer(QString name);
     void setProject(IVirtualRoom *project);
+
+    void addCameraWidgets(QVector<ICamera *> allCameras);
+    void clearCameraWidgets();
 
 private slots:
     void newProject();

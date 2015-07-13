@@ -1,5 +1,7 @@
 #include "marker.h"
 
+#include <QString>
+#include <QVariantMap>
 
 QVector3D Marker::position() const
 {
@@ -51,4 +53,32 @@ Marker::Marker(int id, glm::vec3 positionVector)
 {
     m_id = id;
     m_position = QVector3D(positionVector.x, positionVector.y, positionVector.z);
+}
+
+//##################################################################################
+
+const QString positionKey("position");
+const QString idKey("id");
+
+QVariantMap Marker::toVariantMap()
+{
+    QVariantMap retVal;
+
+    retVal[positionKey] = m_position;
+    retVal[idKey] = m_id;
+
+    return retVal;
+}
+
+bool Marker::fromVariantMap(QVariantMap map)
+{
+    if(! map.contains(positionKey) || ! map.contains(idKey))
+    {
+        return false;
+    }
+
+    m_position = map[positionKey].value<QVector3D>();
+    m_id = map[idKey].toInt();
+
+    return true;
 }

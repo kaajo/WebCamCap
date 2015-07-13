@@ -122,6 +122,8 @@ void QtOpenCVViewerGl::renderImage()
     }
 }
 
+#include <QDebug>
+
 void QtOpenCVViewerGl::showImage( cv::Mat image )
 {
     cv::circle(image, cv::Point(image.cols/2, image.rows/2), 1, CV_RGB(0,255,0), 2);

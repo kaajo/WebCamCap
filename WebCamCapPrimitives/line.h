@@ -40,7 +40,7 @@ public:
     Line(QVector3D position, QVector3D direction);
 
     QVariantMap toVariantMap() const;
-    void fromVariantMap(QVariantMap &varMap);
+    bool fromVariantMap(QVariantMap &map);
 
     static bool closestPointsTwoLines(Line line1, Line line, QVector3D &closestPointLine1, QVector3D &closestPointLine2);
     static float distanceTwoPoints(QVector3D point1, QVector3D point2);

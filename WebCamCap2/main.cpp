@@ -14,11 +14,13 @@ int main(int argc, char *argv[])
     qRegisterMetaType<Frame>("Frame");
     qRegisterMetaType<Animation*>("Animation*");
     qRegisterMetaType<cv::UMat>("cv::UMat");
+    qRegisterMetaType<cv::Mat>("cv::Mat");
     qRegisterMetaType<QVector<Line>>("QVector<Line>");
+    qRegisterMetaType<CameraSettings::CameraSettingsType>("CameraSettings::CameraSettingsType");
+    qRegisterMetaType<RoomSettings::RoomSettingsType>("RoomSettings::RoomSettingsType");
 
     qDebug() << "WebCamCap2 is running under Qt version: " << qVersion();
-
-    qDebug() << cv::ocl::haveOpenCL();
+    qDebug() << "OpenCL availability: " << cv::ocl::haveOpenCL();
 
     w.show();
     return a.exec();

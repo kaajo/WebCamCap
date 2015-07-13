@@ -55,6 +55,11 @@ void ProjectWizard::setSettings(RoomSettings *settings)
     connect(m_roomSettings, &RoomSettings::changed, this, &ProjectWizard::handleSettingsChanged);
 }
 
+QVector<CameraSettings *> ProjectWizard::allCameraSettings() const
+{
+    return m_tableRowToSettings.values().toVector();
+}
+
 void ProjectWizard::saveToRoomSettings()
 {
     if(m_roomSettings)

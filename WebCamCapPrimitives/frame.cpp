@@ -42,6 +42,8 @@ void Frame::setLines(const QVector<QVector<Line>> &lines)
     m_lines = lines;
 }
 
+//#########################################################x
+
 QString elapsedKey("elapsedTime");
 QString linesKey("lines");
 QString markersKey("markers");
@@ -56,13 +58,13 @@ QVariantMap Frame::toVariantMap() const
 
     lines["i"] = m_lines.size();
 
-    for(size_t i = 0; i < m_lines.size(); i++)
+    for(int i = 0; i < m_lines.size(); i++)
     {
         QVariantMap linesInside;
 
         linesInside["j"] = m_lines[i].size();
 
-        for(size_t j = 0; j < m_lines[i].size(); j++)
+        for(int j = 0; j < m_lines[i].size(); j++)
         {
             lines[QString::number(j)] = m_lines[i][j].toVariantMap();
         }
@@ -75,7 +77,14 @@ QVariantMap Frame::toVariantMap() const
     return varMap;
 }
 
-void Frame::fromVariantMap(QVariantMap varMap)
+bool Frame::fromVariantMap(QVariantMap map)
 {
-    m_elapsedTime = varMap.value(elapsedKey).toInt();
+    if(! map.contains(elapsedKey) || ! map.contains(linesKey) || ! map.contains(markersKey))
+    {
+        return false;
+    }
+
+    m_elapsedTime = map.value(elapsedKey).toInt();
+
+    return true;
 }

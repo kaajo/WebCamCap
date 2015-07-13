@@ -51,7 +51,7 @@ public:
     void setLines(const QVector<QVector<Line>> &lines);
 
     QVariantMap toVariantMap() const;
-    void fromVariantMap(QVariantMap varMap);
+    bool fromVariantMap(QVariantMap map);
 };
 
 #endif // FRAME_H

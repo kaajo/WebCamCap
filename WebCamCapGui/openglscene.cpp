@@ -48,7 +48,6 @@ void OpenGlScene::initializeGL()
 
 void OpenGlScene::paintGL()
 {
-
     glClearColor(0.15f, 0.15f, 0.15f, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -56,9 +55,9 @@ void OpenGlScene::paintGL()
 
     gluLookAt(
                 -m_roomDims.x()*zoom, 200*zoom, m_roomDims.y()*zoom,
-                 m_roomDims.x()/2.0f, m_roomDims.z()/2.0f , -m_roomDims.y()/2.0f,
-                 0, 1, 0
-             );
+                m_roomDims.x()/2.0f, m_roomDims.z()/2.0f , -m_roomDims.y()/2.0f,
+                0, 1, 0
+                );
 
     glTranslatef(m_roomDims.x()/2.0f, m_roomDims.z()/2.0f, -m_roomDims.y()/2.0f);
     glRotatef(camRot.x(), 1, 0, 0);
@@ -67,7 +66,6 @@ void OpenGlScene::paintGL()
 
     paintScene();
     paintFrame();
-
 }
 
 void OpenGlScene::resizeGL(int w, int h)
@@ -81,8 +79,6 @@ void OpenGlScene::resizeGL(int w, int h)
 
 void OpenGlScene::setFrame(Frame frame)
 {
-    qDebug() << "new frame in OpenGL scene";
-
     m_actualFrame = frame;
 
     update();

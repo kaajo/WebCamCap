@@ -51,6 +51,8 @@ public:
     RoomSettings *settings() const;
     void setSettings(RoomSettings *settings);
 
+    QVector<CameraSettings *> allCameraSettings() const;
+
     IVirtualRoom *project() const;
     void setProject(IVirtualRoom *project);
 

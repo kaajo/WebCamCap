@@ -21,6 +21,12 @@ void ICameraTopology::setMaxError(double maxError)
 {
     m_maxError = maxError;
 }
+
+QVector<ICamera *> ICameraTopology::getCameras() const
+{
+    return m_cameras;
+}
+
 ICameraTopology::ICameraTopology(QVector3D roomDims, double maxError, QObject *parent) :
     QObject(parent)
 {

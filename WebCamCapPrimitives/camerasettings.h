@@ -51,6 +51,8 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT CameraSettings : public QObject
     QVector3D m_roomDimensions;
     cv::Mat m_roiMask;
 
+    size_t m_thresholdValue = 255;
+
     ///flags
 
     bool m_turnedOn = false;
@@ -134,11 +136,16 @@ public:
 
     QVector4D getDirectionVector() const;
 
+    int getThresholdValue() const;
+
+public slots:
+    void setThresholdValue(int thresholdValue);
+
 signals:
-    void changed(CameraSettingsType type);
+    void changed(CameraSettings::CameraSettingsType type);
 
 private slots:
-    void setSave(CameraSettingsType type);
+    void setSave(CameraSettings::CameraSettingsType type);
 
 private:
     void computeAllParameters();

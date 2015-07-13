@@ -66,7 +66,7 @@ public:
 
 
 signals:
-    void imageShow(cv::UMat image);
+    void imageShow(cv::Mat image);
     void results(QVector<Line>);
     void finished();
 

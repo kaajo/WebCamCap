@@ -34,13 +34,11 @@ WccMainWindow::WccMainWindow(QWidget *parent) :
     m_ui->AnimationsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
 
     ///scrollArea needs widget with layout inside
-    m_scrollWidget = new QWidget;
-    m_scrollWidget->setLayout(new QVBoxLayout);
-    m_ui->cameraScrollArea->setWidget(m_scrollWidget);
+    auto scrollWidget = new QWidget;
 
-    m_scrollWidget->layout()->addWidget(new CameraWidget());
-    m_scrollWidget->layout()->addWidget(new CameraWidget());
-    m_scrollWidget->layout()->addWidget(new CameraWidget());
+    m_scrollLayout = new QVBoxLayout(scrollWidget);
+    scrollWidget->setLayout(m_scrollLayout);
+    m_ui->cameraScrollArea->setWidget(scrollWidget);
 }
 
 WccMainWindow::~WccMainWindow()
@@ -86,6 +84,31 @@ void WccMainWindow::setProject(IVirtualRoom *project)
     m_currentProject = project;
 }
 
+void WccMainWindow::addCameraWidgets(QVector<ICamera *> allCameras)
+{
+    for(ICamera *camera : allCameras)
+    {
+        CameraWidget *camWidget = new CameraWidget(camera->settings(), m_ui->cameraScrollArea);
+
+        m_scrollLayout->layout()->addWidget(camWidget);
+
+        connect(camera, &ICamera::imageShow, camWidget->cameraVideoPreview(), &QtOpenCVViewerGl::showImage);
+    }
+
+    m_scrollLayout->addStretch(1);
+}
+
+void WccMainWindow::clearCameraWidgets()
+{
+    if (m_scrollLayout->layout()) {
+        while(m_scrollLayout->layout()->count() > 0){
+            QLayoutItem *item = m_scrollLayout->takeAt(0);
+            delete item->widget();
+            delete item;
+        }
+    }
+}
+
 void WccMainWindow::newProject()
 {
     RoomSettings *settings= new RoomSettings;
@@ -98,6 +121,8 @@ void WccMainWindow::newProject()
     if(accepted == ProjectWizard::Accepted)
     {
         setProject(wizard->project());
+
+        addCameraWidgets(m_currentProject->cameraTopology()->getCameras());
 
         connect(m_ui->recordScene, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordScene);
         connect(m_ui->recordAnimation, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordAnimation);

@@ -1,10 +1,5 @@
 #include "camerasettings.h"
 
-
-QVector4D CameraSettings::getDirectionVector() const
-{
-    return m_directionVector;
-}
 CameraSettings::CameraSettings(QString name, int videoUsbId , float diagonalFov ,
                                QVector3D globalPosition , QVector3D roomDimensions,  QObject *parent)
     : QObject(parent)
@@ -16,18 +11,6 @@ CameraSettings::CameraSettings(QString name, int videoUsbId , float diagonalFov 
     m_roomDimensions = roomDimensions;
 
     computeAllParameters();
-}
-
-QVariantMap CameraSettings::toVariantMap()
-{
-    QVariantMap retVal;
-
-    return retVal;
-}
-
-void CameraSettings::fromVariantMap(QVariantMap map)
-{
-
 }
 
 QVector2D CameraSettings::resolution() const
@@ -190,6 +173,21 @@ void CameraSettings::setRoomDimensions(const QVector3D &roomDimensions)
     computeAllParameters();
 }
 
+QVector4D CameraSettings::getDirectionVector() const
+{
+    return m_directionVector;
+}
+
+int CameraSettings::getThresholdValue() const
+{
+    return m_thresholdValue;
+}
+
+void CameraSettings::setThresholdValue(int thresholdValue)
+{
+    m_thresholdValue = thresholdValue;
+}
+
 void CameraSettings::setSave(CameraSettings::CameraSettingsType /*type*/)
 {
     m_saved = false;
@@ -286,4 +284,20 @@ void CameraSettings::computeAllParameters()
     computeAnglePerPixel();
     computeMatrices();
     computePixelLines();
+}
+
+//###################################################################################
+
+
+
+QVariantMap CameraSettings::toVariantMap()
+{
+    QVariantMap retVal;
+
+    return retVal;
+}
+
+bool CameraSettings::fromVariantMap(QVariantMap map)
+{
+    computeAllParameters();
 }

@@ -34,7 +34,11 @@ QVector<Line> MarkerCamera::nextFrame()
 
     if(m_settings->showWindow())
     {
-        emit imageShow(m_actualFrame);
+        qDebug() << "show";
+
+        m_actualFrame.copyTo(m_signalFrame);
+
+        emit imageShow(m_signalFrame);
     }
 
     return m_lines;
@@ -112,7 +116,7 @@ bool MarkerCamera::turnOn(bool turnOn)
 
 void MarkerCamera::setThreshold(size_t threshold)
 {
-    m_thresholdValue = threshold;
+    m_settings->setThresholdValue(threshold);
 }
 
 QVariantMap MarkerCamera::toVariantMap() const
@@ -239,7 +243,7 @@ void MarkerCamera::calibBackground()
 
 void MarkerCamera::calibThreshold()
 {
-    m_thresholdValue = 255;
+    m_settings->setThresholdValue(255);
 
     if(m_settings->turnedOn())
     {
@@ -254,14 +258,14 @@ void MarkerCamera::calibThreshold()
         int nLines;
 
         //step 1, find first value which gives some Lines
-        while(m_thresholdValue > 20)
+        while(m_settings->getThresholdValue() > 20)
         {
             applyFilters();
             createLineForComponents();
 
             if(m_lines.size() == 0)
             {
-                --m_thresholdValue;
+                m_settings->setThresholdValue(m_settings->getThresholdValue() - 1);
                 continue;
             }
             else
@@ -271,46 +275,41 @@ void MarkerCamera::calibThreshold()
         }
 
         //some difference in light intensity (rotation of LED)
-        m_thresholdValue -= 10;
+        m_settings->setThresholdValue(m_settings->getThresholdValue() - 10);
 
         applyFilters();
         createLineForComponents();
 
         nLines = m_lines.size();
 
-        thresholdUp = m_thresholdValue;
+        thresholdUp = m_settings->getThresholdValue();
         thresholdLow = 0;
         qDebug() << "calibrated upper value" << thresholdUp;
 
         //step 2 , find threshold where num of lines is starting to grow
-        while(m_thresholdValue > 0)
+        while(m_settings->getThresholdValue() > 0)
         {
-            --m_thresholdValue;
+            m_settings->setThresholdValue(m_settings->getThresholdValue() - 1);
 
             applyFilters();
             createLineForComponents();
 
             if(nLines < m_lines.size())
             {
-                thresholdLow = m_thresholdValue;
+                thresholdLow = m_settings->getThresholdValue();
                 //std::cout << "distance: " << "calibrated lower value" << thresholdLow << std::endl;
                 break;
             }
         }
 
-        m_thresholdValue = (thresholdLow + thresholdUp)/2;
+        m_settings->setThresholdValue((thresholdLow + thresholdUp)/2);
 
-        qDebug() << "final threshold: " << m_thresholdValue;
+        qDebug() << "final threshold: " << m_settings->getThresholdValue();
     }
 }
 
 Line MarkerCamera::qtConcurrentpickLine(MarkerCamera *camera, const Contour &contour)
 {
-/*
-    auto centerMoment = cv::moments(contour);
-
-    QVector2D center(centerMoment.m10/centerMoment.m00, centerMoment.m01/centerMoment.m00);
-*/
     double m00 = contour.size(), m10 = 0.0 , m01 = 0.0;
 
     for(const cv::Point &pnt : contour)
@@ -319,13 +318,12 @@ Line MarkerCamera::qtConcurrentpickLine(MarkerCamera *camera, const Contour &con
         m01 += pnt.y;
     }
 
-    QVector2D center(m10/m00, m01/m00);
+    int x = m10/m00;
+    int y = m01/m00;
 
-    //qDebug() << center << " vs. " << center2;
+    cv::circle(camera->m_actualFrame, cv::Point(x, y), 1, CV_RGB(0,0,255), 2);
 
-    cv::circle(camera->m_actualFrame, cv::Point(center.x(), center.y()), 1, CV_RGB(0,0,255), 2);
-
-    return Line(camera->m_settings->globalPosition(),camera->m_settings->pixelLineDirectionVector(center.x(),center.y()));
+    return Line(camera->m_settings->globalPosition(),camera->m_settings->pixelLineDirectionVector(x,y));
 }
 
 void MarkerCamera::applyFilters()
@@ -335,7 +333,7 @@ void MarkerCamera::applyFilters()
     cv::cvtColor(m_filteredFrame, m_filteredFrame, cv::COLOR_BGR2GRAY);
     cv::medianBlur(m_filteredFrame, m_filteredFrame, 3);
 
-    cv::threshold(m_filteredFrame, m_filteredFrame, m_thresholdValue, 255, cv::THRESH_BINARY);
+    cv::threshold(m_filteredFrame, m_filteredFrame, m_settings->getThresholdValue(), 255, cv::THRESH_BINARY);
 
     cv::morphologyEx(m_filteredFrame, m_filteredFrame, cv::MORPH_OPEN , m_settings->dilateKernel);
 

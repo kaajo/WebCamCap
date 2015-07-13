@@ -185,10 +185,10 @@ QVector<Marker> PointChecker::handleGood(QVector<vec3> &points)
 
     if(points.size() > numOfPoints)
     {
-        for(size_t i = 0; i < points.size(); i++)
+        for(int i = 0; i < points.size(); i++)
         {
             bool ok = false;
-            for(size_t j = 0; j < pts.size(); j++)
+            for(int j = 0; j < pts.size(); j++)
             {
                 QVector3D pnt = pts[j].position();
 
@@ -213,10 +213,10 @@ std::vector<std::vector<double> > PointChecker::createDistanceMap(QVector<Marker
 {
     std::vector< std::vector<double>> matrix;
 
-    for(size_t i = 0; i < lastPoints.size(); i++)
+    for(int i = 0; i < lastPoints.size(); i++)
     {
         std::vector<double> vec;
-        for(size_t j = 0; j < points.size(); j++)
+        for(int j = 0; j < points.size(); j++)
         {
             QVector3D f = lastPoints[i].position();
 
@@ -291,10 +291,10 @@ QVector<Marker> PointChecker::addCoveredPoints(QVector<vec3> points, std::vector
 
 void PointChecker::handleRemovedPoints(QVector<Marker> points)
 {
-    for(size_t i = 0; i < lastPoints.size(); i++)
+    for(int i = 0; i < lastPoints.size(); i++)
     {
         bool found = false;
-        for(size_t j = 0; j < points.size(); j++)
+        for(int j = 0; j < points.size(); j++)
         {
             if(lastPoints[i].id() == points[j].id())
             {
