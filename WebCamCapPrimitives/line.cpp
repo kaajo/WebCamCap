@@ -28,11 +28,8 @@ bool Line::closestPointsTwoLines(Line line1, Line line2, QVector3D &closestPoint
         float c = QVector3D::dotProduct(line1.m_direction, r);
         float f = QVector3D::dotProduct(line2.m_direction, r);
 
-        float s = (b*f - c*e) / d;
-        float t = (a*f - c*b) / d;
-
-        closestPointLine1 = line1.m_position + line1.m_direction * s;
-        closestPointLine2 = line2.m_position + line2.m_direction * t;
+        closestPointLine1 = line1.m_position + line1.m_direction * (b*f - c*e) / d;
+        closestPointLine2 = line2.m_position + line2.m_direction * (a*f - c*b) / d;
 
         return true;
     }
@@ -63,17 +60,22 @@ float Line::lineAngle(QVector2D v1, QVector2D v2)
     return atan2(v2.y(), v2.x()) - atan2(v1.y(), v1.x());
 }
 
-bool Line::intersection(Line &l1, Line &l2, float Epsilon,  QVector3D &point)
+bool Line::intersection(Line &l1, Line &l2, float epsilon,  QVector3D &point)
 {
     QVector3D point1, point2;
 
-    Line::closestPointsTwoLines(l1, l2, point1, point2);
-    if(Epsilon > Line::distanceTwoPoints(point1, point2))
+    if(! Line::closestPointsTwoLines(l1, l2, point1, point2))
+    {
+        return false;
+    }
+
+    if(epsilon > Line::distanceTwoPoints(point1, point2))
     {
         l1.m_numberOfIntersections += 1;
         l2.m_numberOfIntersections += 1;
 
         point = Line::averagePoint(point1, point2);
+
         return true;
     }
 

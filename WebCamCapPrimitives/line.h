@@ -47,15 +47,13 @@ public:
     static QVector3D averagePoint(QVector3D point1, QVector3D point2);
     static float lineAngle(Line l1, Line l2);
     static float lineAngle(QVector2D v1, QVector2D v2);
-    static bool intersection(Line &l1, Line &l2, float Epsilon,  QVector3D &point);
+    static bool intersection(Line &l1, Line &l2, float epsilon,  QVector3D &point);
 
     QVector3D position() const;
     QVector3D direction() const;
     void setDirection(const QVector3D &direction);
 
-
 };
-
 
 
 #endif // LINE_H

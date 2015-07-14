@@ -107,10 +107,7 @@ void AddCamera::on_buttonBox_accepted()
 
     if(!m_coefficients.empty())
     {
-        cv::UMat data;
-
-        m_coefficients.copyTo(data);
-        m_cameraSettings->setDistortionCoeffs(data);
+        m_cameraSettings->setDistortionCoeffs(m_coefficients);
     }
 
     if(!m_cameraMatrix.empty())

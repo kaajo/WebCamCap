@@ -1,5 +1,12 @@
 #include "camerasettings.h"
 
+#include <QVariantMap>
+
+CameraSettings::CameraSettings(QObject *parent) : QObject(parent)
+{
+
+}
+
 CameraSettings::CameraSettings(QString name, int videoUsbId , float diagonalFov ,
                                QVector3D globalPosition , QVector3D roomDimensions,  QObject *parent)
     : QObject(parent)
@@ -149,12 +156,12 @@ void CameraSettings::setGlobalPosition(const QVector3D &globalPosition)
     emit changed(CameraSettingsType::POSITION);
 }
 
-cv::UMat CameraSettings::distortionCoeffs() const
+cv::Mat CameraSettings::distortionCoeffs() const
 {
     return m_distortionCoeffs;
 }
 
-void CameraSettings::setDistortionCoeffs(const cv::UMat &distortionCoeffs)
+void CameraSettings::setDistortionCoeffs(const cv::Mat &distortionCoeffs)
 {
     m_distortionCoeffs = distortionCoeffs;
 
@@ -221,31 +228,7 @@ void CameraSettings::computeMatrices()
 
     m_rotationMatrix.setRow(1, uVector);
     m_rotationMatrix.setRow(3, QVector4D(0,0,0,1));
-
-    /*
-    //extrinsic matrix
-    cv::Mat tMatrix;
-    tMatrix = cv::Mat::eye(4,4, CV_32F);
-
-    tMatrix.at<float>(0,3) = -m_globalPosition.x;
-    tMatrix.at<float>(1,3) = -m_globalPosition.y;
-    tMatrix.at<float>(2,3) = -m_globalPosition.z;
-
-    //float myAngle = Line::LineAngle(Line(glm::vec3(0,0,0), glm::vec3(1, 0, 0)), Line(glm::vec3(0,0,0), directionVectorToMiddle));
-
-    cv::Mat temp = m_rotationMatrix * tMatrix;
-    m_CameraMatrix = temp(Rect(0,0, 4, 3));*/
-
-    /*
-    //projection matrix
-
-    m_projectionMatrix = m_IntrinsicMatrix * m_CameraMatrix;
-
-    */
 }
-
-#include <QTime>
-#include <QTimer>
 
 void CameraSettings::computePixelLines()
 {
@@ -288,16 +271,92 @@ void CameraSettings::computeAllParameters()
 
 //###################################################################################
 
+QString nameKey("name");
+QString videoUsbIdKey("usbId");
+QString diagonalFovKey("diagonalFov");
+QString globalPositionKey("globalPosition");
+QString resolutionKey("resolution");
+QString roomDimensionsKey("roomDims");
+QString distortionCoeffsKey("distortionCoeffs");
 
 
 QVariantMap CameraSettings::toVariantMap()
 {
     QVariantMap retVal;
 
+    retVal[nameKey] = m_name;
+    retVal[videoUsbIdKey] = m_videoUsbId;
+    retVal[diagonalFovKey] = m_diagonalFov;
+    retVal[globalPositionKey] = m_globalPosition;
+    retVal[resolutionKey] = m_resolution;
+    retVal[roomDimensionsKey] = m_roomDimensions;
+
+    if(! m_distortionCoeffs.empty())
+    {
+        QVariantMap distortionCoeffsMap;
+
+        distortionCoeffsMap["x"] = m_distortionCoeffs.cols;
+        distortionCoeffsMap["y"] = m_distortionCoeffs.rows;
+
+        for(int x = 0; x < m_distortionCoeffs.cols; ++x)
+            for(int y = 0; y < m_distortionCoeffs.rows; ++y)
+            {
+                auto xstring = QString::number(x);
+                auto ystring = QString::number(y);
+
+                distortionCoeffsMap[xstring+ystring] = m_distortionCoeffs.at<double>(x,y);
+            }
+
+        retVal[distortionCoeffsKey] = distortionCoeffsMap;
+    }
+
     return retVal;
 }
 
 bool CameraSettings::fromVariantMap(QVariantMap map)
 {
+    if(! map.contains(nameKey) || ! map.contains(videoUsbIdKey) || ! map.contains(diagonalFovKey) ||
+       ! map.contains(globalPositionKey) || ! map.contains(resolutionKey))
+    {
+        return false;
+    }
+
+    m_name = map[nameKey].toString();
+    m_videoUsbId = map[videoUsbIdKey].toInt();
+    m_diagonalFov = map[diagonalFovKey].toFloat();
+    m_globalPosition = map[globalPositionKey].value<QVector3D>();
+    m_resolution = map[resolutionKey].value<QVector2D>();
+    m_roomDimensions = map[roomDimensionsKey].value<QVector3D>();
+
+    if(map.contains(distortionCoeffsKey))
+    {
+        QVariantMap distortionCoeffsMap = map[distortionCoeffsKey].toMap();
+
+        cv::Mat distortionMat;
+
+        int x = distortionCoeffsMap["x"].toInt();
+        int y = distortionCoeffsMap["y"].toInt();
+
+        if(!(x == 0 || y == 0))
+        {
+            distortionMat.create(y,x, CV_64F);
+
+            qDebug() << "loading distortion coefs";
+
+            for(int i = 0; i < x; ++i)
+                for(int j = 0; j < y; ++j)
+                {
+                    QString xstring = QString::number(i);
+                    QString ystring = QString::number(j);
+
+                    distortionMat.at<double>(i,j) = distortionCoeffsMap[xstring+ystring].toDouble();
+                }
+
+            m_distortionCoeffs = distortionMat;
+        }
+    }
+
     computeAllParameters();
+
+    return true;
 }

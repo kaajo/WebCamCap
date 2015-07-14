@@ -47,14 +47,13 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT CameraSettings : public QObject
     float m_diagonalFov = 0.0f;
     QVector3D m_globalPosition;
     QVector2D m_resolution;
-    cv::UMat m_distortionCoeffs;
+    cv::Mat m_distortionCoeffs;
     QVector3D m_roomDimensions;
     cv::Mat m_roiMask;
 
     size_t m_thresholdValue = 255;
 
     ///flags
-
     bool m_turnedOn = false;
     bool useBackgroundSub = false;
     bool m_showWindow = true;
@@ -62,7 +61,6 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT CameraSettings : public QObject
     bool m_saved = false;
 
     ///computed parameters
-
     QVector4D m_directionVector;
     double m_anglePerPixel;
     QMatrix4x4 m_rotationMatrix; //used for rotated lines (pixels)
@@ -89,10 +87,11 @@ public:
         ROIMASK
     };
 
-    explicit CameraSettings(QString m_name, int m_videoUsbId , float m_diagonalFov , QVector3D m_globalPosition , QVector3D m_roomDimensions, QObject *parent = 0);
+    explicit CameraSettings(QObject *parent = 0);
+    CameraSettings(QString m_name, int m_videoUsbId , float m_diagonalFov , QVector3D m_globalPosition , QVector3D m_roomDimensions, QObject *parent = 0);
 
     QVariantMap toVariantMap();
-    void fromVariantMap(QVariantMap map);
+    bool fromVariantMap(QVariantMap map);
 
     QString name() const;
     void setName(const QString &name);
@@ -106,8 +105,8 @@ public:
     QVector3D globalPosition() const;
     void setGlobalPosition(const QVector3D &globalPosition);
 
-    cv::UMat distortionCoeffs() const;
-    void setDistortionCoeffs(const cv::UMat &distortionCoeffs);
+    cv::Mat distortionCoeffs() const;
+    void setDistortionCoeffs(const cv::Mat &distortionCoeffs);
 
     QVector3D roomDimensions() const;
     void setRoomDimensions(const QVector3D &roomDimensions);
@@ -154,8 +153,6 @@ private:
     void computeAnglePerPixel();
     void computeMatrices();
     void computePixelLines();
-
-
 };
 
 #endif // CAMERASETTINGS_H

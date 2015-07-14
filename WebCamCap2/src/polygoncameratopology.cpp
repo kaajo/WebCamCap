@@ -84,11 +84,12 @@ void PolygonCameraTopology::resolveEdges()
     QVector3D dir1, dir2;
 
     float min = 181.0f, temp_angle;
-    int min_index = -1;
+    int min_index;
 
     //get
     for(int i = 0; i < m_cameras.size(); i++)
     {
+        min_index = -1;
 
         pos1 = m_cameras[i]->settings()->globalPosition();
         dir1 = m_cameras[i]->settings()->getDirectionVector().toVector3D();
@@ -108,7 +109,7 @@ void PolygonCameraTopology::resolveEdges()
             }
         }
 
-        if(min_index != -1)
+        if(min_index != -1 &&  min_index != i)
         {
             TopologyEdge edge(m_cameras[i],m_cameras[min_index]);
 
@@ -123,7 +124,7 @@ void PolygonCameraTopology::resolveEdges()
 
         for(int j = 0; j < m_topology.size(); j++)
         {
-            if(m_topology[j].m_camera2 == index2 && m_topology[j].m_camera1 == index1)
+            if(m_topology[j].m_camera2 == index1 && m_topology[j].m_camera1 == index2)
             {
                 m_topology.erase(m_topology.begin()+j);
             }
@@ -202,10 +203,10 @@ void PolygonCameraTopology::handleCameraSettingsChange(CameraSettings::CameraSet
     }
 }
 
+#include <QtWidgets>
+
 void PolygonCameraTopology::handleCameraResults(QVector<Line> lines)
 {
-    qDebug() << "results size: " << lines.size();
-
     cv::waitKey(1);
 
     ++m_resultsCounter;
@@ -234,7 +235,7 @@ void PolygonCameraTopology::handleCameraResults(QVector<Line> lines)
 
                 if(m_cameraTopology[j].m_index2 == i)
                 {
-                    m_cameraTopology[j].b = lines;
+                    m_cameraTopology[j].b = lines;t
                 }
 
                 m_resultLines[i] = lines;

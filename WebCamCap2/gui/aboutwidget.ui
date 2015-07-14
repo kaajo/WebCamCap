@@ -104,7 +104,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Copyright Miroslav Krajíček (https://github.com/kaajo/)</string>
+    <string>Copyright Miroslav Krajíček (&lt;a href=&quot;https://github.com/kaajo/&quot;&gt;GitHub&lt;/a&gt;)</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

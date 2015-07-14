@@ -4,8 +4,6 @@
 #
 #-------------------------------------------------
 
-QT       += gui
-
 TARGET = WebCamCapPrimitives
 TEMPLATE = lib
 
@@ -33,6 +31,7 @@ CONFIG += link_pkgconfig
 PKGCONFIG += opencv
 
 QMAKE_CXXFLAGS += -std=c++11 -pedantic -Wall -Wextra
+QMAKE_CXXFLAGS_RELEASE = -march=native
 
 unix {
     target.path = /usr/lib
