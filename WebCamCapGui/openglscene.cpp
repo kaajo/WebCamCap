@@ -1,13 +1,20 @@
 #include "openglscene.h"
 
 #include <GL/glu.h>
+#include <GL/gl.h>
 #include <QGL>
 #include <QDebug>
+#include <QMouseEvent>
 
 OpenGlScene* OpenGlScene::m_scene = nullptr;
 
 OpenGlScene::OpenGlScene(QWidget *parent) : QOpenGLWidget(parent)
 {
+    generateRandomColors();
+
+//    setFrame(Frame(30, QVector<Marker>(1, Marker(1, QVector3D(1,1,1))),
+//                   QVector<QVector<Line>>(1, QVector<Line>(1, Line(QVector3D(0,0,0), QVector3D(50,50,50))))));
+
     update();
 }
 
@@ -54,14 +61,14 @@ void OpenGlScene::paintGL()
     glLoadIdentity();
 
     gluLookAt(
-                -m_roomDims.x()*zoom, 200*zoom, m_roomDims.y()*zoom,
+                -m_roomDims.x()*m_zoom, 200*m_zoom, m_roomDims.y()*m_zoom,
                 m_roomDims.x()/2.0f, m_roomDims.z()/2.0f , -m_roomDims.y()/2.0f,
                 0, 1, 0
                 );
 
     glTranslatef(m_roomDims.x()/2.0f, m_roomDims.z()/2.0f, -m_roomDims.y()/2.0f);
-    glRotatef(camRot.x(), 1, 0, 0);
-    glRotatef(camRot.y(), 0, 1, 0);
+    glRotatef(m_camRot.y(), 1, 0, 0);
+    glRotatef(m_camRot.x(), 0, 1, 0);
     glTranslatef(-m_roomDims.x()/2.0f, -m_roomDims.z()/2.0f, m_roomDims.y()/2.0f);
 
     paintScene();
@@ -100,13 +107,19 @@ void OpenGlScene::paintFrame()
     glPushMatrix();
     for(int i = 0; i < m_actualFrame.markers().size(); i++)
     {
-        glColor3ub(m_randomColors[m_actualFrame.markers()[i].id()].red(),m_randomColors[m_actualFrame.markers()[i].id()].green(),m_randomColors[m_actualFrame.markers()[i].id()].blue());
+        glColor3ub(m_randomColors[m_actualFrame.markers()[i].id()].red()
+        ,m_randomColors[m_actualFrame.markers()[i].id()].green(),
+        m_randomColors[m_actualFrame.markers()[i].id()].blue());
 
-        //glColor(randomColors[m_actualFrame.markers()[i].id()]);
+        glTranslatef(m_actualFrame.markers()[i].position().x()*m_roomDims.x(),
+                     m_actualFrame.markers()[i].position().z()*m_roomDims.z(),
+                     -m_actualFrame.markers()[i].position().y()*m_roomDims.y());
 
-        glTranslatef(m_actualFrame.markers()[i].position().x()*m_roomDims.x(), m_actualFrame.markers()[i].position().z()*m_roomDims.z(), -m_actualFrame.markers()[i].position().y()*m_roomDims.y());
-        gluSphere(m_quadric, 3,8,8);
-        glTranslatef(-m_actualFrame.markers()[i].position().x()*m_roomDims.x(), -m_actualFrame.markers()[i].position().z()*m_roomDims.z(), m_actualFrame.markers()[i].position().y()*m_roomDims.y());
+        gluSphere(m_quadric, 3, 5, 5);
+
+        glTranslatef(-m_actualFrame.markers()[i].position().x()*m_roomDims.x(),
+                     -m_actualFrame.markers()[i].position().z()*m_roomDims.z(),
+                     m_actualFrame.markers()[i].position().y()*m_roomDims.y());
 
     }
     glPopMatrix();
@@ -138,4 +151,58 @@ void OpenGlScene::generateRandomColors()
     {
         m_randomColors.push_back({qrand() % 255, qrand() % 255, qrand() % 255});
     }
+}
+
+void OpenGlScene::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        m_leftButton = true;
+
+    }
+    else if(event->button() == Qt::RightButton)
+    {
+        m_rightButton = true;
+    }
+
+    setCursor({Qt::DragMoveCursor});
+    m_currentMousePos = event->pos();
+    event->accept();
+}
+
+void OpenGlScene::mouseReleaseEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        m_leftButton = false;
+    }
+    else if(event->button() == Qt::RightButton)
+    {
+        m_rightButton = false;
+    }
+
+    if(!m_leftButton && !m_rightButton)
+    {
+        setCursor({Qt::OpenHandCursor});
+    }
+
+    event->accept();
+}
+
+void OpenGlScene::mouseMoveEvent(QMouseEvent *event)
+{
+    m_lastMousePos = m_currentMousePos;
+    m_currentMousePos = event->pos();
+
+    if(m_leftButton)
+    {
+        m_camRot += (m_currentMousePos - m_lastMousePos);
+    }
+    else if(m_rightButton)
+    {
+        m_zoom += m_zoom / 50.0f * (m_currentMousePos - m_lastMousePos).y();
+    }
+
+    event->accept();
+    update();
 }

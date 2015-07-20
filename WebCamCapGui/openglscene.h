@@ -42,15 +42,16 @@ class WEBCAMCAPGUISHARED_EXPORT OpenGlScene : public QOpenGLWidget
 
     //paint props
     QVector<QColor> m_randomColors;
-    bool mdrawJoints = true;
-    bool mdrawLines = true;
+    bool m_drawJoints = true;
+    bool m_drawLines = true;
 
-    QVector3D camRot = QVector3D(0,0,0);
-    float zoom = 1.0;
+    QPoint m_camRot = QPoint(0,0);
+    float m_zoom = 1.0;
 
     //mouse tracking
-    bool leftButton = false;
-    QVector2D lastMousePos, currentMousePos;
+    bool m_leftButton = false;
+    bool m_rightButton = false;
+    QPoint m_lastMousePos, m_currentMousePos;
 
     Frame m_actualFrame;
 
@@ -72,6 +73,10 @@ public slots:
 private:
     void paintScene();
     void paintFrame();
+
+    void mousePressEvent(QMouseEvent * event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
 
     void drawLine(const Line &line) const;
 
