@@ -42,7 +42,7 @@ void Frame::setLines(const QVector<QVector<Line>> &lines)
     m_lines = lines;
 }
 
-//#########################################################x
+//#########################################################
 
 QString elapsedKey("elapsedTime");
 QString linesKey("lines");
@@ -54,25 +54,29 @@ QVariantMap Frame::toVariantMap() const
 
     varMap[elapsedKey] = m_elapsedTime;
 
-    QVariantMap lines;
+    QVariantList linesList;
 
-    lines["i"] = m_lines.size();
-
-    for(int i = 0; i < m_lines.size(); i++)
+    for(auto &vector : m_lines)
     {
-        QVariantMap linesInside;
+        QVariantList nestedList;
 
-        linesInside["j"] = m_lines[i].size();
-
-        for(int j = 0; j < m_lines[i].size(); j++)
+        for(const Line &line: vector)
         {
-            lines[QString::number(j)] = m_lines[i][j].toVariantMap();
+            nestedList.append(line.toVariantMap());
         }
 
-        lines[QString::number(i)] = linesInside;
+        linesList.append(nestedList);
     }
 
-    varMap[linesKey] = lines;
+    varMap[linesKey] = linesList;
+
+    QVariantList markersList;
+
+    foreach (const Marker &marker, m_markers) {
+        markersList.append(marker.toVariantMap());
+    }
+
+    varMap[markersKey] = markersList;
 
     return varMap;
 }

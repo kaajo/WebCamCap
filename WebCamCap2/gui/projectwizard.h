@@ -45,11 +45,8 @@ class ProjectWizard : public QWizard
     IVirtualRoom *m_project = nullptr;
 
 public:
-    explicit ProjectWizard(QWidget *parent = 0);
+    explicit ProjectWizard(IVirtualRoom *room = nullptr, QWidget *parent = 0);
     ~ProjectWizard();
-
-    RoomSettings *settings() const;
-    void setSettings(RoomSettings *settings);
 
     QVector<CameraSettings *> allCameraSettings() const;
 
@@ -58,9 +55,12 @@ public:
 
 private:
     Ui::ProjectWizard *m_ui;
+    
+    bool m_editMode = false;
 
     ///1. page
     void saveToRoomSettings();
+    void setRoomSettings(RoomSettings *settings);
 
     ///2. page
     void generateCameras();

@@ -53,7 +53,7 @@ public:
     ICamera *getCamera(QString name);
 
     virtual QVariantMap toVariantMap() = 0;
-    virtual void fromVariantMap(QVariantMap varMap) = 0;
+    virtual bool fromVariantMap(QVariantMap varMap) = 0;
 
     QVector3D getRoomDimensions() const;
     void setRoomDimensions(const QVector3D &roomDimensions);

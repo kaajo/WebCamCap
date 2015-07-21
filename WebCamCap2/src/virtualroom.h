@@ -31,11 +31,12 @@ class VirtualRoom : public IVirtualRoom
     Q_OBJECT
 
 public:
-    explicit VirtualRoom(RoomSettings* settings, QObject *parent = 0);
+    explicit VirtualRoom(QVariantMap varMap, QObject *parent = 0);
+    VirtualRoom(RoomSettings* settings, QObject *parent = 0);
     virtual ~VirtualRoom();  
 
     virtual QVariantMap toVariantMap() override;
-    virtual void fromVariantMap(QVariantMap varMap) override;
+    virtual bool fromVariantMap(QVariantMap varMap) override;
 signals:
 
 public slots:
@@ -44,6 +45,8 @@ private:
     virtual void settingsChange(RoomSettings::RoomSettingsType type) override;
     void recordScene(bool record);
     void recordAnimation(bool record);
+
+    inline void initProject(RoomSettings *settings);
 
 private slots:
 

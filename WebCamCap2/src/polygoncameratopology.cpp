@@ -10,21 +10,14 @@ PolygonCameraTopology::PolygonCameraTopology(QVector3D roomDims, double maxError
     m_waitCondition = new QWaitCondition;
 }
 
-QVariantMap PolygonCameraTopology::toVariantMap()
-{
-    QVariantMap retVal;
-
-    return retVal;
-}
-
-void PolygonCameraTopology::fromVariantMap(QVariantMap varMap)
-{
-
-}
-
 void PolygonCameraTopology::addCameras(QVector<ICamera*> cameras)
 {
     foreach (ICamera* cam, cameras) {
+
+        if(m_cameras.contains(cam))
+        {
+            continue;
+        }
 
         cam->setWaitCondition(m_waitCondition);
 
@@ -142,7 +135,7 @@ void PolygonCameraTopology::intersections()
 
     for(auto pts: points)
     {
-        pointsFlatten.append(pts);
+        pointsFlatten+=pts;
     }
 
     auto labeledPoints = m_pointChecker.solvePointIDs(pointsFlatten);
@@ -203,8 +196,6 @@ void PolygonCameraTopology::handleCameraSettingsChange(CameraSettings::CameraSet
     }
 }
 
-#include <QtWidgets>
-
 void PolygonCameraTopology::handleCameraResults(QVector<Line> lines)
 {
     cv::waitKey(1);
@@ -212,49 +203,6 @@ void PolygonCameraTopology::handleCameraResults(QVector<Line> lines)
     ++m_resultsCounter;
 
     m_resultLines[qobject_cast<ICamera*>(sender())] = lines;
-
-    /*
-    QObject *obj = QObject::sender();
-
-    for(size_t i = 0; i < workers.size(); i++)
-    {
-        if(obj == workers[i])
-        {
-            if(m_haveResults[i])
-            {
-                qDebug() << "bad sync camera " << i;
-            }
-
-            m_haveResults[i] = true;
-            for(size_t j = 0; j < m_cameraTopology.size(); j++)
-            {
-                if(m_cameraTopology[j].m_index1 == i)
-                {
-                    m_cameraTopology[j].a = lines;
-                }
-
-                if(m_cameraTopology[j].m_index2 == i)
-                {
-                    m_cameraTopology[j].b = lines;t
-                }
-
-                m_resultLines[i] = lines;
-            }
-
-            break;
-        }
-    }
-
-
-    for(size_t i = 0; i < workers.size(); i++)
-    {
-        if(!m_haveResults[i])
-        {
-            return;
-        }
-    }
-
-    */
 
     if(m_resultsCounter == m_cameras.size())
     {
@@ -271,3 +219,41 @@ void PolygonCameraTopology::handleCameraResults(QVector<Line> lines)
     QCoreApplication::processEvents();
 }
 
+
+//#######################################################################
+
+#include "markercamera.h"
+
+const QString camerasKey("cameras");
+
+QVariantMap PolygonCameraTopology::toVariantMap()
+{
+    QVariantMap retVal;
+
+    QVariantList camerasList;
+
+    foreach (ICamera *camera, m_cameras) {
+        camerasList << camera->toVariantMap();
+    }
+
+    retVal[camerasKey] = camerasList;
+
+    return retVal;
+}
+
+bool PolygonCameraTopology::fromVariantMap(QVariantMap varMap)
+{
+    QVariantList camerasList = varMap[camerasKey].toList();
+
+    QVector<ICamera*> cameras;
+
+    foreach (const QVariant variant, camerasList) {
+        ICamera *camera = new MarkerCamera(variant.toMap(), m_waitCondition);
+
+        cameras.push_back(camera);
+    }
+
+    addCameras(cameras);
+
+    return true;
+}

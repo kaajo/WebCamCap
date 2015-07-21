@@ -341,8 +341,6 @@ bool CameraSettings::fromVariantMap(QVariantMap map)
         {
             distortionMat.create(y,x, CV_64F);
 
-            qDebug() << "loading distortion coefs";
-
             for(int i = 0; i < x; ++i)
                 for(int j = 0; j < y; ++j)
                 {

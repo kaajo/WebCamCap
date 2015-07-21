@@ -53,9 +53,13 @@ public:
 private:
     Ui::WccMainWindow *m_ui = nullptr;
 
+    void closeEvent(QCloseEvent *event) override;
+
     bool addServer(IServer *server);
     bool removeServer(QString name);
     void setProject(IVirtualRoom *project);
+
+    bool saveVariantMapToFile(const QString &path,const QVariantMap &map) const;
 
     void addCameraWidgets(QVector<ICamera *> allCameras);
     void clearCameraWidgets();

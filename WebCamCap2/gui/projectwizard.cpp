@@ -20,11 +20,33 @@ void ProjectWizard::setProject(IVirtualRoom *project)
 {
     m_project = project;
 }
-ProjectWizard::ProjectWizard(QWidget *parent) :
+ProjectWizard::ProjectWizard(IVirtualRoom *room, QWidget *parent) :
     QWizard(parent),
     m_ui(new Ui::ProjectWizard)
 {
     m_ui->setupUi(this);
+
+    if(! room)
+    {
+        m_roomSettings = new RoomSettings;
+    }
+    else
+    {
+        setRoomSettings(room->settings());
+
+        m_cameras = room->cameraTopology()->getCameras();
+
+        for(const ICamera *camera: room->cameraTopology()->getCameras())
+        {
+            addCameraSettingsToTable(camera->settings());
+        }
+        
+
+        m_project = room;
+        m_editMode = true;
+    }
+
+    connect(m_roomSettings, &RoomSettings::changed, this, &ProjectWizard::handleSettingsChanged);
 
     connect(this, &QWizard::currentIdChanged, this, &ProjectWizard::handlePageChange);
     connect(m_ui->cameraTable, &QTableWidget::cellChanged, this, &ProjectWizard::handleCellChanged);
@@ -43,18 +65,6 @@ ProjectWizard::~ProjectWizard()
     delete m_ui;
 }
 
-RoomSettings *ProjectWizard::settings() const
-{
-    return m_roomSettings;
-}
-
-void ProjectWizard::setSettings(RoomSettings *settings)
-{
-    m_roomSettings = settings;
-
-    connect(m_roomSettings, &RoomSettings::changed, this, &ProjectWizard::handleSettingsChanged);
-}
-
 QVector<CameraSettings *> ProjectWizard::allCameraSettings() const
 {
     return m_tableRowToSettings.values().toVector();
@@ -62,32 +72,51 @@ QVector<CameraSettings *> ProjectWizard::allCameraSettings() const
 
 void ProjectWizard::saveToRoomSettings()
 {
-    if(m_roomSettings)
-    {
-        if(m_roomSettings->name() != m_ui->name->text())
-        {
-            m_roomSettings->setName(m_ui->name->text());
-        }
-
-        QVector3D roomDims = QVector3D(m_ui->width->text().toInt(),
-                                       m_ui->length->text().toInt(),
-                                       m_ui->height->text().toInt());
-
-        if(m_roomSettings->roomDimensions() != roomDims)
-        {
-            m_roomSettings->setRoomDimensions(roomDims);
-        }
-
-        if(m_roomSettings->maxError() != m_ui->error->text().toFloat())
-        {
-            m_roomSettings->setMaxError(m_ui->error->text().toFloat());
-        }
-    }
-    else
+    if(! m_roomSettings)
     {
         QMessageBox::warning(this, "No project", "There is no project to edit");
         this->reject();
     }
+    
+    /*
+    if(m_editMode)
+    {
+        return;
+    }
+    */
+    
+    if(m_roomSettings->name() != m_ui->name->text())
+    {
+        m_roomSettings->setName(m_ui->name->text());
+    }
+    
+    QVector3D roomDims = QVector3D(m_ui->width->text().toInt(),
+                                   m_ui->length->text().toInt(),
+                                   m_ui->height->text().toInt());
+    
+    if(m_roomSettings->roomDimensions() != roomDims)
+    {
+        m_roomSettings->setRoomDimensions(roomDims);
+    }
+    
+    if(m_roomSettings->maxError() != m_ui->error->text().toFloat())
+    {
+        m_roomSettings->setMaxError(m_ui->error->text().toFloat());
+    }
+    
+}
+
+void ProjectWizard::setRoomSettings(RoomSettings *settings)
+{
+    m_roomSettings = settings;
+
+    auto roomDims = m_roomSettings->roomDimensions();
+
+    m_ui->name->setText(settings->name());
+    m_ui->width->setText(QString::number(roomDims.x()));
+    m_ui->length->setText(QString::number(roomDims.y()));
+    m_ui->height->setText(QString::number(roomDims.z()));
+    m_ui->error->setText(QString::number(m_roomSettings->maxError()));
 }
 
 void ProjectWizard::generateCameras()
@@ -155,8 +184,10 @@ void ProjectWizard::handleAccepted()
     if(! m_project)
     {
         m_project = new VirtualRoom(m_roomSettings);
-        m_project->cameraTopology()->addCameras(m_cameras);
+
     }
+
+    m_project->cameraTopology()->addCameras(m_cameras);
 }
 
 void ProjectWizard::addCamera()

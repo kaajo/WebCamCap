@@ -74,6 +74,7 @@ public:
     cv::Mat dilateKernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3,3));
 
     enum class CameraSettingsType{
+        ALL,
         NAME,
         VIDEOUSBID,
         FOV,

@@ -44,7 +44,7 @@ protected:
     QWaitCondition *m_waitCondition = nullptr;
 
 public:
-    explicit ICamera(CameraSettings *settings, QObject *parent = 0);
+    explicit ICamera(QObject *parent = 0);
     virtual ~ICamera();
 
     enum class CameraCalibrationType {
@@ -56,13 +56,12 @@ public:
     virtual QVector<QVector3D> nextFrame2D() = 0;
     virtual void calibrate(CameraCalibrationType type) = 0;
 
-
     CameraSettings *settings() const;
     void setSettings(CameraSettings *settings);
     void setWaitCondition(QWaitCondition *waitCondition);
 
     virtual QVariantMap toVariantMap() const = 0;
-    virtual void fromVariantMap(QVariantMap varMap) = 0;
+    virtual bool fromVariantMap(QVariantMap varMap) = 0;
 
 
 signals:

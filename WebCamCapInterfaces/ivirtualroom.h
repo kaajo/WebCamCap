@@ -44,7 +44,7 @@ protected:
     QLinkedList<Animation*> m_animations;
 
 public:
-    explicit IVirtualRoom(RoomSettings *settings, QObject *parent = 0);
+    explicit IVirtualRoom(QObject *parent = 0);
     virtual ~IVirtualRoom();
 
     RoomSettings *settings();
@@ -53,7 +53,7 @@ public:
     ICameraTopology *cameraTopology() const;
 
     virtual QVariantMap toVariantMap() = 0;
-    virtual void fromVariantMap(QVariantMap varMap) = 0;
+    virtual bool fromVariantMap(QVariantMap varMap) = 0;
 
 signals:
     void animationRecorded(Animation *animation);

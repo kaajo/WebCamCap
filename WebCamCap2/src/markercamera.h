@@ -42,7 +42,6 @@ class MarkerCamera : public ICamera
 
     QVector<Line> m_lines;
 
-
     std::vector<Contour> m_contours;
 
     QMutex m_mutex;
@@ -50,7 +49,9 @@ class MarkerCamera : public ICamera
     bool m_running = false;
 
 public:
-    explicit MarkerCamera(CameraSettings *settings, QObject *parent = 0);
+    explicit MarkerCamera(QVariantMap varMap, QWaitCondition *waitCondition, QObject *parent = 0);
+    MarkerCamera(CameraSettings *settings, QObject *parent = 0);
+    virtual ~MarkerCamera();
 
     virtual QVector<Line> nextFrame() override;
     virtual QVector<QVector3D> nextFrame2D() override;
@@ -61,7 +62,7 @@ public:
     virtual void setThreshold(size_t threshold) override;
 
     virtual QVariantMap toVariantMap() const override;
-    virtual void fromVariantMap(QVariantMap varMap) override;
+    virtual bool fromVariantMap(QVariantMap varMap) override;
 private:
     virtual void settingsChanged(CameraSettings::CameraSettingsType type) override;
 

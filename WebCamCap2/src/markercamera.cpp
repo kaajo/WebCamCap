@@ -8,13 +8,28 @@
 #include <QtConcurrent/QtConcurrentMap>
 #include <QMutexLocker>
 
-MarkerCamera::MarkerCamera(CameraSettings *settings, QObject *parent) :
-    ICamera(settings, parent)
+MarkerCamera::MarkerCamera(QVariantMap varMap, QWaitCondition *waitCondition, QObject *parent) :
+    ICamera(parent)
 {
+    setWaitCondition(waitCondition);
+
+    fromVariantMap(varMap);
+}
+
+MarkerCamera::MarkerCamera(CameraSettings *settings, QObject *parent) :
+    ICamera(parent)
+{
+    setSettings(settings);
+
     if(m_settings->turnedOn())
     {
         turnOn(true);
     }
+}
+
+MarkerCamera::~MarkerCamera()
+{
+    m_settings->setTurnedOn(false);
 }
 
 QVector<Line> MarkerCamera::nextFrame()
@@ -93,6 +108,8 @@ bool MarkerCamera::turnOn(bool turnOn)
                 m_camera.set(CV_CAP_PROP_FRAME_HEIGHT, m_settings->resolution().y());
             }
 
+            qDebug() << "turning on cam " << this;
+
             return true;
         }
         else
@@ -110,6 +127,8 @@ bool MarkerCamera::turnOn(bool turnOn)
         m_camera.release();
         m_settings->setTurnedOn(false);
 
+        qDebug() << "turning off cam " << this;
+
         return true;
     }
 }
@@ -119,28 +138,16 @@ void MarkerCamera::setThreshold(size_t threshold)
     m_settings->setThresholdValue(threshold);
 }
 
-QVariantMap MarkerCamera::toVariantMap() const
-{
-
-}
-
-void MarkerCamera::fromVariantMap(QVariantMap varMap)
-{
-
-}
-
 void MarkerCamera::settingsChanged(CameraSettings::CameraSettingsType type)
 {
     switch (type) {
     case CameraSettings::CameraSettingsType::TURNEDON:
-        if(m_settings->turnedOn())
-        {
-            turnOn(true);
-        }
-        else
-        {
-            turnOn(false);
-        }
+            turnOn(m_settings->turnedOn());
+        break;
+    case CameraSettings::CameraSettingsType::ALL:
+
+        turnOn(m_settings->turnedOn());
+
         break;
     default:
         break;
@@ -352,4 +359,32 @@ void MarkerCamera::createLineForComponents()
 {
     m_lines = QtConcurrent::blockingMapped<QVector<Line>>(m_contours,
               std::tr1::bind(&MarkerCamera::qtConcurrentpickLine, this, std::tr1::placeholders::_1));
+}
+
+//########################################################################################
+
+const QString settingsKey("settings");
+
+QVariantMap MarkerCamera::toVariantMap() const
+{
+    QVariantMap retVal;
+
+    retVal[settingsKey] = m_settings->toVariantMap();
+
+    return retVal;
+}
+
+bool MarkerCamera::fromVariantMap(QVariantMap varMap)
+{
+    auto settings = new CameraSettings;
+
+    if(! settings->fromVariantMap(varMap[settingsKey].toMap()))
+    {
+        qDebug() << "wrong variantMap for CameraSettings";
+        return false;
+    }
+
+    setSettings(settings);
+
+    return true;
 }

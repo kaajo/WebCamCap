@@ -38,7 +38,7 @@ public:
     Marker(int id, QVector3D positionVector);
     Marker(int id, glm::vec3 positionVector);
 
-    QVariantMap toVariantMap();
+    QVariantMap toVariantMap() const;
     bool fromVariantMap(QVariantMap map);
 
     QVector3D position() const;

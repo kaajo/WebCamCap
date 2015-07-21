@@ -130,8 +130,6 @@ void MainWindow::on_newProject_triggered()
     {
         delete(m_project);
 
-
-
         Room * temp = NewProjectDialog.resolveProject();
 
         handleMainWProject(temp);
@@ -278,7 +276,7 @@ void MainWindow::on_saveProject_triggered()
             file.write(doc.toJson());
 
             file.close();
-            std::cout << "Project saved to:" << filename.toStdString() << std::endl;
+            qDebug() << "Project saved to:" << filename;
         }
     }
     else

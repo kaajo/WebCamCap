@@ -2,12 +2,16 @@
 
 #include "polygoncameratopology.h"
 
-VirtualRoom::VirtualRoom(RoomSettings *settings, QObject *parent) :
-    IVirtualRoom(settings, parent)
+VirtualRoom::VirtualRoom(QVariantMap varMap, QObject *parent) :
+    IVirtualRoom(parent)
 {
-    setSettings(settings);
+    fromVariantMap(varMap);
+}
 
-    m_cameraTopology = new PolygonCameraTopology(settings->roomDimensions(), settings->maxError());
+VirtualRoom::VirtualRoom(RoomSettings *settings, QObject *parent) :
+    IVirtualRoom(parent)
+{
+    initProject(settings);
 }
 
 VirtualRoom::~VirtualRoom()
@@ -42,14 +46,11 @@ void VirtualRoom::recordAnimation(bool record)
     }
 }
 
-QVariantMap VirtualRoom::toVariantMap()
+void VirtualRoom::initProject(RoomSettings *settings)
 {
+    setSettings(settings);
 
-}
-
-void VirtualRoom::fromVariantMap(QVariantMap varMap)
-{
-
+    m_cameraTopology = new PolygonCameraTopology(settings->roomDimensions(), settings->maxError());
 }
 
 void VirtualRoom::settingsChange(RoomSettings::RoomSettingsType type)
@@ -69,4 +70,43 @@ void VirtualRoom::settingsChange(RoomSettings::RoomSettingsType type)
     default:
         break;
     }
+}
+
+//#########################################################
+
+const QString settingsKey("settings");
+const QString topologyKey("topology");
+
+QVariantMap VirtualRoom::toVariantMap()
+{
+    QVariantMap retVal;
+
+    retVal[settingsKey] = m_settings->toVariantMap();
+    retVal[topologyKey] = m_cameraTopology->toVariantMap();
+
+    return retVal;
+}
+
+bool VirtualRoom::fromVariantMap(QVariantMap varMap)
+{
+    //init settings and topology
+    auto settings = new RoomSettings();
+
+    if(! settings->fromVariantMap(varMap[settingsKey].toMap()))
+    {
+        qDebug() << "wrong RoomSettings variantMap";
+
+        return false;
+    }
+
+    initProject(settings);
+
+    if(! m_cameraTopology->fromVariantMap(varMap[topologyKey].toMap()))
+    {
+        qDebug() << "wrong PolygonCameraTopology variantMap";
+
+        return false;
+    }
+
+    return true;
 }

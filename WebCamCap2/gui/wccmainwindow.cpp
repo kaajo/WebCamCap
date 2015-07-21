@@ -8,7 +8,12 @@
 #include "openglscene.h"
 
 #include <QDebug>
+#include <QCloseEvent>
 #include <QHeaderView>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QJsonDocument>
+#include <QDataStream>
 
 WccMainWindow::WccMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -46,6 +51,16 @@ WccMainWindow::~WccMainWindow()
     delete m_ui;
 }
 
+void WccMainWindow::closeEvent(QCloseEvent *event)
+{
+    event->accept();
+
+    if(m_currentProject)
+    {
+        delete m_currentProject;
+    }
+}
+
 bool WccMainWindow::addServer(IServer *server)
 {
     QString name = server->name();
@@ -72,6 +87,11 @@ bool WccMainWindow::removeServer(QString name)
 
 void WccMainWindow::setProject(IVirtualRoom *project)
 {
+    if(m_currentProject == project)
+    {
+        return;
+    }
+
     this->setEnabled(true);
 
     if(m_currentProject)
@@ -79,9 +99,44 @@ void WccMainWindow::setProject(IVirtualRoom *project)
         ///handle save, deactivate etc
         ///
         m_currentProject->disconnect();
+
+        ///clean cam widgets
+        clearCameraWidgets();
+
+        if(project != m_currentProject)
+        {
+            delete m_currentProject;
+        }
     }
 
     m_currentProject = project;
+
+    addCameraWidgets(m_currentProject->cameraTopology()->getCameras());
+
+    connect(m_ui->recordScene, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordScene);
+    connect(m_ui->recordAnimation, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordAnimation);
+    connect(m_currentProject->cameraTopology(), &ICameraTopology::frameReady, OpenGlScene::getInstance(), &OpenGlScene::setFrame);
+    connect(m_currentProject, &IVirtualRoom::animationRecorded, this, &WccMainWindow::addAnimationToTable);
+}
+
+bool WccMainWindow::saveVariantMapToFile(const QString &path,const QVariantMap &map) const
+{
+    QFile file(path);
+
+    if( file.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
+    {
+        QDataStream doc(&file);
+
+        doc << map;
+
+        file.close();
+
+        return true;
+    }
+
+    QMessageBox::warning(0, "warning", "cannot save file to this location");
+
+    return false;
 }
 
 void WccMainWindow::addCameraWidgets(QVector<ICamera *> allCameras)
@@ -111,38 +166,87 @@ void WccMainWindow::clearCameraWidgets()
 
 void WccMainWindow::newProject()
 {
-    RoomSettings *settings= new RoomSettings;
-
     ProjectWizard *wizard = new ProjectWizard();
-    wizard->setSettings(settings);
 
     int accepted = wizard->exec();
 
     if(accepted == ProjectWizard::Accepted)
     {
         setProject(wizard->project());
-
-        addCameraWidgets(m_currentProject->cameraTopology()->getCameras());
-
-        connect(m_ui->recordScene, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordScene);
-        connect(m_ui->recordAnimation, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordAnimation);
-        connect(m_currentProject->cameraTopology(), &ICameraTopology::frameReady, OpenGlScene::getInstance(), &OpenGlScene::setFrame);
-        connect(m_currentProject, &IVirtualRoom::animationRecorded, this, &WccMainWindow::addAnimationToTable);
     }
 }
 
 void WccMainWindow::openProject()
 {
+    QString filename = QFileDialog::getOpenFileName(this,tr("Load Project"), ".wcc", tr(".json Files (*.wcc)"));
 
+    if(filename != "")
+    {
+        qDebug() << "Open project:" << filename;
+
+        QFile file(filename);
+        file.open(QFile::OpenModeFlag::ReadOnly);
+
+        QDataStream doc(&file);
+
+        QVariantMap map;
+        doc >> map;
+
+        VirtualRoom* temp = new VirtualRoom(map);
+
+        file.close();
+
+        ProjectWizard *wizard = new ProjectWizard(temp);
+
+        int accepted = wizard->exec();
+
+        if(accepted == ProjectWizard::Accepted)
+        {
+            setProject(wizard->project());
+        }
+    }
 }
 
 void WccMainWindow::editCurrentProject()
 {
+    if(! m_currentProject)
+    {
+        return;
+    }
 
+    ProjectWizard *wizard = new ProjectWizard(m_currentProject);
+
+    int accepted = wizard->exec();
+
+    if(accepted == ProjectWizard::Accepted)
+    {
+        setProject(wizard->project());
+    }
 }
 
 void WccMainWindow::saveCurrentProject()
 {
+    if(! m_currentProject)
+    {
+        return;
+    }
+
+    QString file = QFileDialog::getSaveFileName(this,tr("Save Project"),m_currentProject->settings()->name()+".wcc" , tr(".wcc Files (*.wcc)"));
+
+    if(file != "")
+    {
+        /*
+        if(!searchForRecentProjects(filename))
+        {
+            m_recentProjects.push_back(filename);
+
+        }*/
+
+        if(saveVariantMapToFile(file, m_currentProject->toVariantMap()))
+        {
+            m_currentProject->settings()->save();
+        }
+    }
 
 }
 

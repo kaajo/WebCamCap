@@ -60,7 +60,7 @@ Marker::Marker(int id, glm::vec3 positionVector)
 const QString positionKey("position");
 const QString idKey("id");
 
-QVariantMap Marker::toVariantMap()
+QVariantMap Marker::toVariantMap() const
 {
     QVariantMap retVal;
 

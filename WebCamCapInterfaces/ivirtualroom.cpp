@@ -1,7 +1,7 @@
 #include "ivirtualroom.h"
 
 
-IVirtualRoom::IVirtualRoom(RoomSettings *settings, QObject *parent) :
+IVirtualRoom::IVirtualRoom(QObject *parent) :
     QObject(parent)
 {
 
@@ -9,7 +9,9 @@ IVirtualRoom::IVirtualRoom(RoomSettings *settings, QObject *parent) :
 
 IVirtualRoom::~IVirtualRoom()
 {
-    
+    delete m_settings;
+    delete m_cameraTopology;
+    qDeleteAll(m_animations);
 }
 
 RoomSettings *IVirtualRoom::settings()

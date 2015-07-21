@@ -27,7 +27,7 @@ class PolygonCameraTopology : public ICameraTopology
     Q_OBJECT
 
     size_t m_turnedOnCamerasCounter = 0;
-    size_t m_resultsCounter = 0;
+    int m_resultsCounter = 0;
 
     QVector<QThread*> m_cameraThreads;
     QVector<TopologyEdge> m_topology;
@@ -45,7 +45,7 @@ public:
     PolygonCameraTopology(QVector3D roomDims, double maxError, QObject *parent = 0);
 
     virtual QVariantMap toVariantMap() override;
-    virtual void fromVariantMap(QVariantMap varMap) override;
+    virtual bool fromVariantMap(QVariantMap varMap) override;
 
     virtual void addCameras(QVector<ICamera *> cameras) override;
     virtual void removeCamera(ICamera *camera) override;

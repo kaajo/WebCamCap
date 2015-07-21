@@ -8,10 +8,10 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QCoreApplication::setOrganizationName("Kaajo-WebCamCap");
-    QCoreApplication::setOrganizationDomain("https://github.com/kaajo/WebCamCap");
-    QCoreApplication::setApplicationVersion("1.0");
-    QCoreApplication::setApplicationName("WebCamCap");
+    QApplication::setOrganizationName("Kaajo-WebCamCap");
+    QApplication::setOrganizationDomain("https://github.com/kaajo/WebCamCap");
+    QApplication::setApplicationVersion("1.0");
+    QApplication::setApplicationName("WebCamCap");
 
     qRegisterMetaType<QVector<Line>>("QVector<Line>");
     qRegisterMetaType<Line>("Line");
