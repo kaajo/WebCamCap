@@ -4,6 +4,9 @@
 #
 #-------------------------------------------------
 
+#remove this line to build webcamcap1
+requires(0)
+
 QT += core gui opengl testlib concurrent network
 
 LIBS += -lglut
