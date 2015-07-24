@@ -4,8 +4,6 @@
 #include "addcamera.h"
 #include "../src/virtualroom.h"
 
-#include <tr1/functional>
-
 #include <QDebug>
 #include <QMessageBox>
 #include <QtConcurrent/QtConcurrentMap>
@@ -77,13 +75,6 @@ void ProjectWizard::saveToRoomSettings()
         QMessageBox::warning(this, "No project", "There is no project to edit");
         this->reject();
     }
-    
-    /*
-    if(m_editMode)
-    {
-        return;
-    }
-    */
     
     if(m_roomSettings->name() != m_ui->name->text())
     {

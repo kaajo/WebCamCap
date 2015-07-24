@@ -74,3 +74,6 @@ DEPENDPATH += $$PWD/../WebCamCapGui
 
 #RESOURCES += \
   #  WebCamCap2.qrc
+
+RESOURCES += \
+    WebCamCap2.qrc

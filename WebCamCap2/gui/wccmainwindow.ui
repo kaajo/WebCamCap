@@ -508,6 +508,10 @@
    </property>
   </action>
   <action name="actionNewProject">
+   <property name="icon">
+    <iconset resource="../WebCamCap2.qrc">
+     <normaloff>:/img/new_project.ico</normaloff>:/img/new_project.ico</iconset>
+   </property>
    <property name="text">
     <string>New</string>
    </property>
@@ -516,6 +520,10 @@
    </property>
   </action>
   <action name="actionOpenProject">
+   <property name="icon">
+    <iconset resource="../WebCamCap2.qrc">
+     <normaloff>:/img/open_project.ico</normaloff>:/img/open_project.ico</iconset>
+   </property>
    <property name="text">
     <string>Open</string>
    </property>
@@ -532,6 +540,10 @@
    </property>
   </action>
   <action name="actionSaveCurrentProject">
+   <property name="icon">
+    <iconset resource="../WebCamCap2.qrc">
+     <normaloff>:/img/save_project.ico</normaloff>:/img/save_project.ico</iconset>
+   </property>
    <property name="text">
     <string>Save</string>
    </property>
@@ -543,6 +555,10 @@
    </property>
   </action>
   <action name="actionAddServer">
+   <property name="icon">
+    <iconset resource="../WebCamCap2.qrc">
+     <normaloff>:/img/add_server.png</normaloff>:/img/add_server.png</iconset>
+   </property>
    <property name="text">
     <string>Add server</string>
    </property>
@@ -557,6 +573,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../WebCamCap2.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -7,13 +7,17 @@
 #include "addcamera.h"
 #include "openglscene.h"
 
+#include <tr1/functional>
 #include <QDebug>
+#include <QSettings>
 #include <QCloseEvent>
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QJsonDocument>
 #include <QDataStream>
+
+const QString lastOpenedProjectsKey("lastProjects");
 
 WccMainWindow::WccMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -44,6 +48,23 @@ WccMainWindow::WccMainWindow(QWidget *parent) :
     m_scrollLayout = new QVBoxLayout(scrollWidget);
     scrollWidget->setLayout(m_scrollLayout);
     m_ui->cameraScrollArea->setWidget(scrollWidget);
+
+    ///init last opened projects
+    QSettings settings;
+
+    const QStringList list = settings.value(lastOpenedProjectsKey).toStringList();
+
+    QList<QAction*> actions;
+
+    for(const QString &string:list)
+    {
+        QAction* temp = new QAction(string,this);
+
+        actions.push_back(temp);
+        connect(temp, &QAction::triggered, this, &WccMainWindow::openProject);
+    }
+
+    m_ui->menuRecent_projects->addActions(actions);
 }
 
 WccMainWindow::~WccMainWindow()
@@ -81,6 +102,9 @@ bool WccMainWindow::addServer(IServer *server)
 bool WccMainWindow::removeServer(QString name)
 {
     auto it = std::find_if(m_servers.begin(), m_servers.end(), [name](IServer *s){return s->name() == name;});
+
+    delete it;
+    m_servers.erase(it);
 
     return true;
 }
@@ -164,6 +188,37 @@ void WccMainWindow::clearCameraWidgets()
     }
 }
 
+void WccMainWindow::addProjectToSettings(const QString &path)
+{
+    QSettings settings;
+
+    QStringList list = settings.value(lastOpenedProjectsKey).toStringList();
+
+    if(list.contains(path))
+    {
+        list.replace(0, path);
+    }
+    else
+    {
+        list.insert(0, path);
+    }
+
+    settings.setValue(lastOpenedProjectsKey, list);
+}
+
+void WccMainWindow::removeProjectFromSettings(const QString &path)
+{
+    QSettings settings;
+
+    QStringList list = settings.value(lastOpenedProjectsKey).toStringList();
+
+    if(list.contains(path))
+    {
+        list.removeOne(path);
+        settings.setValue(lastOpenedProjectsKey, list);
+    }
+}
+
 void WccMainWindow::newProject()
 {
     ProjectWizard *wizard = new ProjectWizard();
@@ -178,14 +233,30 @@ void WccMainWindow::newProject()
 
 void WccMainWindow::openProject()
 {
-    QString filename = QFileDialog::getOpenFileName(this,tr("Load Project"), ".wcc", tr(".json Files (*.wcc)"));
+    QAction * snd = qobject_cast<QAction*>(sender());
 
-    if(filename != "")
+    if(snd == m_ui->actionOpenProject)
     {
-        qDebug() << "Open project:" << filename;
+        loadProject(QFileDialog::getOpenFileName(this,tr("Load Project"), ".wcc", tr(".wcc Files (*.wcc)")));
+    }
+    else if(snd)
+    {
+        loadProject(snd->text());
+    }
+}
 
-        QFile file(filename);
-        file.open(QFile::OpenModeFlag::ReadOnly);
+void WccMainWindow::loadProject(QString filePath)
+{
+    if(filePath != "")
+    {
+        qDebug() << "Open project:" << filePath;
+
+        QFile file(filePath);
+        if(! file.open(QFile::OpenModeFlag::ReadOnly))
+        {
+            qDebug() << "failed to open project:" << filePath;
+            return;
+        }
 
         QDataStream doc(&file);
 
@@ -203,6 +274,7 @@ void WccMainWindow::openProject()
         if(accepted == ProjectWizard::Accepted)
         {
             setProject(wizard->project());
+            addProjectToSettings(filePath);
         }
     }
 }
@@ -231,23 +303,16 @@ void WccMainWindow::saveCurrentProject()
         return;
     }
 
-    QString file = QFileDialog::getSaveFileName(this,tr("Save Project"),m_currentProject->settings()->name()+".wcc" , tr(".wcc Files (*.wcc)"));
+    QString filename = QFileDialog::getSaveFileName(this,tr("Save Project"),m_currentProject->settings()->name()+".wcc" , tr(".wcc Files (*.wcc)"));
 
-    if(file != "")
+    if(filename != "")
     {
-        /*
-        if(!searchForRecentProjects(filename))
-        {
-            m_recentProjects.push_back(filename);
-
-        }*/
-
-        if(saveVariantMapToFile(file, m_currentProject->toVariantMap()))
+        if(saveVariantMapToFile(filename, m_currentProject->toVariantMap()))
         {
             m_currentProject->settings()->save();
+            addProjectToSettings(filename);
         }
     }
-
 }
 
 void WccMainWindow::addNewServer()
@@ -264,5 +329,11 @@ void WccMainWindow::showAboutPage()
 
 void WccMainWindow::addAnimationToTable(Animation *animation)
 {
+    int row = m_ui->AnimationsTable->rowCount();
+    m_ui->AnimationsTable->insertRow(row);
 
+    QTableWidgetItem *x = new QTableWidgetItem(QString("name"));
+    m_ui->AnimationsTable->setItem(row, 0, x);
+    x = new QTableWidgetItem(QString::number(animation->fps()));
+    m_ui->AnimationsTable->setItem(row, 1, x);
 }

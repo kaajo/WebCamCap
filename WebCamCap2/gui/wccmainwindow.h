@@ -46,6 +46,8 @@ class WccMainWindow : public QMainWindow
     QVector<IServer*> m_servers;
 
     QVBoxLayout *m_scrollLayout;
+
+    QVector<Animation*> m_animations;
 public:
     explicit WccMainWindow(QWidget *parent = 0);
     ~WccMainWindow();
@@ -64,9 +66,13 @@ private:
     void addCameraWidgets(QVector<ICamera *> allCameras);
     void clearCameraWidgets();
 
+    void addProjectToSettings(const QString &path);
+    void removeProjectFromSettings(const QString &path);
+
 private slots:
     void newProject();
     void openProject();
+    void loadProject(QString filePath);
     void editCurrentProject();
     void saveCurrentProject();
 
