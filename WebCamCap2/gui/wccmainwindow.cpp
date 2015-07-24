@@ -7,7 +7,6 @@
 #include "addcamera.h"
 #include "openglscene.h"
 
-#include <tr1/functional>
 #include <QDebug>
 #include <QSettings>
 #include <QCloseEvent>
@@ -111,30 +110,9 @@ bool WccMainWindow::removeServer(QString name)
 
 void WccMainWindow::setProject(IVirtualRoom *project)
 {
-    if(m_currentProject == project)
-    {
-        return;
-    }
-
-    this->setEnabled(true);
-
-    if(m_currentProject)
-    {
-        ///handle save, deactivate etc
-        ///
-        m_currentProject->disconnect();
-
-        ///clean cam widgets
-        clearCameraWidgets();
-
-        if(project != m_currentProject)
-        {
-            delete m_currentProject;
-        }
-    }
-
     m_currentProject = project;
 
+    clearCameraWidgets();
     addCameraWidgets(m_currentProject->cameraTopology()->getCameras());
 
     connect(m_ui->recordScene, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordScene);
@@ -266,6 +244,22 @@ void WccMainWindow::loadProject(QString filePath)
         VirtualRoom* temp = new VirtualRoom(map);
 
         file.close();
+
+        if(m_currentProject)
+        {
+            int ret = QMessageBox::warning(this, tr("Deactivation"), tr("This action will close your current project, continue?"), QMessageBox::Ok, QMessageBox::Cancel);
+
+            if(ret == QMessageBox::Cancel)
+            {
+                return;
+            }
+            else
+            {
+                m_currentProject->disconnect();
+                clearCameraWidgets();
+                delete m_currentProject;
+            }
+        }
 
         ProjectWizard *wizard = new ProjectWizard(temp);
 

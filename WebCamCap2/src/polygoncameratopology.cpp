@@ -10,6 +10,11 @@ PolygonCameraTopology::PolygonCameraTopology(QVector3D roomDims, double maxError
     m_waitCondition = new QWaitCondition;
 }
 
+PolygonCameraTopology::~PolygonCameraTopology()
+{
+
+}
+
 void PolygonCameraTopology::addCameras(QVector<ICamera*> cameras)
 {
     foreach (ICamera* cam, cameras) {

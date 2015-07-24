@@ -36,7 +36,7 @@ ICameraTopology::ICameraTopology(QVector3D roomDims, double maxError, QObject *p
 
 ICameraTopology::~ICameraTopology()
 {
-    
+    qDeleteAll(m_cameras);
 }
 
 ICamera *ICameraTopology::getCamera(QString name)

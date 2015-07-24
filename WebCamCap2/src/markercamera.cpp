@@ -49,8 +49,6 @@ QVector<Line> MarkerCamera::nextFrame()
 
     if(m_settings->showWindow())
     {
-        qDebug() << "show";
-
         m_actualFrame.copyTo(m_signalFrame);
 
         emit imageShow(m_signalFrame);
@@ -127,7 +125,7 @@ bool MarkerCamera::turnOn(bool turnOn)
         m_camera.release();
         m_settings->setTurnedOn(false);
 
-        qDebug() << "turning off cam " << this;
+        qDebug() << "turning off cam ";
 
         return true;
     }
@@ -145,9 +143,7 @@ void MarkerCamera::settingsChanged(CameraSettings::CameraSettingsType type)
             turnOn(m_settings->turnedOn());
         break;
     case CameraSettings::CameraSettingsType::ALL:
-
         turnOn(m_settings->turnedOn());
-
         break;
     default:
         break;

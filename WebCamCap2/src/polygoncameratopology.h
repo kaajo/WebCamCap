@@ -43,6 +43,7 @@ class PolygonCameraTopology : public ICameraTopology
 public:
 
     PolygonCameraTopology(QVector3D roomDims, double maxError, QObject *parent = 0);
+    virtual ~PolygonCameraTopology();
 
     virtual QVariantMap toVariantMap() override;
     virtual bool fromVariantMap(QVariantMap varMap) override;
