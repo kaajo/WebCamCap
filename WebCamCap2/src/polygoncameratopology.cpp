@@ -1,5 +1,6 @@
 #include "polygoncameratopology.h"
 
+#include <QPair>
 #include <QDebug>
 #include <QtConcurrent>
 
@@ -77,7 +78,7 @@ void PolygonCameraTopology::record(bool start)
 void PolygonCameraTopology::resolveEdges()
 {
     m_topology.clear();
-
+/*
     QVector3D pos1, pos2;
     QVector3D dir1, dir2;
 
@@ -130,6 +131,69 @@ void PolygonCameraTopology::resolveEdges()
     }
 
     std::cout << "new camtopology size:" << m_topology.size() << std::endl;
+    */
+
+    if(m_cameras.size() < 2)
+    {
+        qDebug() << "only 1 camera -> no topology";
+        return;
+    }
+
+    QVector3D dir1, dir2;
+
+    QVector<QPair<double, TopologyEdge>> allEdges;
+
+    //get
+    for(int i = 0; i < m_cameras.size(); i++)
+    {
+        dir1 = m_cameras[i]->settings()->getDirectionVector().toVector3D();
+
+        for(int j = i+1; j < m_cameras.size(); j++)
+        {
+            dir2 = m_cameras[j]->settings()->getDirectionVector().toVector3D();
+
+            allEdges.push_back(QPair<double,TopologyEdge>(Line::lineAngle(dir1, dir2), {m_cameras[i], m_cameras[j]}));
+        }
+    }
+
+    QVector<ICamera*> usedCams;
+    QVector<TopologyEdge> topology;
+
+    std::sort(allEdges.begin(), allEdges.end(), [](const QPair<double, TopologyEdge> &pair1 , const QPair<double, TopologyEdge> &pair2){return pair1.first < pair2.first;});
+
+    auto it = allEdges.begin();
+
+    while(topology.size() != m_cameras.size())
+    {
+        if(it == allEdges.end())
+        {
+            break;
+        }
+
+        if(! usedCams.contains(it->second.m_camera1))
+        {
+            usedCams.push_back(it->second.m_camera1);
+        }
+
+        if(! usedCams.contains(it->second.m_camera2))
+        {
+            usedCams.push_back(it->second.m_camera2);
+        }
+
+        topology.push_back(it->second);
+
+        ++it;
+    }
+
+    m_topology = topology;
+
+    qDebug() << "new camtopology size: " << m_topology.size();
+
+    for(int i = 0; i < topology.size(); i++)
+    {
+        qDebug() << i << " " << topology[i].m_camera1->settings()->globalPosition()
+                             << topology[i].m_camera2->settings()->globalPosition();
+    }
 }
 
 void PolygonCameraTopology::intersections()

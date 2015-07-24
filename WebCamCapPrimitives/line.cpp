@@ -49,11 +49,10 @@ QVector3D Line::averagePoint(QVector3D point1, QVector3D point2)
     return QVector3D((point1.x() + point2.x())/2,(point1.y() + point2.y())/2,(point1.z() + point2.z())/2);
 }
 
-float Line::lineAngle(Line l1, Line l2)
+float Line::lineAngle(QVector3D v1, QVector3D v2)
 {
-    return acos( QVector3D::dotProduct(l1.m_direction, l2.m_direction)/sqrt(l1.m_direction.lengthSquared()) * l2.m_direction.lengthSquared());
+    return std::atan2(QVector3D::crossProduct(v1, v2).length(), QVector3D::dotProduct(v1, v2));
 }
-
 
 float Line::lineAngle(QVector2D v1, QVector2D v2)
 {
