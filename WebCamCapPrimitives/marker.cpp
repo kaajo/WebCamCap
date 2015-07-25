@@ -49,12 +49,6 @@ Marker::Marker(int id, QVector3D positionVector)
     m_position = positionVector;
 }
 
-Marker::Marker(int id, glm::vec3 positionVector)
-{
-    m_id = id;
-    m_position = QVector3D(positionVector.x, positionVector.y, positionVector.z);
-}
-
 //##################################################################################
 
 const QString positionKey("position");

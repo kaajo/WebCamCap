@@ -3,8 +3,6 @@
 #include "line.h"
 #include "std_2d_vector.h"
 
-using namespace glm;
-
 #include <QVector>
 
 size_t PointChecker::getNumOfPoints() const
@@ -21,15 +19,8 @@ PointChecker::PointChecker()
 {
 }
 
-QVector<Marker> PointChecker::solvePointIDs(QVector<QVector3D> points2)
+QVector<Marker> PointChecker::solvePointIDs(QVector<QVector3D> points)
 {
-    QVector<vec3> points;
-
-    for(QVector3D &pnt : points2)
-    {
-        points.push_back({pnt.x(), pnt.y(), pnt.z()});
-    }
-
     QVector<Marker> pts;
 
     if(points.empty())
@@ -76,19 +67,19 @@ QVector<Marker> PointChecker::solvePointIDs(QVector<QVector3D> points2)
 
 }
 
-QVector<Marker> PointChecker::solvePointIDs(QVector<vec2> points)
+QVector<Marker> PointChecker::solvePointIDs(QVector<QVector2D> points)
 {
     QVector<QVector3D> pts;
 
-    for(size_t i = 0; i < points.size(); i++)
+    for(const QVector2D &point : points)
     {
-        pts.push_back(QVector3D(QVector2D(points[i].x, points[i].y), 0.0f));
+        pts.push_back(QVector3D(point.x(), point.y(), 0.0f));
     }
 
     return solvePointIDs(pts);
 }
 
-QVector<Marker> PointChecker::handleNo(QVector<vec3> &points)
+QVector<Marker> PointChecker::handleNo(QVector<QVector3D> &points)
 {
     QVector<Marker> pts;
 
@@ -126,7 +117,7 @@ QVector<Marker> PointChecker::handleNo(QVector<vec3> &points)
     return pts;
 }
 
-QVector<Marker> PointChecker::handleNotEnough(QVector<vec3> &points)
+QVector<Marker> PointChecker::handleNotEnough(QVector<QVector3D> &points)
 {
     QVector<Marker> pts;
 
@@ -164,7 +155,7 @@ QVector<Marker> PointChecker::handleNotEnough(QVector<vec3> &points)
     return pts;
 }
 
-QVector<Marker> PointChecker::handleGood(QVector<vec3> &points)
+QVector<Marker> PointChecker::handleGood(QVector<QVector3D> &points)
 {
     QVector<Marker> pts;
 
@@ -192,7 +183,7 @@ QVector<Marker> PointChecker::handleGood(QVector<vec3> &points)
             {
                 QVector3D pnt = pts[j].position();
 
-                if(points[i] == glm::vec3(pnt.x(), pnt.y(), pnt.z()))
+                if(points[i] == pnt)
                 {
                     ok = true;
                     break;
@@ -209,7 +200,7 @@ QVector<Marker> PointChecker::handleGood(QVector<vec3> &points)
 }
 
 
-std::vector<std::vector<double> > PointChecker::createDistanceMap(QVector<Marker> lastPoints, QVector<vec3> points)
+std::vector<std::vector<double> > PointChecker::createDistanceMap(QVector<Marker> lastPoints, QVector<QVector3D> points)
 {
     std::vector< std::vector<double>> matrix;
 
@@ -220,7 +211,7 @@ std::vector<std::vector<double> > PointChecker::createDistanceMap(QVector<Marker
         {
             QVector3D f = lastPoints[i].position();
 
-            vec.push_back( glm::distance(glm::vec3(f.x(),f.y(),f.z()), points[j]));
+            vec.push_back( f.distanceToPoint(points[j]));
         }
         matrix.push_back(vec);
     }
@@ -242,7 +233,7 @@ size_t PointChecker::nextUniqueIndex(int size)
     }
 }
 
-void PointChecker::addUncoveredPoints(QVector<vec3> points, std::vector<std::vector<double> > map, QVector<Marker> &pts)
+void PointChecker::addUncoveredPoints(QVector<QVector3D> points, std::vector<std::vector<double> > map, QVector<Marker> &pts)
 {
     size_t rows = map.size();
 
@@ -271,7 +262,7 @@ void PointChecker::addUncoveredPoints(QVector<vec3> points, std::vector<std::vec
     }
 }
 
-QVector<Marker> PointChecker::addCoveredPoints(QVector<vec3> points, std::vector<std::vector<double> > map)
+QVector<Marker> PointChecker::addCoveredPoints(QVector<QVector3D> points, std::vector<std::vector<double> > map)
 {
     QVector<Marker> pts;
 

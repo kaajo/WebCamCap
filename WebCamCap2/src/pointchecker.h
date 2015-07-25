@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <QQueue>
-#include <glm/glm.hpp>
 
 #include "marker.h"
 #include "line.h"
@@ -38,7 +37,6 @@ class PointChecker
 
     QVector<Marker> lastPoints;
     QVector<Marker> lastGoodFrame;
-    Munkres m_munkres;
 
 public:
     PointChecker();
@@ -49,18 +47,18 @@ public:
     QVector<Marker> getLastPoints() const {return lastPoints;}
 
     QVector<Marker> solvePointIDs(QVector<QVector3D> points2);
-    QVector<Marker> solvePointIDs(QVector<glm::vec2> points);
+    QVector<Marker> solvePointIDs(QVector<QVector2D> points);
 private:
 
-    QVector<Marker> handleNo(QVector<glm::vec3> &points);
-    QVector<Marker> handleNotEnough(QVector<glm::vec3> &points);
-    QVector<Marker> handleGood(QVector<glm::vec3> &points);
+    QVector<Marker> handleNo(QVector<QVector3D> &points);
+    QVector<Marker> handleNotEnough(QVector<QVector3D> &points);
+    QVector<Marker> handleGood(QVector<QVector3D> &points);
 
-    std::vector<std::vector<double> > createDistanceMap(QVector<Marker> lastPoints, QVector<glm::vec3> points);
+    std::vector<std::vector<double> > createDistanceMap(QVector<Marker> lastPoints, QVector<QVector3D> points);
     void checkRemovedIndexes();
     size_t nextUniqueIndex(int size);
-    void addUncoveredPoints(QVector<glm::vec3> points, std::vector<std::vector<double> > map, QVector<Marker> &pts);
-    QVector<Marker> addCoveredPoints(QVector<glm::vec3> points, std::vector<std::vector<double> > map);
+    void addUncoveredPoints(QVector<QVector3D> points, std::vector<std::vector<double> > map, QVector<Marker> &pts);
+    QVector<Marker> addCoveredPoints(QVector<QVector3D> points, std::vector<std::vector<double> > map);
     void handleRemovedPoints(QVector<Marker> points);
 };
 

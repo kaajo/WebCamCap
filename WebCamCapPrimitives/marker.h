@@ -25,8 +25,15 @@
 
 #include "webcamcapprimitives_global.h"
 
-#include <glm/glm.hpp>
 #include <QVector3D>
+
+/**
+ * @author Miroslav Krajicek <mirokrajicek@gmail.com>
+ * @class Marker marker.h
+ * @brief Represents Point in 3D space with unique ID.
+ * This class can be used also for 2D points, z axis has then zero value.
+ * @date 2015
+ */
 
 class WEBCAMCAPPRIMITIVESSHARED_EXPORT Marker
 {
@@ -34,9 +41,17 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT Marker
     QVector3D m_position;
 
 public:
+    /**
+     * @brief Marker Constructs Marker with default values (Used for void QVector::reserve(int size) )
+     */
     Marker();
+
+    /**
+     * @brief Marker constructor
+     * @param id unique ID of Marker
+     * @param positionVector position of Marker
+     */
     Marker(int id, QVector3D positionVector);
-    Marker(int id, glm::vec3 positionVector);
 
     QVariantMap toVariantMap() const;
     bool fromVariantMap(QVariantMap map);
