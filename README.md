@@ -1,9 +1,28 @@
-WebCamCap
-======
-Tool for 2D/3D motion capture with LED markers.
+## Project information
+**WebCamCap** is tool for 2D/3D motion capture with active markers (LED diodes) written in C++11. It doesn't require any special hardware, just common webcam with VGA (640 x 480) resolution and diffused white LED diodes for best results. 
 
-https://www.youtube.com/watch?v=o3Gj5Vc9yDY
+NOTE: There are currently 2 versions of **WebCamCap** in QMake project.
 
-Video with point labeling:
-https://www.youtube.com/watch?v=DEoKx4D_B10
+## Features
+- 2D Motion Capture*
+- 3D Motion Capture
+- Real time motion capture data transfer*
+- Virtual scene preview (OpenGL)
+
+## Requirements
+- Qt 5.4 / 5.5
+- OpenCV 3.0
+- OpenGL
+- GLU
+- GLUT*
+- GLM*
+
+*only first version
+
+## Donate
+[![Donate via PayPal](https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=kajo8246%40azet%2esk&lc=SK&item_name=WebCamCap&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
+
+
+## Videos
+For all videos check my WebCamCap [Playlist](https://www.youtube.com/playlist?list=PL06R3YeyHsEbsVQlwZ6-BCoW4DKWrXiek)
 
