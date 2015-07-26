@@ -80,7 +80,7 @@ private:
 
     void drawLine(const Line &line) const;
 
-    void generateRandomColors();
+    void generateRandomColors(int count);
 
 };
 

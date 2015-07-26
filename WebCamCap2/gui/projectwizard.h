@@ -39,7 +39,7 @@ class ProjectWizard : public QWizard
     Q_OBJECT
 
     RoomSettings *m_roomSettings = nullptr;
-    QMap<int, CameraSettings*> m_tableRowToSettings;
+    QMap<int, std::shared_ptr<CameraSettings>> m_tableRowToSettings;
     QVector<ICamera*> m_cameras;
 
     IVirtualRoom *m_project = nullptr;
@@ -48,7 +48,7 @@ public:
     explicit ProjectWizard(IVirtualRoom *room = nullptr, QWidget *parent = 0);
     ~ProjectWizard();
 
-    QVector<CameraSettings *> allCameraSettings() const;
+    QVector<std::shared_ptr<CameraSettings>> allCameraSettings() const;
 
     IVirtualRoom *project() const;
     void setProject(IVirtualRoom *project);
@@ -64,7 +64,7 @@ private:
 
     ///2. page
     void generateCameras();
-    void addCameraSettingsToTable(CameraSettings *cameraSettings, int row = -1);
+    void addCameraSettingsToTable(std::shared_ptr<CameraSettings> cameraSettings, int row = -1);
 
     ///3. page
 

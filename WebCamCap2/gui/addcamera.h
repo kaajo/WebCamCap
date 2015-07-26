@@ -32,6 +32,8 @@
 
 #include <opencv2/highgui/highgui.hpp>
 
+#include <memory>
+
 namespace Ui {
 class AddCamera;
 }
@@ -40,7 +42,7 @@ class AddCamera : public QDialog
 {
     Q_OBJECT
 
-    CameraSettings *m_cameraSettings = nullptr;
+    std::shared_ptr<CameraSettings> m_cameraSettings = nullptr;
     cv::VideoCapture m_videoCaptureTemp;
     cv::Mat m_frame, m_mask;
     bool m_cameraRecording = false;
@@ -55,8 +57,8 @@ public:
     explicit AddCamera(QVector3D m_roomDimensions, QWidget *parent = 0);
     ~AddCamera();
 
-    CameraSettings *cameraSettings() const;
-    void setCameraSettings(CameraSettings *cameraSettings);
+    std::shared_ptr<CameraSettings> cameraSettings() const;
+    void setCameraSettings(std::shared_ptr<CameraSettings> cameraSettings);
 
 private slots:
 

@@ -16,7 +16,7 @@ MarkerCamera::MarkerCamera(QVariantMap varMap, QWaitCondition *waitCondition, QO
     fromVariantMap(varMap);
 }
 
-MarkerCamera::MarkerCamera(CameraSettings *settings, QObject *parent) :
+MarkerCamera::MarkerCamera(std::shared_ptr<CameraSettings> settings, QObject *parent) :
     ICamera(parent)
 {
     setSettings(settings);
@@ -402,9 +402,9 @@ QVariantMap MarkerCamera::toVariantMap() const
 
 bool MarkerCamera::fromVariantMap(QVariantMap varMap)
 {
-    auto settings = new CameraSettings;
+    std::shared_ptr<CameraSettings> settings = std::make_shared<CameraSettings>();
 
-    if(! settings->fromVariantMap(varMap[settingsKey].toMap()))
+    if(! settings.get()->fromVariantMap(varMap[settingsKey].toMap()))
     {
         qDebug() << "wrong variantMap for CameraSettings";
         return false;

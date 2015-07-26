@@ -2,7 +2,7 @@
 #include "ui_camerawidget.h"
 
 
-CameraWidget::CameraWidget(CameraSettings *settings, QWidget *parent) :
+CameraWidget::CameraWidget(std::shared_ptr<CameraSettings> settings, QWidget *parent) :
     QWidget(parent),
     m_ui(new Ui::CameraWidget)
 {
@@ -16,7 +16,7 @@ CameraWidget::CameraWidget(CameraSettings *settings, QWidget *parent) :
     handleMinSize(false);
 
     m_ui->thresholdSpinBox->setValue(m_settings->getThresholdValue());
-    connect(m_ui->thresholdSpinBox, SIGNAL(valueChanged(int)), m_settings, SLOT(setThresholdValue(int)));
+    connect(m_ui->thresholdSpinBox, SIGNAL(valueChanged(int)), m_settings.get(), SLOT(setThresholdValue(int)));
 }
 
 CameraWidget::~CameraWidget()

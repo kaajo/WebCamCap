@@ -63,7 +63,7 @@ ProjectWizard::~ProjectWizard()
     delete m_ui;
 }
 
-QVector<CameraSettings *> ProjectWizard::allCameraSettings() const
+QVector<std::shared_ptr<CameraSettings> > ProjectWizard::allCameraSettings() const
 {
     return m_tableRowToSettings.values().toVector();
 }
@@ -116,7 +116,7 @@ void ProjectWizard::generateCameras()
 
     QVector<ICamera*> newCams;
 
-    foreach (CameraSettings *settings, camSettings)
+    foreach (std::shared_ptr<CameraSettings> settings, camSettings)
     {
         auto it = std::find_if(m_cameras.begin(), m_cameras.end(), [settings](ICamera *camera){return camera->settings() == settings;});
 
@@ -233,12 +233,10 @@ void ProjectWizard::deleteCamera()
     int row = m_ui->cameraTable->currentRow();
 
     m_ui->cameraTable->removeRow(row);
-    auto settings = m_tableRowToSettings[row];
-    delete settings;
     m_tableRowToSettings.remove(row);
 }
 
-void ProjectWizard::addCameraSettingsToTable(CameraSettings *cameraSettings, int row)
+void ProjectWizard::addCameraSettingsToTable(std::shared_ptr<CameraSettings> cameraSettings, int row)
 {
     if(row == -1)
     {
@@ -246,9 +244,9 @@ void ProjectWizard::addCameraSettingsToTable(CameraSettings *cameraSettings, int
         m_ui->cameraTable->insertRow(row);
     }
 
-    QTableWidgetItem *x = new QTableWidgetItem(QString::number(cameraSettings->videoUsbId()));
+    QTableWidgetItem *x = new QTableWidgetItem(QString::number(cameraSettings.get()->videoUsbId()));
     m_ui->cameraTable->setItem(row, 0, x);
-    x = new QTableWidgetItem(cameraSettings->name());
+    x = new QTableWidgetItem(cameraSettings.get()->name());
     m_ui->cameraTable->setItem(row, 1, x);
 
     x = new QTableWidgetItem(Qt::CheckStateRole);
@@ -262,9 +260,9 @@ void ProjectWizard::handleSettingsChanged(RoomSettings::RoomSettingsType type)
 {
     if(type == RoomSettings::RoomSettingsType::DIMENSIONS)
     {
-        foreach (CameraSettings *camSettings, m_tableRowToSettings)
+        foreach (std::shared_ptr<CameraSettings> camSettings, m_tableRowToSettings)
         {
-            camSettings->setRoomDimensions(m_roomSettings->roomDimensions());
+            camSettings.get()->setRoomDimensions(m_roomSettings->roomDimensions());
         }
     }
 }

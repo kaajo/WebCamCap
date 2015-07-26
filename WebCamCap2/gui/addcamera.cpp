@@ -29,12 +29,12 @@
 #include <QFileDialog>
 
 
-CameraSettings *AddCamera::cameraSettings() const
+std::shared_ptr<CameraSettings> AddCamera::cameraSettings() const
 {
     return m_cameraSettings;
 }
 
-void AddCamera::setCameraSettings(CameraSettings *cameraSettings)
+void AddCamera::setCameraSettings(std::shared_ptr<CameraSettings> cameraSettings)
 {
     if(!cameraSettings)
     {
@@ -43,17 +43,17 @@ void AddCamera::setCameraSettings(CameraSettings *cameraSettings)
 
     m_cameraSettings = cameraSettings;
 
-    m_ui->name->setText(m_cameraSettings->name());
-    m_ui->usbId->setText(QString::number(m_cameraSettings->videoUsbId()));
-    m_ui->diagonalFov->setText(QString::number(m_cameraSettings->diagonalFov()));
+    m_ui->name->setText(m_cameraSettings.get()->name());
+    m_ui->usbId->setText(QString::number(m_cameraSettings.get()->videoUsbId()));
+    m_ui->diagonalFov->setText(QString::number(m_cameraSettings.get()->diagonalFov()));
 
-    QVector3D globalPosition = m_cameraSettings->globalPosition();
+    QVector3D globalPosition = m_cameraSettings.get()->globalPosition();
 
     m_ui->X->setText(QString::number(globalPosition.x()));
     m_ui->Y->setText(QString::number(globalPosition.y()));
     m_ui->Z->setText(QString::number(globalPosition.z()));
 
-    QVector2D frameResolution = m_cameraSettings->resolution();
+    QVector2D frameResolution = m_cameraSettings.get()->resolution();
 
     m_ui->FrameX->setText(QString::number(frameResolution.x()));
     m_ui->FrameY->setText(QString::number(frameResolution.y()));
@@ -91,23 +91,23 @@ void AddCamera::on_buttonBox_accepted()
 
     if(!m_cameraSettings)
     {
-        m_cameraSettings = new CameraSettings(m_ui->name->text(), m_ui->usbId->text().toInt(),
+        m_cameraSettings = std::make_shared<CameraSettings>(m_ui->name->text(), m_ui->usbId->text().toInt(),
                                               m_ui->diagonalFov->text().toFloat(), globalPosition, m_roomDims);
     }
     else
     {
-        m_cameraSettings->setName(m_ui->name->text());
-        m_cameraSettings->setVideoUsbId(m_ui->usbId->text().toInt());
-        m_cameraSettings->setDiagonalFov(m_ui->diagonalFov->text().toFloat());
-        m_cameraSettings->setGlobalPosition(globalPosition);
-        m_cameraSettings->setRoomDimensions(m_roomDims);
+        m_cameraSettings.get()->setName(m_ui->name->text());
+        m_cameraSettings.get()->setVideoUsbId(m_ui->usbId->text().toInt());
+        m_cameraSettings.get()->setDiagonalFov(m_ui->diagonalFov->text().toFloat());
+        m_cameraSettings.get()->setGlobalPosition(globalPosition);
+        m_cameraSettings.get()->setRoomDimensions(m_roomDims);
     }
 
-    m_cameraSettings->setResolution(resolution);
+    m_cameraSettings.get()->setResolution(resolution);
 
     if(!m_coefficients.empty())
     {
-        m_cameraSettings->setDistortionCoeffs(m_coefficients);
+        m_cameraSettings.get()->setDistortionCoeffs(m_coefficients);
     }
 
     if(!m_cameraMatrix.empty())

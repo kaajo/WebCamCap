@@ -35,12 +35,14 @@
 #include <QVariantMap>
 #include <QObject>
 
+#include <memory>
+
 class WEBCAMCAPINTERFACESSHARED_EXPORT ICamera : public QObject
 {
     Q_OBJECT
 
 protected:
-    CameraSettings *m_settings = nullptr;
+    std::shared_ptr<CameraSettings> m_settings = nullptr;
     QWaitCondition *m_waitCondition = nullptr;
 
 public:
@@ -56,8 +58,8 @@ public:
     virtual QVector<QVector3D> nextFrame2D() = 0;
     virtual void calibrate(CameraCalibrationType type) = 0;
 
-    CameraSettings *settings() const;
-    void setSettings(CameraSettings *settings);
+    std::shared_ptr<CameraSettings> settings() const;
+    void setSettings(std::shared_ptr<CameraSettings> settings);
     void setWaitCondition(QWaitCondition *waitCondition);
 
     virtual QVariantMap toVariantMap() const = 0;

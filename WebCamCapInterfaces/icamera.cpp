@@ -14,21 +14,16 @@ void ICamera::setWaitCondition(QWaitCondition *waitCondition)
     m_waitCondition = waitCondition;
 }
 
-CameraSettings *ICamera::settings() const
+std::shared_ptr<CameraSettings> ICamera::settings() const
 {
     return m_settings;
 }
 
-void ICamera::setSettings(CameraSettings *settings)
+void ICamera::setSettings(std::shared_ptr<CameraSettings> settings)
 {
-    if(m_settings)
-    {
-        delete m_settings;
-    }
-
     m_settings = settings;
 
-    connect(m_settings, &CameraSettings::changed, this, &ICamera::settingsChanged);
+    connect(m_settings.get(), &CameraSettings::changed, this, &ICamera::settingsChanged);
 
     settingsChanged(CameraSettings::CameraSettingsType::ALL);
 }

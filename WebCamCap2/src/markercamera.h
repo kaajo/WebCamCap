@@ -50,7 +50,7 @@ class MarkerCamera : public ICamera
 
 public:
     explicit MarkerCamera(QVariantMap varMap, QWaitCondition *waitCondition, QObject *parent = 0);
-    MarkerCamera(CameraSettings *settings, QObject *parent = 0);
+    MarkerCamera(std::shared_ptr<CameraSettings> settings, QObject *parent = 0);
     virtual ~MarkerCamera();
 
     virtual QVector<Line> nextFrame() override;

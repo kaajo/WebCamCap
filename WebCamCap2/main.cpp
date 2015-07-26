@@ -4,6 +4,8 @@
 #include <QDebug>
 #include <opencv2/core/ocl.hpp>
 
+#include <memory>
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);

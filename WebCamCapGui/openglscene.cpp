@@ -10,11 +10,7 @@ OpenGlScene* OpenGlScene::m_scene = nullptr;
 
 OpenGlScene::OpenGlScene(QWidget *parent) : QOpenGLWidget(parent)
 {
-    generateRandomColors();
-
-//    setFrame(Frame(30, QVector<Marker>(1, Marker(1, QVector3D(1,1,1))),
-//                   QVector<QVector<Line>>(1, QVector<Line>(1, Line(QVector3D(0,0,0), QVector3D(50,50,50))))));
-
+    generateRandomColors(100);
     update();
 }
 
@@ -104,8 +100,15 @@ void OpenGlScene::paintScene()
 
 void OpenGlScene::paintFrame()
 {
+    int markersCount = m_actualFrame.markers().size();
+
+    if(m_randomColors.size() < markersCount)
+    {
+        generateRandomColors(markersCount);
+    }
+
     glPushMatrix();
-    for(int i = 0; i < m_actualFrame.markers().size(); i++)
+    for(int i = 0; i < markersCount; i++)
     {
         glColor3ub(m_randomColors[m_actualFrame.markers()[i].id()].red()
         ,m_randomColors[m_actualFrame.markers()[i].id()].green(),
@@ -145,9 +148,11 @@ void OpenGlScene::drawLine(const Line &l) const
     glEnd();
 }
 
-void OpenGlScene::generateRandomColors()
+void OpenGlScene::generateRandomColors(int count)
 {
-    for(size_t i = 0; i < 100; i++)
+    int size = m_randomColors.size();
+
+    for(int i = 0; i < count - size; i++)
     {
         m_randomColors.push_back({qrand() % 255, qrand() % 255, qrand() % 255});
     }

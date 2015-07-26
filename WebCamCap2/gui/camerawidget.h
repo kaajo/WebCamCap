@@ -6,6 +6,8 @@
 
 #include <QWidget>
 
+#include <memory>
+
 namespace Ui {
 class CameraWidget;
 }
@@ -14,10 +16,10 @@ class CameraWidget : public QWidget
 {
     Q_OBJECT
 
-    CameraSettings *m_settings = nullptr;
+    std::shared_ptr<CameraSettings> m_settings = nullptr;
 
 public:
-    explicit CameraWidget(CameraSettings* settings, QWidget *parent = 0);
+    explicit CameraWidget(std::shared_ptr<CameraSettings> settings, QWidget *parent = 0);
     ~CameraWidget();
 
     QtOpenCVViewerGl *cameraVideoPreview();

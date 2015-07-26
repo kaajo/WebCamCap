@@ -100,7 +100,10 @@ QVector<Marker> PointChecker::handleNo(QVector<QVector3D> &points)
     {
         auto m = createDistanceMap(lastGoodFrame, points);
 
-        my_solve(m);
+        if(! m.empty())
+        {
+            my_solve(m);
+        }
 
         pts = addCoveredPoints(points, m);
     }
@@ -122,7 +125,11 @@ QVector<Marker> PointChecker::handleNotEnough(QVector<QVector3D> &points)
     QVector<Marker> pts;
 
     std::vector< std::vector<double>> m = createDistanceMap(lastPoints, points);
-    my_solve(m);
+
+    if(! m.empty())
+    {
+        my_solve(m);
+    }
 
     pts = addCoveredPoints(points,m);
 
@@ -140,7 +147,11 @@ QVector<Marker> PointChecker::handleNotEnough(QVector<QVector3D> &points)
         if(!lastGoodFrame.empty())
         {
             m = createDistanceMap(lastGoodFrame, points);
-            my_solve(m);
+
+            if(! m.empty())
+            {
+                my_solve(m);
+            }
         }
         addUncoveredPoints(points, m, pts);
 
@@ -160,7 +171,11 @@ QVector<Marker> PointChecker::handleGood(QVector<QVector3D> &points)
     QVector<Marker> pts;
 
     std::vector< std::vector<double>> m = createDistanceMap(lastPoints, points);
-    my_solve(m);
+
+    if(! m.empty())
+    {
+        my_solve(m);
+    }
 
     pts = addCoveredPoints(points,m);
 
@@ -272,7 +287,10 @@ QVector<Marker> PointChecker::addCoveredPoints(QVector<QVector3D> points, std::v
         {
             if(map[i][j] == 0)
             {
-                pts.push_back({lastPoints[i].id(), points[j]});
+                if(i < lastPoints.size() && j < points.size())
+                {
+                    pts.push_back({lastPoints[i].id(), points[j]});
+                }
             }
         }
     }
