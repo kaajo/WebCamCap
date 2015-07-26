@@ -38,20 +38,15 @@ void PolygonCameraTopology::addCameras(QVector<ICamera*> cameras)
         cam->moveToThread(thread);
         m_cameraThreads.push_back(thread);
 
-        ///connect( this, SIGNAL(startWork2D()), this, SLOT(record2D()));
         connect(this, &PolygonCameraTopology::startRecording, cam, &ICamera::startWork);
         connect(this, &PolygonCameraTopology::stopRecording, cam, &ICamera::stopWork);
+        connect(this, &PolygonCameraTopology::startRecording2D, this, &PolygonCameraTopology::record2D);
         connect(cam, &ICamera::results,this,&PolygonCameraTopology::handleCameraResults, Qt::QueuedConnection);
         connect(cam, &ICamera::finished, thread, &QThread::quit);
         connect(cam, &ICamera::finished, cam, &ICamera::deleteLater);
         connect(thread, &QThread::finished, thread, &QThread::deleteLater);
 
         thread->start();
-        /*
-         *
-    workers.push_back(new worker(&m_linesWaitCondition, cam));
-
-         * */
     }
 
     resolveEdges();
@@ -59,18 +54,35 @@ void PolygonCameraTopology::addCameras(QVector<ICamera*> cameras)
 
 void PolygonCameraTopology::removeCamera(ICamera *camera)
 {
-
+    ///TODO
 }
 
 void PolygonCameraTopology::record(bool start)
 {
+    if(start == m_record)
+    {
+        return;
+    }
+
     if(start)
     {
-        emit startRecording();
-        m_frameTimer.start();
+        m_record = true;
+
+        //if there is only 1 camera turned on start 2D
+        if(m_turnedOnCamerasCounter <= 1)
+        {
+            emit startRecording2D();
+        }
+        else
+        {
+            emit startRecording();
+            m_frameTimer.start();
+        }
     }
     else
     {
+        m_record = false;
+
         emit stopRecording();
     }
 }
@@ -78,60 +90,6 @@ void PolygonCameraTopology::record(bool start)
 void PolygonCameraTopology::resolveEdges()
 {
     m_topology.clear();
-/*
-    QVector3D pos1, pos2;
-    QVector3D dir1, dir2;
-
-    float min = 181.0f, temp_angle;
-    int min_index;
-
-    //get
-    for(int i = 0; i < m_cameras.size(); i++)
-    {
-        min_index = -1;
-
-        pos1 = m_cameras[i]->settings()->globalPosition();
-        dir1 = m_cameras[i]->settings()->getDirectionVector().toVector3D();
-
-        for(int j = i+1; j < m_cameras.size(); j++)
-        {
-
-            pos2 = m_cameras[j]->settings()->globalPosition();
-            dir2 = m_cameras[j]->settings()->getDirectionVector().toVector3D();
-
-            temp_angle = Line::lineAngle(QVector2D(dir1.x(), dir1.y()),QVector2D(dir2.x(), dir2.y()));
-
-            if(qAbs(temp_angle) < min)
-            {
-                min = temp_angle;
-                min_index = j;
-            }
-        }
-
-        if(min_index != -1 &&  min_index != i)
-        {
-            TopologyEdge edge(m_cameras[i],m_cameras[min_index]);
-
-            m_topology.push_back(edge);
-        }
-    }
-
-    for(int i = 0; i < m_topology.size(); i++)
-    {
-        ICamera* index1 = m_topology[i].m_camera1;
-        ICamera* index2 = m_topology[i].m_camera2;
-
-        for(int j = 0; j < m_topology.size(); j++)
-        {
-            if(m_topology[j].m_camera2 == index1 && m_topology[j].m_camera1 == index2)
-            {
-                m_topology.erase(m_topology.begin()+j);
-            }
-        }
-    }
-
-    std::cout << "new camtopology size:" << m_topology.size() << std::endl;
-    */
 
     if(m_cameras.size() < 2)
     {
@@ -163,7 +121,7 @@ void PolygonCameraTopology::resolveEdges()
 
     auto it = allEdges.begin();
 
-    while(topology.size() != m_cameras.size())
+    while(usedCams.size() <= m_cameras.size())
     {
         if(it == allEdges.end())
         {
@@ -192,7 +150,7 @@ void PolygonCameraTopology::resolveEdges()
     for(int i = 0; i < topology.size(); i++)
     {
         qDebug() << i << " " << topology[i].m_camera1->settings()->globalPosition()
-                             << topology[i].m_camera2->settings()->globalPosition();
+                 << topology[i].m_camera2->settings()->globalPosition();
     }
 }
 
@@ -243,6 +201,29 @@ QVector<QVector3D> PolygonCameraTopology::intersection(TopologyEdge edge)
     }
 
     return retVal;
+}
+
+void PolygonCameraTopology::setNumberOfPoints(int numberOfPoints)
+{
+    m_pointChecker.setNumOfPoints(numberOfPoints);
+}
+
+void PolygonCameraTopology::record2D()
+{
+    while(m_record)
+    {
+        auto it = std::find_if(m_cameras.begin(), m_cameras.end(), [](ICamera *camera){return camera->settings()->turnedOn();});
+
+        auto labeledPoints= m_pointChecker.solvePointIDs((*it)->nextFrame2D());
+
+        normaliseCoords(labeledPoints, QVector3D((*it)->settings()->resolution(), 1.0));
+
+        emit frameReady(Frame(m_frameTimer.elapsed(),labeledPoints, {}));
+
+        m_frameTimer.restart();
+
+        QCoreApplication::processEvents();
+    }
 }
 
 void PolygonCameraTopology::handleCameraSettingsChange(CameraSettings::CameraSettingsType type)

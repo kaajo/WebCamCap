@@ -26,6 +26,8 @@ class PolygonCameraTopology : public ICameraTopology
 {
     Q_OBJECT
 
+    bool m_record = false;
+
     size_t m_turnedOnCamerasCounter = 0;
     int m_resultsCounter = 0;
 
@@ -61,6 +63,8 @@ signals:
     void startRecording2D();
 
 private:
+    void setNumberOfPoints(int numberOfPoints) override;
+
     void resolveEdges();
 
     void intersections();
@@ -70,6 +74,7 @@ private:
 private slots:
     void handleCameraSettingsChange(CameraSettings::CameraSettingsType type);
     void handleCameraResults(QVector<Line> lines);
+    void record2D();
 
 };
 

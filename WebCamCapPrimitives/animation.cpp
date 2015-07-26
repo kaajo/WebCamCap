@@ -13,7 +13,9 @@ float Animation::fps()
 
 QVariantMap Animation::toVariantMap()
 {
+    QVariantMap retVal;
 
+    return retVal;
 }
 
 void Animation::fromVariantMap(QVariantMap map)

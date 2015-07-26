@@ -59,8 +59,38 @@ QVector<Line> MarkerCamera::nextFrame()
 
 QVector<QVector3D> MarkerCamera::nextFrame2D()
 {
-    QVector<QVector3D> blank;
-    return blank;
+    QVector<QVector3D> retVal;
+
+    if(! m_settings->turnedOn())
+    {
+        return retVal;
+    }
+
+    m_camera >> m_actualFrame;
+
+    applyFilters();
+
+    foreach(auto &contour, m_contours)
+    {
+        float m00 = contour.size(), m10 = 0.0 , m01 = 0.0;
+
+        for(const cv::Point &pnt : contour)
+        {
+            m10 += pnt.x;
+            m01 += pnt.y;
+        }
+
+        retVal.push_back({m10/m00, m01/m00, 0.0});
+    }
+
+    if(m_settings->showWindow())
+    {
+        m_actualFrame.copyTo(m_signalFrame);
+
+        emit imageShow(m_signalFrame);
+    }
+
+    return retVal;
 }
 
 void MarkerCamera::calibrate(ICamera::CameraCalibrationType type)

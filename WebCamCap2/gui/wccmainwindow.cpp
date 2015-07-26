@@ -117,6 +117,7 @@ void WccMainWindow::setProject(IVirtualRoom *project)
 
     connect(m_ui->recordScene, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordScene);
     connect(m_ui->recordAnimation, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordAnimation);
+    connect(m_ui->markersSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_currentProject->cameraTopology(), &ICameraTopology::setNumberOfPoints);
     connect(m_currentProject->cameraTopology(), &ICameraTopology::frameReady, OpenGlScene::getInstance(), &OpenGlScene::setFrame);
     connect(m_currentProject, &IVirtualRoom::animationRecorded, this, &WccMainWindow::addAnimationToTable);
 }
@@ -172,14 +173,9 @@ void WccMainWindow::addProjectToSettings(const QString &path)
 
     QStringList list = settings.value(lastOpenedProjectsKey).toStringList();
 
-    if(list.contains(path))
-    {
-        list.replace(0, path);
-    }
-    else
-    {
-        list.insert(0, path);
-    }
+    list.insert(0, path);
+
+    list.removeDuplicates();
 
     settings.setValue(lastOpenedProjectsKey, list);
 }

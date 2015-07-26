@@ -67,6 +67,7 @@ signals:
     void frameReady(Frame frame);
 
 public slots:
+    virtual void setNumberOfPoints(int numberOfPoints) = 0;
     virtual void record(bool start) = 0;
 
 };
