@@ -171,8 +171,6 @@ void AddCamera::on_Play_ID_clicked(bool checked)
             m_cameraRecording = false;
             return;
         }
-        m_ui->FrameY->setText(QString::number(m_videoCaptureTemp.get(CV_CAP_PROP_FRAME_WIDTH)));
-        m_ui->FrameX->setText(QString::number(m_videoCaptureTemp.get(CV_CAP_PROP_FRAME_HEIGHT)));
 
         recording();
     }
@@ -192,6 +190,9 @@ void AddCamera::recording()
 
         m_videoCaptureTemp >> m_frame;
 
+        m_ui->FrameY->setText(QString::number(m_frame.rows));
+        m_ui->FrameX->setText(QString::number(m_frame.cols));
+
         /*
         cv::threshold(m_frame, m_mask, 220, 255, cv::THRESH_BINARY);
 
@@ -209,6 +210,7 @@ void AddCamera::recording()
         }
 
         endOfLoop:*/
+
         if(m_tooHighValueWarning)
         {
             m_ui->warning->setText("Some areas are too bright");

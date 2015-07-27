@@ -68,6 +68,8 @@ QVector<QVector3D> MarkerCamera::nextFrame2D()
 
     m_camera >> m_actualFrame;
 
+    qDebug() << m_actualFrame.rows << " " << m_actualFrame.cols;
+
     applyFilters();
 
     foreach(auto &contour, m_contours)
@@ -117,6 +119,12 @@ void MarkerCamera::showPreviewInWindow(bool show)
 
 bool MarkerCamera::turnOn(bool turnOn)
 {
+    if(m_settings->resolution().x() != 0 && m_settings->resolution().y() != 0)
+    {
+        m_camera.set(CV_CAP_PROP_FRAME_WIDTH, m_settings->resolution().x());
+        m_camera.set(CV_CAP_PROP_FRAME_HEIGHT, m_settings->resolution().y());
+    }
+
     if(m_settings->turnedOn() == m_camera.isOpened())
     {
         return false;
@@ -129,12 +137,6 @@ bool MarkerCamera::turnOn(bool turnOn)
 
 
             m_settings->setTurnedOn(turnOn);
-
-            if(m_settings->resolution().x() != 0 && m_settings->resolution().y() != 0)
-            {
-                m_camera.set(CV_CAP_PROP_FRAME_WIDTH, m_settings->resolution().x());
-                m_camera.set(CV_CAP_PROP_FRAME_HEIGHT, m_settings->resolution().y());
-            }
 
             qDebug() << "turning on cam " << this;
 
@@ -174,6 +176,8 @@ void MarkerCamera::settingsChanged(CameraSettings::CameraSettingsType type)
         break;
     case CameraSettings::CameraSettingsType::ALL:
         turnOn(m_settings->turnedOn());
+        m_camera.set(CV_CAP_PROP_FRAME_WIDTH, m_settings.get()->resolution().x());
+        m_camera.set(CV_CAP_PROP_FRAME_HEIGHT, m_settings.get()->resolution().y());
         break;
     default:
         break;
@@ -354,7 +358,7 @@ Line MarkerCamera::qtConcurrentpickLine(MarkerCamera *camera, const Contour &con
     int x = m10/m00;
     int y = m01/m00;
 
-    cv::circle(camera->m_actualFrame, cv::Point(x, y), 1, CV_RGB(0,0,255), 2);
+    cv::circle(camera->m_actualFrame, cv::Point(x, y), 2, CV_RGB(0,0,255), 2);
 
     return Line(camera->m_settings->globalPosition(),camera->m_settings->pixelLineDirectionVector(x,y));
 }
