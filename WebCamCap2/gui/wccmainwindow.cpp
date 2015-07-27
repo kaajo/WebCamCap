@@ -17,6 +17,7 @@
 #include <QDataStream>
 
 const QString lastOpenedProjectsKey("lastProjects");
+const QString camerasControlVisibleKey("camerasControlVisible");
 
 WccMainWindow::WccMainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -38,6 +39,8 @@ WccMainWindow::WccMainWindow(QWidget *parent) :
     connect(m_ui->actionSaveCurrentProject, &QAction::triggered, this, &WccMainWindow::saveCurrentProject);
     connect(m_ui->actionAddServer, &QAction::triggered, this, &WccMainWindow::addNewServer);
     connect(m_ui->actionAbout, &QAction::triggered, this, &WccMainWindow::showAboutPage);
+    ///view actions
+    connect(m_ui->actionCameras, &QAction::triggered, this, &WccMainWindow::handleViewActionChecked);
 
     m_ui->AnimationsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
 
@@ -64,11 +67,23 @@ WccMainWindow::WccMainWindow(QWidget *parent) :
     }
 
     m_ui->menuRecent_projects->addActions(actions);
+
+    ///enable and view widgets
+    enableProjectRelatedWidgets(false);
+    m_ui->cameraControlDock->setVisible(settings.value(camerasControlVisibleKey, true).toBool());
+    m_ui->actionCameras->setChecked(settings.value(camerasControlVisibleKey, true).toBool());
 }
 
 WccMainWindow::~WccMainWindow()
 {
     delete m_ui;
+}
+
+void WccMainWindow::enableProjectRelatedWidgets(bool enabled)
+{
+    m_ui->animationControlDock->setEnabled(enabled);
+    m_ui->actionSaveCurrentProject->setEnabled(enabled);
+    m_ui->actionEditCurrentProject->setEnabled(enabled);
 }
 
 void WccMainWindow::closeEvent(QCloseEvent *event)
@@ -120,6 +135,8 @@ void WccMainWindow::setProject(IVirtualRoom *project)
     connect(m_ui->markersSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_currentProject->cameraTopology(), &ICameraTopology::setNumberOfPoints);
     connect(m_currentProject->cameraTopology(), &ICameraTopology::frameReady, OpenGlScene::getInstance(), &OpenGlScene::setFrame);
     connect(m_currentProject, &IVirtualRoom::animationRecorded, this, &WccMainWindow::addAnimationToTable);
+
+    enableProjectRelatedWidgets(true);
 }
 
 bool WccMainWindow::saveVariantMapToFile(const QString &path,const QVariantMap &map) const
@@ -315,6 +332,24 @@ void WccMainWindow::showAboutPage()
     AboutWidget *aboutWidget = new AboutWidget(this);
 
     aboutWidget->exec();
+}
+
+void WccMainWindow::handleViewActionChecked(bool view)
+{
+    QAction * snd = qobject_cast<QAction*>(sender());
+
+    if(! snd)
+    {
+        return;
+    }
+
+    QSettings settings;
+
+    if(snd == m_ui->actionCameras)
+    {
+        m_ui->cameraControlDock->setVisible(view);
+        settings.setValue(camerasControlVisibleKey, view);
+    }
 }
 
 void WccMainWindow::addAnimationToTable(Animation *animation)

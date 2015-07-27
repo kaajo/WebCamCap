@@ -55,6 +55,7 @@ public:
 private:
     Ui::WccMainWindow *m_ui = nullptr;
 
+    void enableProjectRelatedWidgets(bool enabled);
     void closeEvent(QCloseEvent *event) override;
 
     bool addServer(IServer *server);
@@ -78,6 +79,8 @@ private slots:
 
     void addNewServer();
     void showAboutPage();
+
+    void handleViewActionChecked(bool view);
 
     void addAnimationToTable(Animation *animation);
 };
