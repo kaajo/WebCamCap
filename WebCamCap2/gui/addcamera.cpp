@@ -155,11 +155,9 @@ void AddCamera::on_Play_ID_clicked(bool checked)
     {
         m_cameraRecording = true;
 
-        bool open = m_videoCaptureTemp.open(m_ui->usbId->text().toInt());
+        m_videoCaptureTemp.open(m_ui->usbId->text().toInt());
 
-        qDebug() << open;
-
-        if(!open)
+        if(! m_videoCaptureTemp.isOpened())
         {
             QMessageBox msgBox;
             msgBox.setWindowTitle("");

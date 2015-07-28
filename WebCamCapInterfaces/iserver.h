@@ -41,7 +41,7 @@ public:
     virtual ~IServer();
 
     virtual bool setEnabled(bool enabled) = 0;
-    virtual void sendMesage(QVariantMap &message) = 0;
+    virtual void sendMesage(QVariantMap message) = 0;
 
     QString name() const;
     void setName(const QString &name);

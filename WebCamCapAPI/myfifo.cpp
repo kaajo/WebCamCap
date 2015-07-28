@@ -21,16 +21,13 @@
 
 #include "myfifo.h"
 
-#include <string>
-#include <sstream>
-
 #include <QDebug>
 #include <QDataStream>
 
 MyFifo::MyFifo()
 {
     m_socket = new QLocalSocket();
-    setupSocket();
+    m_socket->setReadBufferSize(16384);
 
     QObject::connect(m_socket, SIGNAL(readyRead()), this, SLOT(handleMessageFromSocket()));
     QObject::connect(m_socket, SIGNAL(disconnected()), this , SLOT(disconnected()));
@@ -70,15 +67,15 @@ bool MyFifo::isConnected()
 void MyFifo::handleMessageFromSocket()
 {
     QDataStream in(m_socket);
-    in.setVersion(QDataStream::Qt_4_0);
+    in.setVersion(QDataStream::Qt_5_4);
 
-    if (m_blockSize == 0)
+    /*if (m_blockSize == 0)
     {
         if (m_socket->bytesAvailable() < (int)sizeof(quint16))
             return;
 
         in >> m_blockSize;
-    }
+    }*/
 
     if (in.atEnd())
     {
@@ -86,16 +83,21 @@ void MyFifo::handleMessageFromSocket()
         return;
     }
 
-    QString qmsg;
-    in >> qmsg;
+    QVariantMap varMap;
+    in >> varMap;
 
-    std::string msg;
-    msg = qmsg.toStdString();
+    Frame frame;
 
-    QVector<Point> pts = messageToPoint(msg);
-    emit pointsReady(pts);
+    if(! frame.fromVariantMap(varMap))
+    {
+        qDebug() << "wrong variant map";
+    }
+    else
+    {
+        qDebug() << frame.markers().size();
+    }
 
-
+    emit frameReady(frame);
     m_blockSize = 0;
 }
 
@@ -115,35 +117,4 @@ void MyFifo::connected()
         qDebug() << "connected";
         emit connectedServer();
     }
-}
-
-void MyFifo::setupSocket()
-{
-    m_socket->setReadBufferSize(1024);
-}
-
-
-QVector<Point> MyFifo::messageToPoint(std::string msg)
-{
-    std::stringstream split(msg);
-    size_t NumOfPoints = 0;
-
-    split >> NumOfPoints;
-
-    int id;
-    float x, y, z;
-    QVector<Point> ret;
-
-    for(size_t i = 0; i < NumOfPoints; i++)
-    {
-        split >> id;
-        split >> x;
-        split >> y;
-        split >> z;
-
-        Point point(id, glm::vec3(x,y,z));
-
-        ret.push_back(point);
-    }
-    return ret;
 }

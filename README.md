@@ -6,7 +6,7 @@ NOTE: There are currently 2 versions of **WebCamCap** in QMake project.
 ## Features
 - 2D Motion Capture
 - 3D Motion Capture
-- Real time motion capture data transfer*
+- Real time motion capture data transfer
 - Virtual scene preview (OpenGL)
 
 ## Requirements

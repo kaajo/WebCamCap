@@ -24,21 +24,6 @@
 
 #include <QDebug>
 
-void ControlPanel::handlePoints(QVector<Point> pts)
-{   
-    makeDiff(pts);
-
-    if(m_sendPositions)
-    {
-        handlePositions();
-    }
-
-    if(m_sendMovement)
-    {
-        handleMovements();
-    }
-}
-
 ControlPanel::ControlPanel(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ControlPanel)
@@ -52,7 +37,7 @@ ControlPanel::ControlPanel(QWidget *parent) :
 
     connect(m_fifo, SIGNAL(disconnectedServer()), this, SLOT(disconnected()));
     connect(m_fifo, SIGNAL(connectedServer()), this, SLOT(connected()));
-    connect(m_fifo, SIGNAL(pointsReady(QVector<Point>)), this, SLOT(handlePoints(QVector<Point>)));
+    connect(m_fifo, &MyFifo::frameReady, this, &ControlPanel::handleFrame);
 
     m_sensitivity = ui->sensitivity->value();
     minSpeed = ui->speed->value()*0.01f;
@@ -101,11 +86,26 @@ ControlPanel::~ControlPanel()
     delete ui;
 }
 
+void ControlPanel::handleFrame(Frame frame)
+{
+    makeDiff(frame.markers());
+
+    if(m_sendPositions)
+    {
+        handlePositions();
+    }
+
+    if(m_sendMovement)
+    {
+        handleMovements();
+    }
+}
+
 
 void ControlPanel::handlePositions()
 {
 
-        QMap<size_t, Point> sendPts = points;
+        QMap<size_t, Marker> sendPts = points;
 
 /*        if(sendPts.size() > pts.size())
         {
@@ -114,31 +114,33 @@ void ControlPanel::handlePositions()
 */
         for(auto it : sendPts)
         {
-            if(it.position().x > 1.0f)
+            auto position = it.position();
+
+            if(position.x() > 1.0f)
             {
-                it.setPositionX(1.0f);
+                position.setX(1.0f);
             }
-            else if(it.position().x < 0.0f)
+            else if(position.x() < 0.0f)
             {
-                it.setPositionX(0.0f);
+                position.setX(0.0f);
             }
 
-            if(it.position().y > 1.0f)
+            if(position.y() > 1.0f)
             {
-                it.setPositionY(1.0f);
+                position.setY(1.0f);
             }
-            else if(it.position().y < 0.0f)
+            else if(position.y() < 0.0f)
             {
-                it.setPositionX(0.0f);
+                position.setY(0.0f);
             }
 
-            if(it.position().z > 1.0f)
+            if(position.z() > 1.0f)
             {
-                it.setPositionZ(1.0f);
+                position.setZ(1.0f);
             }
-            else if(it.position().z < 0.0f)
+            else if(position.z() < 0.0f)
             {
-                it.setPositionZ(0.0f);
+                position.setZ(0.0f);
             }
         }
 
@@ -155,7 +157,7 @@ void ControlPanel::handleMovements()
     for(int i = 0; i < points.size(); i++)
     {
 
-        difTemp = sqrt(diff[i].position().x * diff[i].position().x + diff[i].position().y*diff[i].position().y);
+        difTemp = sqrt(diff[i].position().x() * diff[i].position().x() + diff[i].position().y()*diff[i].position().y());
         if(difTemp > minSpeed)
         {
             if(m_minSizeOfMovement == 0.0f)
@@ -167,7 +169,7 @@ void ControlPanel::handleMovements()
             if(m_minSizeOfMovement >= minSize)
             {
                 m_endMovementPoint = points[i].position();
-                emit movement(Movement(glm::vec3(m_endMovementPoint.x- m_startMovementPoint.x, m_endMovementPoint.y- m_startMovementPoint.y, 0.0f), m_minSizeOfMovement), i);
+                emit movement(Movement(glm::vec3(m_endMovementPoint.x()- m_startMovementPoint.x(), m_endMovementPoint.y()- m_startMovementPoint.y(), 0.0f), m_minSizeOfMovement), i);
                 qDebug() << "MOVE";
                 m_minSizeOfMovement = 0.0f;
                 m_movementTimer->restart();
@@ -256,7 +258,7 @@ void ControlPanel::on_timeout_valueChanged(int arg1)
     m_nextMovementCaptureTime = arg1;
 }
 
-void ControlPanel::makeDiff(QVector<Point> &pts)
+void ControlPanel::makeDiff(QVector<Marker> pts)
 {
     lastDiff = diff;
     lastPoints = points;
@@ -264,7 +266,7 @@ void ControlPanel::makeDiff(QVector<Point> &pts)
     diff.clear();
     points.clear();
 
-    for(Point &pnt : pts)
+    for(Marker &pnt : pts)
     {
         points[pnt.id()] = pnt;
     }

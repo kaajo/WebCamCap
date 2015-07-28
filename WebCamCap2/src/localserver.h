@@ -41,7 +41,7 @@ public:
     virtual ~LocalServer();
 
     virtual bool setEnabled(bool enabled) override;
-    virtual void sendMesage(QVariantMap &message) override;
+    virtual void sendMesage(QVariantMap message) override;
 
     virtual QVariantMap toVariantMap() const override;
     virtual void fromVariantMap(QVariantMap varMap) override;

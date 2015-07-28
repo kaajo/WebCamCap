@@ -6,6 +6,7 @@
 #include "projectwizard.h"
 #include "addcamera.h"
 #include "openglscene.h"
+#include "src/localserver.h"
 
 #include <QDebug>
 #include <QSettings>
@@ -72,6 +73,11 @@ WccMainWindow::WccMainWindow(QWidget *parent) :
     enableProjectRelatedWidgets(false);
     m_ui->cameraControlDock->setVisible(settings.value(camerasControlVisibleKey, true).toBool());
     m_ui->actionCameras->setChecked(settings.value(camerasControlVisibleKey, true).toBool());
+
+    ///create default local server
+    auto server = new LocalServer;
+    server->setEnabled(true);
+    addServer(server);
 }
 
 WccMainWindow::~WccMainWindow()
@@ -133,6 +139,7 @@ void WccMainWindow::setProject(IVirtualRoom *project)
     connect(m_ui->recordScene, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordScene);
     connect(m_ui->recordAnimation, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordAnimation);
     connect(m_ui->markersSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), m_currentProject->cameraTopology(), &ICameraTopology::setNumberOfPoints);
+    connect(m_currentProject->cameraTopology(), &ICameraTopology::frameReady, this, &WccMainWindow::sendFrameToAllServers);
     connect(m_currentProject->cameraTopology(), &ICameraTopology::frameReady, OpenGlScene::getInstance(), &OpenGlScene::setFrame);
     connect(m_currentProject, &IVirtualRoom::animationRecorded, this, &WccMainWindow::addAnimationToTable);
 
@@ -361,4 +368,12 @@ void WccMainWindow::addAnimationToTable(Animation *animation)
     m_ui->AnimationsTable->setItem(row, 0, x);
     x = new QTableWidgetItem(QString::number(animation->fps()));
     m_ui->AnimationsTable->setItem(row, 1, x);
+}
+
+void WccMainWindow::sendFrameToAllServers(Frame frame)
+{
+    foreach(IServer *server, m_servers)
+    {
+        server->sendMesage(frame.toVariantMap());
+    }
 }

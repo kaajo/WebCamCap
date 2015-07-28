@@ -1,10 +1,10 @@
 /*
  *
- * Copyright (C) 2014  Miroslav Krajicek (https://github.com/kaajo) . All Rights Reserved.
+ * Copyright (C) 2015  Miroslav Krajicek (https://github.com/kaajo) . All Rights Reserved.
  *
- * This file is part of WccPong.
+ * This file is part of WebCamCap.
  *
- * WccPong is free software: you can redistribute it and/or modify
+ * WebCamCap is free software: you can redistribute it and/or modify
  * it under the terms of the GNU LGPL version 3 as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -15,16 +15,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU  LGPL version 3
- * along with WccPong.  If not, see <http://www.gnu.org/licenses/lgpl-3.0.txt>.
+ * along with WebCamCap.  If not, see <http://www.gnu.org/licenses/lgpl-3.0.txt>.
  *
  */
 
 #ifndef MYFIFO_H
 #define MYFIFO_H
 
-#include "point.h"
-
-#include <glm/glm.hpp>
+#include "frame.h"
 
 #include <QVector>
 #include <QLocalSocket>
@@ -41,7 +39,6 @@ class MyFifo : public QObject
     Q_OBJECT
 
     bool m_haveConnection = false;
-
     QLocalSocket *m_socket = nullptr;
     quint16 m_blockSize = 0;
 public:
@@ -87,11 +84,9 @@ signals:
      * @brief Emitted every time when points are received from WebCamCap. This signal is emitted if there were no points in the frame.
      * @param pts Point received from WebCamCap
      */
-    void pointsReady(QVector<Point> pts);
+    void frameReady(Frame frame);
 
 private:
-    void setupSocket();
-    QVector<Point> messageToPoint(std::string msg);
 };
 
 

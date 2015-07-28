@@ -16,5 +16,4 @@ WebCamCapAPI.depends += WebCamCapPrimitives
 WebCamCapGui.depends += WebCamCapPrimitives
 WebCamCapInterfaces.depends += WebCamCapPrimitives
 
-WebCamCap2.depends += WebCamCapGui
-WebCamCap2.depends += WebCamCapInterfaces
+WebCamCap2.depends += WebCamCapGui WebCamCapInterfaces

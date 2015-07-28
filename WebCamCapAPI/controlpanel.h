@@ -15,9 +15,9 @@ class ControlPanel;
 }
 
 /**
- * @author Miroslav Krajicek <409917@mail.muni.cz>
+ * @author Miroslav Krajicek <mirokrajicek@gmail.com>
  * @class ControlPanel controlpanel.h
- * @brief Qt Designer form class with all settings needed for WebCamCap game.
+ * @brief Qt Designer form class with all settings needed for WebCamCap external application.
  * @date 2015
  */
 
@@ -35,14 +35,14 @@ class ControlPanel : public QMainWindow
 
     float difTemp;
 
-    QMap<size_t, Point> points, lastPoints;
-    QMap<size_t, Point> diff, lastDiff, acceleration;
+    QMap<size_t, Marker> points, lastPoints;
+    QMap<size_t, Marker> diff, lastDiff, acceleration;
 
     //move
     QTime *m_movementTimer = nullptr;
     float m_minSizeOfMovement = 0.0f;
-    glm::vec3 m_startMovementPoint;
-    glm::vec3 m_endMovementPoint;
+    QVector3D m_startMovementPoint;
+    QVector3D m_endMovementPoint;
 
 public:
 
@@ -60,7 +60,7 @@ public slots:
      * @brief Used to handle points in actual frame
      * @param pts Points from MyFifo
      */
-    void handlePoints(QVector<Point> pts);
+    void handleFrame(Frame frame);
 
 private slots:
 
@@ -100,12 +100,12 @@ signals:
      * This signal is emitted only if checkbox "Positions" is checked.
      * @param pts Points
      */
-    void pointsReady(QVector<Point> pts);
+    void pointsReady(QVector<Marker> pts);
 
 private:
     Ui::ControlPanel *ui;
 
-    void makeDiff(QVector<Point> &pts);
+    void makeDiff(QVector<Marker> pts);
 
     void handlePositions();
     void handleMovements();

@@ -1,11 +1,10 @@
 #include "localserver.h"
 
-#include <QJsonObject>
-#include <QJsonDocument>
+#include <QDataStream>
 
 LocalServer::LocalServer(QString name, QObject *parent) : IServer(parent)
 {
-    m_name = name;
+    setName(name);
     m_server = new QLocalServer();
     connect(m_server, &QLocalServer::newConnection, this, &IServer::newConnection);
 }
@@ -23,31 +22,24 @@ LocalServer::~LocalServer()
 
 bool LocalServer::setEnabled(bool enabled)
 {
+    if(enabled == m_enabled)
+    {
+        return false;
+    }
+
     if(enabled)
     {
+        m_server->removeServer(m_name);
+
         if(!m_server->listen(m_name))
         {
-            if(m_server->removeServer(m_name))
-            {
-                if(!m_server->listen(m_name))
-                {
-                    qDebug() << "Server down somehow!";
-                    m_enabled = false;
-                    return false;
-                }
-            }
-            else
-            {
-                qDebug() << "Server down somehow!";
-                m_enabled = false;
-                return false;
-            }
-
+            qDebug() << "Server down somehow!";
+            m_enabled = false;
+            return false;
         }
-        qDebug() << "server connected";
+        qDebug() << "Server with name: " << m_name << " created";
         m_enabled = true;
         return true;
-
     }
     else
     {
@@ -55,7 +47,7 @@ bool LocalServer::setEnabled(bool enabled)
 
         foreach (QLocalSocket *socket, m_sockets)
         {
-            if(socket != nullptr)
+            if(socket)
             {
                 socket->disconnectFromServer();
                 socket->deleteLater();
@@ -64,23 +56,23 @@ bool LocalServer::setEnabled(bool enabled)
 
         m_sockets.clear();
 
-        qDebug() << "Server closed";
+        qDebug() << "Server with name: " << m_name << " closed";
         m_enabled = false;
         return true;
     }
 }
 
-void LocalServer::sendMesage(QVariantMap &message)
+void LocalServer::sendMesage(QVariantMap message)
 {
-    QJsonDocument document(QJsonObject::fromVariantMap(message));
-
-    QByteArray block = document.toBinaryData();
-
     foreach (QLocalSocket *socket, m_sockets)
     {
         if(socket != nullptr && socket->isOpen() && socket->isWritable())
         {
-            socket->write(block);
+            QDataStream out(socket);
+            out.setVersion(QDataStream::Qt_5_4);
+
+            out << message;
+
             socket->flush();
         }
     }

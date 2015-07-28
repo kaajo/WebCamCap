@@ -122,7 +122,6 @@
    </attribute>
    <addaction name="actionNewProject"/>
    <addaction name="actionSaveCurrentProject"/>
-   <addaction name="actionAddServer"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="cameraControlDock">
@@ -555,6 +554,17 @@
     <string>Ctrl+S</string>
    </property>
   </action>
+  <action name="actionCameras">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Cameras control</string>
+   </property>
+  </action>
   <action name="actionAddServer">
    <property name="icon">
     <iconset resource="../WebCamCap2.qrc">
@@ -565,22 +575,6 @@
    </property>
    <property name="toolTip">
     <string>Add new server for realtime points transfer</string>
-   </property>
-  </action>
-  <action name="actionNew">
-   <property name="text">
-    <string>New</string>
-   </property>
-  </action>
-  <action name="actionCameras">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Cameras control</string>
    </property>
   </action>
  </widget>

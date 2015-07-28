@@ -11,8 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     m_panel.show();
 
-    connect(&m_panel, SIGNAL(pointsReady(QVector<Point>)), this, SLOT(handlePoints(QVector<Point>)));
-    connect(&m_panel, SIGNAL(movement(Movement,size_t)), this, SLOT(handleMovement(Movement,size_t)));
+    connect(&m_panel, &ControlPanel::pointsReady, this, &MainWindow::handlePoints);
+    connect(&m_panel, &ControlPanel::movement, this, &MainWindow::handleMovement);
 }
 
 MainWindow::~MainWindow()
@@ -20,13 +20,13 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::handlePoints(QVector<Point> pts)
+void MainWindow::handlePoints(QVector<Marker> pts)
 {
     QString text;
 
-    for(Point &pnt: pts)
+    for(Marker &pnt: pts)
     {
-        QString one(" " + QString::number(pnt.id()) + " " + QString::number(pnt.position().x) + " " + QString::number(pnt.position().y));
+        QString one(" " + QString::number(pnt.id()) + " " + QString::number(pnt.position().x()) + " " + QString::number(pnt.position().y()) + " " + QString::number(pnt.position().z()));
         text += one;
     }
 

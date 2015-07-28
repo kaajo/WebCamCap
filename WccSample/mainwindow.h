@@ -21,7 +21,7 @@ public:
 
 private slots:
 
-    void handlePoints(QVector<Point> pts);
+    void handlePoints(QVector<Marker> pts);
     void handleMovement(Movement mvmnt, size_t index);
 
 private:

@@ -16,13 +16,11 @@ CONFIG += c++11
 SOURCES += \
     controlpanel.cpp \
     myfifo.cpp \
-    point.cpp \
     movement.cpp
 
 HEADERS += \
     controlpanel.h \
     myfifo.h \
-    point.h \
     movement.h
 
 unix {

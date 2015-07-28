@@ -113,7 +113,7 @@ QVariantMap Line::toVariantMap() const
     return varMap;
 }
 
-bool Line::fromVariantMap(QVariantMap &map)
+bool Line::fromVariantMap(QVariantMap map)
 {
     if(! map.contains(positionKey) || ! map.contains(directionKey) ||
        ! map.contains(nOfIntersectionsKey))

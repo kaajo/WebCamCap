@@ -72,7 +72,8 @@ QVariantMap Frame::toVariantMap() const
 
     QVariantList markersList;
 
-    foreach (const Marker &marker, m_markers) {
+    foreach (const Marker &marker, m_markers)
+    {
         markersList.append(marker.toVariantMap());
     }
 
@@ -81,14 +82,43 @@ QVariantMap Frame::toVariantMap() const
     return varMap;
 }
 
-bool Frame::fromVariantMap(QVariantMap map)
+bool Frame::fromVariantMap(QVariantMap varMap)
 {
-    if(! map.contains(elapsedKey) || ! map.contains(linesKey) || ! map.contains(markersKey))
+    if(! varMap.contains(elapsedKey) || ! varMap.contains(linesKey) || ! varMap.contains(markersKey))
     {
         return false;
     }
 
-    m_elapsedTime = map.value(elapsedKey).toInt();
+    QVariantList linesList = varMap[linesKey].toList();
+
+    foreach(const QVariant &variant, linesList)
+    {
+        QVariantList nestedList = variant.toList();
+        QVector<Line> lineVector;
+
+        foreach(const QVariant &variant, nestedList)
+        {
+            Line line;
+            line.fromVariantMap(variant.toMap());
+
+            lineVector.push_back(line);
+        }
+
+        m_lines.push_back(lineVector);
+    }
+
+    QVariantList markersList = varMap[markersKey].toList();
+
+    foreach(const QVariant &variant, markersList)
+    {
+        Marker marker;
+
+        marker.fromVariantMap(variant.toMap());
+
+        m_markers.push_back(marker);
+    }
+
+    m_elapsedTime = varMap[elapsedKey].toInt();
 
     return true;
 }

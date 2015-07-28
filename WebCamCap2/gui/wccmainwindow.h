@@ -83,6 +83,7 @@ private slots:
     void handleViewActionChecked(bool view);
 
     void addAnimationToTable(Animation *animation);
+    void sendFrameToAllServers(Frame frame);
 };
 
 #endif // WCCMAINWINDOW_H

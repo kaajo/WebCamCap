@@ -68,8 +68,6 @@ QVector<QVector3D> MarkerCamera::nextFrame2D()
 
     m_camera >> m_actualFrame;
 
-    qDebug() << m_actualFrame.rows << " " << m_actualFrame.cols;
-
     applyFilters();
 
     foreach(auto &contour, m_contours)
@@ -378,6 +376,8 @@ void MarkerCamera::applyFilters()
 
     QtConcurrent::blockingFilter(m_contours, [](const Contour &contour)
     {
+        ///if area of component is too big, it is probably some big light or window
+        ///if                      too small, it is noise
         double contArea = contour.size();
         return contArea < 500 && contArea > 5;
     });

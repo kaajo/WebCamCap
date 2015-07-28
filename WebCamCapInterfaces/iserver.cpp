@@ -10,6 +10,7 @@ void IServer::setName(const QString &name)
 {
     m_name = name;
 }
+
 IServer::IServer(QObject *parent) :
     QObject(parent)
 {
