@@ -3,6 +3,7 @@
 
 #include "aboutwidget.h"
 #include "camerawidget.h"
+#include "animationplayer.h"
 #include "projectwizard.h"
 #include "addcamera.h"
 #include "openglscene.h"
@@ -31,6 +32,10 @@ WccMainWindow::WccMainWindow(QWidget *parent) :
     m_ui->openGlLayout->addWidget(scene, 1);
     scene->setMinimumSize(300, 100);
     scene->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
+    this->resize(sizeHint());
+
+    ///add player dock widget
+    this->addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, new AnimationPlayer, Qt::Horizontal);
     this->resize(sizeHint());
 
     ///connect actions

@@ -13,12 +13,14 @@ DEFINES += WEBCAMCAPGUI_LIBRARY
 
 SOURCES += \
     openglscene.cpp \
-    qtopencvviewergl.cpp
+    qtopencvviewergl.cpp \
+    animationplayer.cpp
 
 HEADERS +=\
         webcamcapgui_global.h \
     openglscene.h \
-    qtopencvviewergl.h
+    qtopencvviewergl.h \
+    animationplayer.h
 
 QMAKE_CXXFLAGS += -std=c++11 -pedantic -Wall -Wextra
 
@@ -38,3 +40,6 @@ else:unix: LIBS += -L$$OUT_PWD/../WebCamCapPrimitives/ -lWebCamCapPrimitives
 
 INCLUDEPATH += $$PWD/../WebCamCapPrimitives
 DEPENDPATH += $$PWD/../WebCamCapPrimitives
+
+FORMS += \
+    animationplayer.ui
