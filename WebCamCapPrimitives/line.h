@@ -36,23 +36,56 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT Line
     size_t m_numberOfIntersections = 0;
 
 public:
+
+    /**
+     * @brief Default constructor - inits position and direction to (0,0,0)
+     */
     Line();
+
+    /**
+     * @brief Creates parametric representation of line/ray in 3D space
+     * @param position arbitrary point on line/ray
+     * @param direction direction of line/ray
+     */
     Line(QVector3D position, QVector3D direction);
 
     QVariantMap toVariantMap() const;
     bool fromVariantMap(QVariantMap map);
 
-    static bool closestPointsTwoLines(Line line1, Line line, QVector3D &closestPointLine1, QVector3D &closestPointLine2);
-    static float distanceTwoPoints(QVector3D point1, QVector3D point2);
-    static QVector3D averagePoint(QVector3D point1, QVector3D point2);
-    static float lineAngle(QVector3D v1, QVector3D v2);
-    static float lineAngle(QVector2D v1, QVector2D v2);
-    static bool intersection(Line &l1, Line &l2, float epsilon,  QVector3D &point);
-
     QVector3D position() const;
+    void setPosition(const QVector3D &position);
     QVector3D direction() const;
     void setDirection(const QVector3D &direction);
 
+    /**
+     * @brief closestPointsTwoLines Finds closest points on two lines.
+     * @param[in] line1 First line
+     * @param[in] line2 Second line
+     * @param[out] closestPointLine1 Point on line1
+     * @param[out] closestPointLine2 Point on line2
+     * @return If lines are parallel returns false, otherwise true.
+     */
+    static bool closestPointsTwoLines(const Line &line1,const Line &line2, QVector3D &closestPointLine1, QVector3D &closestPointLine2);
+
+    /**
+     * @brief averagePoint
+     * @param point1
+     * @param point2
+     * @return Midpoint of line segment
+     */
+    static QVector3D averagePoint(const QVector3D &point1, const QVector3D &point2);
+    static float lineAngle(const QVector3D &v1, const QVector3D &v2);
+    static float lineAngle(const QVector2D &v1, const QVector2D &v2);
+
+    /**
+     * @brief
+     * @param[inout] l1
+     * @param[inout] l2
+     * @param[in] maxError
+     * @param[out] point 3D point
+     * @return If lines are closer than \a maxError returns true, otherwise false.
+     */
+    static bool intersection(Line &l1, Line &l2, float maxError, QVector3D &point);
 };
 
 

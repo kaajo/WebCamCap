@@ -33,7 +33,7 @@ Marker Marker::operator *(float &val)
     return {m_id, m_position * val};
 }
 
-Marker Marker::operator +(Marker point)
+Marker Marker::operator +(Marker &point)
 {
     return {m_id, m_position + point.position()};
 }

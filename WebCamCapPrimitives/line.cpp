@@ -13,7 +13,7 @@ Line::Line(QVector3D position, QVector3D direction) : m_position(position) , m_d
     
 }
 
-bool Line::closestPointsTwoLines(Line line1, Line line2, QVector3D &closestPointLine1, QVector3D &closestPointLine2)
+bool Line::closestPointsTwoLines(const Line &line1, const Line &line2, QVector3D &closestPointLine1, QVector3D &closestPointLine2)
 {
     float a = QVector3D::dotProduct(line1.m_direction, line1.m_direction);
     float b = QVector3D::dotProduct(line1.m_direction, line2.m_direction);
@@ -37,29 +37,22 @@ bool Line::closestPointsTwoLines(Line line1, Line line2, QVector3D &closestPoint
     return false;
 }
 
-float Line::distanceTwoPoints(QVector3D point1, QVector3D point2)
-{
-    QVector3D vector = point2 - point1;
-
-    return sqrt(vector.x() * vector.x() + vector.y() * vector.y() + vector.z() * vector.z());
-}
-
-QVector3D Line::averagePoint(QVector3D point1, QVector3D point2)
+QVector3D Line::averagePoint(const QVector3D &point1, const QVector3D &point2)
 {
     return QVector3D((point1.x() + point2.x())/2,(point1.y() + point2.y())/2,(point1.z() + point2.z())/2);
 }
 
-float Line::lineAngle(QVector3D v1, QVector3D v2)
+float Line::lineAngle(const QVector3D &v1, const QVector3D &v2)
 {
     return std::atan2(QVector3D::crossProduct(v1, v2).length(), QVector3D::dotProduct(v1, v2));
 }
 
-float Line::lineAngle(QVector2D v1, QVector2D v2)
+float Line::lineAngle(const QVector2D &v1, const QVector2D &v2)
 {
     return atan2(v2.y(), v2.x()) - atan2(v1.y(), v1.x());
 }
 
-bool Line::intersection(Line &l1, Line &l2, float epsilon,  QVector3D &point)
+bool Line::intersection(Line &l1, Line &l2, float maxError,  QVector3D &point)
 {
     QVector3D point1, point2;
 
@@ -68,7 +61,7 @@ bool Line::intersection(Line &l1, Line &l2, float epsilon,  QVector3D &point)
         return false;
     }
 
-    if(epsilon > Line::distanceTwoPoints(point1, point2))
+    if(maxError > (point1 - point2).length())
     {
         l1.m_numberOfIntersections += 1;
         l2.m_numberOfIntersections += 1;
@@ -84,6 +77,11 @@ bool Line::intersection(Line &l1, Line &l2, float epsilon,  QVector3D &point)
 QVector3D Line::position() const
 {
     return m_position;
+}
+
+void Line::setPosition(const QVector3D &position)
+{
+    m_position = position;
 }
 
 QVector3D Line::direction() const

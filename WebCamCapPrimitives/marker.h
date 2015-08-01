@@ -65,7 +65,7 @@ public:
     ///operators
     Marker operator -(Marker &point);
     Marker operator *(float &val);
-    Marker operator +(Marker point);
+    Marker operator +(Marker &point);
 };
 
 #endif // MARKER_H
