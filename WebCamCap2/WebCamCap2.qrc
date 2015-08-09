@@ -4,5 +4,6 @@
         <file>img/save_project.ico</file>
         <file>img/open_project.ico</file>
         <file>img/add_server.png</file>
+        <file>img/edit_animation.png</file>
     </qresource>
 </RCC>

@@ -3,7 +3,6 @@
 
 #include "aboutwidget.h"
 #include "camerawidget.h"
-#include "animationplayer.h"
 #include "projectwizard.h"
 #include "addcamera.h"
 #include "openglscene.h"
@@ -33,11 +32,11 @@ WccMainWindow::WccMainWindow(QWidget *parent) :
     scene->setMinimumSize(300, 100);
     scene->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
     this->resize(sizeHint());
-
+/*
     ///add player dock widget
     this->addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, new AnimationPlayer, Qt::Horizontal);
     this->resize(sizeHint());
-
+*/
     ///connect actions
     connect(m_ui->actionNewProject , &QAction::triggered, this, &WccMainWindow::newProject);
     connect(m_ui->actionOpenProject, &QAction::triggered, this, &WccMainWindow::openProject);
@@ -48,7 +47,9 @@ WccMainWindow::WccMainWindow(QWidget *parent) :
     ///view actions
     connect(m_ui->actionCameras, &QAction::triggered, this, &WccMainWindow::handleViewActionChecked);
 
+    ///table for animations
     m_ui->AnimationsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeMode::ResizeToContents);
+    connect(m_ui->AnimationsTable, &QTableWidget::cellChanged, this, &WccMainWindow::animationCellEdited);
 
     ///scrollArea needs widget with layout inside
     auto scrollWidget = new QWidget;
@@ -366,13 +367,50 @@ void WccMainWindow::handleViewActionChecked(bool view)
 
 void WccMainWindow::addAnimationToTable(Animation *animation)
 {
+    m_animations.push_back(animation);
+
     int row = m_ui->AnimationsTable->rowCount();
     m_ui->AnimationsTable->insertRow(row);
 
-    QTableWidgetItem *x = new QTableWidgetItem(QString("name"));
+    QTableWidgetItem *x = new QTableWidgetItem(animation->name());
     m_ui->AnimationsTable->setItem(row, 0, x);
     x = new QTableWidgetItem(QString::number(animation->fps()));
+    x->setFlags(x->flags() ^ (Qt::ItemIsEditable | Qt::ItemIsSelectable));
     m_ui->AnimationsTable->setItem(row, 1, x);
+    x = new QTableWidgetItem(QString::number(animation->length()));
+    x->setFlags(x->flags() ^ (Qt::ItemIsEditable | Qt::ItemIsSelectable));
+    m_ui->AnimationsTable->setItem(row, 2, x);
+
+    QPushButton *button = new QPushButton;
+    button->setIcon(QIcon(QPixmap(":/img/edit_animation.png").scaled(20, 20, Qt::IgnoreAspectRatio, Qt::SmoothTransformation)));
+    connect(button, &QPushButton::clicked, this, &WccMainWindow::animationEdit);
+    m_ui->AnimationsTable->setCellWidget(row, 3, button);
+    m_ui->AnimationsTable->itemAt(row, 3)->setFlags(x->flags() ^ (Qt::ItemIsEditable | Qt::ItemIsSelectable));
+}
+
+void WccMainWindow::animationEdit()
+{
+    QWidget *snd = qobject_cast<QWidget*>(sender());
+
+    for(int row = 0; row < m_ui->AnimationsTable->rowCount(); row++)
+    {
+        if(snd == m_ui->AnimationsTable->cellWidget(row, 3))
+        {
+            //open editor window with animation
+            qDebug() << "row clicked: " << row << m_animations[row]->name();
+        }
+    }
+}
+
+void WccMainWindow::animationCellEdited(int row, int column)
+{
+    switch (column) {
+    case 0:
+        m_animations[row]->setName(m_ui->AnimationsTable->itemAt(row, column)->text());
+        break;
+    default:
+        break;
+    }
 }
 
 void WccMainWindow::sendFrameToAllServers(Frame frame)

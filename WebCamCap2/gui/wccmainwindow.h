@@ -83,6 +83,8 @@ private slots:
     void handleViewActionChecked(bool view);
 
     void addAnimationToTable(Animation *animation);
+    void animationEdit();
+    void animationCellEdited(int row, int column);
     void sendFrameToAllServers(Frame frame);
 };
 

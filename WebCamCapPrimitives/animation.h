@@ -41,12 +41,16 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT Animation : public QObject
     QVector<Frame> m_frames;
 
 public:
-    explicit Animation(QString name = "new_animation", QObject *parent = 0);
+    explicit Animation(QString name = "name", QObject *parent = 0);
 
     float fps();
+    float length();
 
     QVariantMap toVariantMap();
     void fromVariantMap(QVariantMap map);
+
+    QString name() const;
+    void setName(const QString &name);
 
 public slots:
     void addFrame(Frame frame);
