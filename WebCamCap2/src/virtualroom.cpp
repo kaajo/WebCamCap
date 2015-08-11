@@ -33,7 +33,7 @@ void VirtualRoom::recordAnimation(bool record)
 
     if(record)
     {
-        Animation *anim = new Animation();
+        Animation *anim = new Animation(m_settings->roomDimensions());
         connect(m_cameraTopology, &ICameraTopology::frameReady, anim, &Animation::addFrame);
 
         m_animations.push_back(anim);

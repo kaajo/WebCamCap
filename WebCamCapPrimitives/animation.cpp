@@ -7,19 +7,11 @@
 
 #include <QDebug>
 
-QString Animation::name() const
-{
-    return m_name;
-}
-
-void Animation::setName(const QString &name)
-{
-    m_name = name;
-}
-Animation::Animation(QString name, QObject *parent) :
+Animation::Animation(QVector3D roomDims, QString name, QObject *parent) :
     QObject(parent)
 {
-    this->m_name = name;
+    m_roomDimensions = roomDims;
+    m_name = name;
 }
 
 float Animation::fps()
@@ -79,7 +71,9 @@ bool Animation::save(QString file)
                 lRootNode->AddChild(newMarker);
             }
 
-            WccToFbxExporter::addPositionKeyToNode(nodes[id], lAnimLayer, time, marker.position()*100);
+            WccToFbxExporter::addPositionKeyToNode(nodes[id], lAnimLayer, time, marker.position()*m_roomDimensions);
+
+            qDebug() << marker.position()*m_roomDimensions;
         }
     }
 
@@ -108,6 +102,21 @@ QVariantMap Animation::toVariantMap()
 void Animation::fromVariantMap(QVariantMap map)
 {
 
+}
+
+QString Animation::name() const
+{
+    return m_name;
+}
+
+void Animation::setName(const QString &name)
+{
+    m_name = name;
+}
+
+QVector3D Animation::roomDimensions() const
+{
+    return m_roomDimensions;
 }
 
 void Animation::addFrame(Frame frame)

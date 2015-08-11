@@ -27,6 +27,7 @@
 
 #include "frame.h"
 
+#include <QVector3D>
 #include <QString>
 #include <QVector>
 #include <QObject>
@@ -39,9 +40,10 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT Animation : public QObject
     QString m_name;
     long int m_elapsedMilliSecondsTime = 0;
     QVector<Frame> m_frames;
+    QVector3D m_roomDimensions;
 
 public:
-    explicit Animation(QString name = "name", QObject *parent = 0);
+    explicit Animation(QVector3D roomDims, QString name = "name", QObject *parent = 0);
 
     float fps();
     float length();
@@ -53,6 +55,8 @@ public:
 
     QString name() const;
     void setName(const QString &name);
+
+    QVector3D roomDimensions() const;
 
 public slots:
     void addFrame(Frame frame);
