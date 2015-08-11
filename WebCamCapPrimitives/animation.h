@@ -46,6 +46,8 @@ public:
     float fps();
     float length();
 
+    bool save(QString file);
+
     QVariantMap toVariantMap();
     void fromVariantMap(QVariantMap map);
 
@@ -54,6 +56,8 @@ public:
 
 public slots:
     void addFrame(Frame frame);
+
+private:
 
 };
 

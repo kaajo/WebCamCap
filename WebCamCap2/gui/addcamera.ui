@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>743</width>
-    <height>250</height>
+    <height>270</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -99,12 +99,15 @@
      <height>28</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>Turn on camera</string>
+   </property>
    <property name="text">
     <string/>
    </property>
    <property name="icon">
-    <iconset>
-     <normaloff>Pictures/show_camera.ico</normaloff>Pictures/show_camera.ico</iconset>
+    <iconset resource="../WebCamCap2.qrc">
+     <normaloff>:/img/show_camera.ico</normaloff>:/img/show_camera.ico</iconset>
    </property>
    <property name="iconSize">
     <size>
@@ -114,6 +117,12 @@
    </property>
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="default">
+    <bool>false</bool>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
    </property>
   </widget>
   <widget class="QLineEdit" name="usbId">
@@ -157,7 +166,7 @@
       <x>20</x>
       <y>0</y>
       <width>131</width>
-      <height>118</height>
+      <height>111</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -479,7 +488,9 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../WebCamCap2.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

@@ -398,6 +398,7 @@ void WccMainWindow::animationEdit()
         {
             //open editor window with animation
             qDebug() << "row clicked: " << row << m_animations[row]->name();
+            m_animations[row]->save(QDir::currentPath());
         }
     }
 }

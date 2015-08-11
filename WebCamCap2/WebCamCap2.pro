@@ -72,8 +72,6 @@ else:unix: LIBS += -L$$OUT_PWD/../WebCamCapGui/ -lWebCamCapGui
 INCLUDEPATH += $$PWD/../WebCamCapGui
 DEPENDPATH += $$PWD/../WebCamCapGui
 
-#RESOURCES += \
-  #  WebCamCap2.qrc
-
 RESOURCES += \
     WebCamCap2.qrc
+

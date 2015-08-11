@@ -8,6 +8,7 @@ NOTE: There are currently 2 versions of **WebCamCap** in QMake project.
 - 3D Motion Capture
 - Real time motion capture data transfer
 - Virtual scene preview (OpenGL)
+- export animation to .fbx format
 
 ## Requirements
 - Qt 5.4 / 5.5
@@ -16,6 +17,7 @@ NOTE: There are currently 2 versions of **WebCamCap** in QMake project.
 - GLU
 - GLUT*
 - GLM*
+- FBX SDK [link](http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=10775847)
 
 *only first version
 
