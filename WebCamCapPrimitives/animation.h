@@ -43,12 +43,40 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT Animation : public QObject
     QVector3D m_roomDimensions;
 
 public:
+    /**
+     * @brief Animation stores captured frames from scene for edit/export.
+     * @param roomDims dimensions are captured normalized so before exporting,
+     * they need to be multiplied again by room dimensions
+     * @param name
+     * @param parent
+     */
     explicit Animation(QVector3D roomDims, QString name = "name", QObject *parent = 0);
 
+    /**
+     * @brief This function computes AVERAGE FPS of animation.
+     * It is not guaranteed that all frames will be captured in same or almost same time.
+     * @return average FPS of animation
+     */
     float fps();
+
+    /**
+     * @brief
+     * @return elapsed time in seconds
+     */
     float length();
 
-    bool save(QString file);
+    /**
+     * @brief
+     * @return elapsed time in milliseconds
+     */
+    float lengthMS();
+
+    /**
+     * @brief Exports #Animation into specified folder.
+     * @param folder
+     * @return true if exporting was successful
+     */
+    bool save(QString folder);
 
     QVariantMap toVariantMap();
     void fromVariantMap(QVariantMap map);

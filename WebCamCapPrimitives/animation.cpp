@@ -24,7 +24,12 @@ float Animation::length()
     return m_elapsedMilliSecondsTime / 1000.0;
 }
 
-bool Animation::save(QString file)
+float Animation::lengthMS()
+{
+    return m_elapsedMilliSecondsTime;
+}
+
+bool Animation::save(QString folder)
 {
     // ex:
     // create a SdkManager
@@ -66,7 +71,7 @@ bool Animation::save(QString file)
 
             if(! nodes.contains(id))
             {
-                FbxNode *newMarker = WccToFbxExporter::createCube(pScene, (QString("marker_")+QString::number(id)).toStdString().c_str() , 5.0f);
+                FbxNode *newMarker = WccToFbxExporter::createSphere(pScene, (QString("marker_")+QString::number(id)).toStdString().c_str() , 5.0f);
                 nodes[id] = newMarker;
                 lRootNode->AddChild(newMarker);
             }
@@ -80,11 +85,14 @@ bool Animation::save(QString file)
     // create an exporter.
     FbxExporter* lExporter = FbxExporter::Create(lSdkManager, "");
     // initialize the exporter by providing a filename and the IOSettings to use
-    QString target = (file + "/" + name()+ ".fbx");
+    QString target = (folder + "/" + name()+ ".fbx");
     qDebug() << "animation saved to: " << target;
     lExporter->Initialize(target.toStdString().c_str(), -1, ios);
     // export the scene.
-    lExporter->Export(pScene);
+    if( ! lExporter->Export(pScene))
+    {
+        return false;
+    }
 
     // destroy the exporter
     lExporter->Destroy();

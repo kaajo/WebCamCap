@@ -39,6 +39,12 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT Frame
 
 public:
     Frame();
+    /**
+     * @brief Frame contains all information captured in one image.
+     * @param elapsed elapsed milliseconds since last #Frame
+     * @param markers captured Markers
+     * @param lines captured Lines
+     */
     Frame(int elapsed, QVector<Marker> markers, QVector<QVector<Line>> lines);
 
     int elapsedTime() const;
