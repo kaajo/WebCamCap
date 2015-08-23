@@ -2,9 +2,19 @@
 
 #include <QVariantMap>
 
+
+QMatrix4x4 CameraSettings::getRotationMatrix() const
+{
+    return m_rotationMatrix;
+}
+
+void CameraSettings::setRotationMatrix(const QMatrix4x4 &rotationMatrix)
+{
+    m_rotationMatrix = rotationMatrix;
+}
 CameraSettings::CameraSettings(QObject *parent) : QObject(parent)
 {
-
+    
 }
 
 CameraSettings::CameraSettings(QString name, int videoUsbId , float diagonalFov ,

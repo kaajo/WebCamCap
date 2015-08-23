@@ -14,9 +14,16 @@ OpenGlScene::OpenGlScene(QWidget *parent) : QOpenGLWidget(parent)
     update();
 }
 
-void OpenGlScene::setRoomDimensions(QVector3D &roomDims)
+void OpenGlScene::setRoomDimensions(QVector3D roomDims)
 {
     m_roomDims = roomDims;
+
+    update();
+}
+
+void OpenGlScene::setCamerasSettings(QVector<std::shared_ptr<CameraSettings>> settings)
+{
+    m_camSettings = settings;
 
     update();
 }
@@ -68,6 +75,7 @@ void OpenGlScene::paintGL()
     glTranslatef(-m_roomDims.x()/2.0f, -m_roomDims.z()/2.0f, m_roomDims.y()/2.0f);
 
     paintScene();
+    paintCameras();
     paintFrame();
 }
 
@@ -98,6 +106,41 @@ void OpenGlScene::paintScene()
     glEnd();
 }
 
+void OpenGlScene::paintCameras()
+{
+    glColor3ub(255, 0, 0);
+
+    for(std::shared_ptr<CameraSettings> settings: m_camSettings)
+    {
+        glPushMatrix();
+
+        glTranslatef(settings->globalPosition().x(),
+                     settings->globalPosition().z(),
+                     -settings->globalPosition().y());
+
+        glRotatef(180, 0, 0, 1);
+        glRotatef(90, 0, 1, 0);
+
+        glMultMatrixf(settings->getRotationMatrix().constData());
+
+        glPushMatrix();
+        glRotatef(-90, 0, 1, 0);
+        gluCylinder(m_cubeQuadric, 5, 0, 7, 10, 1);
+        glPopMatrix();
+
+        glBegin(GL_LINES);
+        glVertex3f(0, 0, 0);
+        glVertex3f(qMax(m_roomDims.y(), m_roomDims.x())/5, 0, 0);
+        glEnd();
+
+        glTranslatef(-settings->globalPosition().x(),
+                     -settings->globalPosition().z(),
+                     settings->globalPosition().y());
+
+        glPopMatrix();
+    }
+}
+
 void OpenGlScene::paintFrame()
 {
     int markersCount = m_actualFrame.markers().size();
@@ -118,7 +161,7 @@ void OpenGlScene::paintFrame()
                      m_actualFrame.markers()[i].position().z()*m_roomDims.z(),
                      -m_actualFrame.markers()[i].position().y()*m_roomDims.y());
 
-        gluSphere(m_quadric, 3, 5, 5);
+        gluSphere(m_sphereQuadric, 3, 5, 5);
 
         glTranslatef(-m_actualFrame.markers()[i].position().x()*m_roomDims.x(),
                      -m_actualFrame.markers()[i].position().z()*m_roomDims.z(),

@@ -139,8 +139,20 @@ void WccMainWindow::setProject(IVirtualRoom *project)
 {
     m_currentProject = project;
 
+    QVector<ICamera*> cams = m_currentProject->cameraTopology()->getCameras();
+
     clearCameraWidgets();
-    addCameraWidgets(m_currentProject->cameraTopology()->getCameras());
+    addCameraWidgets(cams);
+
+    QVector<std::shared_ptr<CameraSettings> > settings;
+
+    for(ICamera *cam: cams)
+    {
+        settings.push_back(cam->settings());
+    }
+
+    OpenGlScene::getInstance()->setRoomDimensions(m_currentProject->settings()->roomDimensions());
+    OpenGlScene::getInstance()->setCamerasSettings(settings);
 
     connect(m_ui->recordScene, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordScene);
     connect(m_ui->recordAnimation, &QPushButton::clicked, m_currentProject->settings(), &RoomSettings::setRecordAnimation);

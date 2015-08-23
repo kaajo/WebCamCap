@@ -138,6 +138,9 @@ public:
 
     int getThresholdValue() const;
 
+    QMatrix4x4 getRotationMatrix() const;
+    void setRotationMatrix(const QMatrix4x4 &rotationMatrix);
+
 public slots:
     void setThresholdValue(int thresholdValue);
 

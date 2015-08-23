@@ -26,6 +26,7 @@
 #include "webcamcapgui_global.h"
 
 #include "frame.h"
+#include "camerasettings.h"
 
 #include <QColor>
 #include <QVector>
@@ -34,11 +35,14 @@
 #include <QOpenGLWidget>
 #include <GL/glu.h>
 
+#include <memory>
+
 class WEBCAMCAPGUISHARED_EXPORT OpenGlScene : public QOpenGLWidget
 {
     static OpenGlScene *m_scene;
 
     QVector3D m_roomDims = QVector3D(100,100,100);
+    QVector<std::shared_ptr<CameraSettings>> m_camSettings;
 
     //paint props
     QVector<QColor> m_randomColors;
@@ -56,10 +60,12 @@ class WEBCAMCAPGUISHARED_EXPORT OpenGlScene : public QOpenGLWidget
     Frame m_actualFrame;
 
     //some glu mess
-    GLUquadricObj *m_quadric = gluNewQuadric();
+    GLUquadricObj *m_sphereQuadric = gluNewQuadric();
+    GLUquadricObj *m_cubeQuadric = gluNewQuadric();
 public:
     explicit OpenGlScene(QWidget *parent = 0);
-    void setRoomDimensions(QVector3D &m_roomDims);
+    void setRoomDimensions(QVector3D m_roomDims);
+    void setCamerasSettings(QVector<std::shared_ptr<CameraSettings>> settings);
 
     static OpenGlScene *getInstance();
 
@@ -72,6 +78,7 @@ public slots:
 
 private:
     void paintScene();
+    void paintCameras();
     void paintFrame();
 
     void mousePressEvent(QMouseEvent * event);
