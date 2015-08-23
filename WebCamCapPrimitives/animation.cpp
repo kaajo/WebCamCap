@@ -71,14 +71,12 @@ bool Animation::save(QString folder)
 
             if(! nodes.contains(id))
             {
-                FbxNode *newMarker = WccToFbxExporter::createSphere(pScene, (QString("marker_")+QString::number(id)).toStdString().c_str() , 5.0f);
+                FbxNode *newMarker = WccToFbxExporter::createSphere(pScene, (QString("marker_")+QString::number(id)).toStdString().c_str() , 1.0f);
                 nodes[id] = newMarker;
                 lRootNode->AddChild(newMarker);
             }
 
             WccToFbxExporter::addPositionKeyToNode(nodes[id], lAnimLayer, time, marker.position()*m_roomDimensions);
-
-            qDebug() << marker.position()*m_roomDimensions;
         }
     }
 
