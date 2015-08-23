@@ -65,10 +65,11 @@ signals:
 private:
     void setNumberOfPoints(int numberOfPoints) override;
 
-    void resolveEdges();
+    void resolveTopologyEdges();
 
     void intersections();
 
+    QVector<QVector3D> mergePoints(size_t targetNumberOfPoints, const QVector<QVector<QVector3D>> &points);
     void normaliseCoords(QVector<Marker> &points, QVector3D roomSize);
 
 private slots:

@@ -49,7 +49,7 @@ void PolygonCameraTopology::addCameras(QVector<ICamera*> cameras)
         thread->start();
     }
 
-    resolveEdges();
+    resolveTopologyEdges();
 }
 
 void PolygonCameraTopology::removeCamera(ICamera *camera)
@@ -59,6 +59,18 @@ void PolygonCameraTopology::removeCamera(ICamera *camera)
 
 void PolygonCameraTopology::record(bool start)
 {
+    int turnedOnCams = 0;
+
+    for(ICamera *camera :m_cameras)
+    {
+        if(camera->settings()->turnedOn())
+        {
+            ++turnedOnCams;
+        }
+    }
+
+    m_turnedOnCamerasCounter = turnedOnCams;
+
     if(start == m_record)
     {
         return;
@@ -71,6 +83,7 @@ void PolygonCameraTopology::record(bool start)
         //if there is only 1 camera turned on start 2D
         if(m_turnedOnCamerasCounter <= 1)
         {
+            qDebug() << "only one camera";
             emit startRecording2D();
         }
         else
@@ -87,7 +100,7 @@ void PolygonCameraTopology::record(bool start)
     }
 }
 
-void PolygonCameraTopology::resolveEdges()
+void PolygonCameraTopology::resolveTopologyEdges()
 {
     m_topology.clear();
 
@@ -158,20 +171,23 @@ void PolygonCameraTopology::intersections()
 {
     QVector<QVector<QVector3D>> points = QtConcurrent::blockingMapped<QVector<QVector<QVector3D>>>(m_topology, PolygonCameraTopology::intersection);
 
-    QVector<QVector3D> pointsFlatten;
-
-    for(auto pts: points)
-    {
-        pointsFlatten+=pts;
-    }
-
-    auto labeledPoints = m_pointChecker.solvePointIDs(pointsFlatten);
+    auto labeledPoints = m_pointChecker.solvePointIDs(mergePoints(m_pointChecker.getNumOfPoints(), points));
 
     normaliseCoords(labeledPoints, m_roomDimensions);
 
     emit frameReady(Frame(m_frameTimer.elapsed(), labeledPoints, m_resultLines.values().toVector()));
 
     QCoreApplication::processEvents();
+}
+
+QVector<QVector3D> PolygonCameraTopology::mergePoints(size_t targetNumberOfPoints, const QVector<QVector<QVector3D>> &points)
+{
+    QVector<QVector3D> retVal;
+
+    for(auto pts: points)
+    {
+        retVal+=pts;
+    }
 }
 
 void PolygonCameraTopology::normaliseCoords(QVector<Marker> &points, QVector3D roomSize)
@@ -240,6 +256,7 @@ void PolygonCameraTopology::handleCameraSettingsChange(CameraSettings::CameraSet
         {
             --m_turnedOnCamerasCounter;
         }
+        qDebug() << "# cams turned on" <<m_turnedOnCamerasCounter;
         break;
     default:
         break;
@@ -257,8 +274,6 @@ void PolygonCameraTopology::handleCameraResults(QVector<Line> lines)
     if(m_resultsCounter == m_cameras.size())
     {
         intersections();
-
-        qDebug() << m_frameTimer.elapsed();
 
         m_frameTimer.restart();
         m_waitCondition->wakeAll();
