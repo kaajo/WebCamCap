@@ -52,7 +52,7 @@ float Line::lineAngle(const QVector2D &v1, const QVector2D &v2)
     return atan2(v2.y(), v2.x()) - atan2(v1.y(), v1.x());
 }
 
-bool Line::intersection(Line &l1, Line &l2, float maxError,  QVector3D &point)
+bool Line::intersection(Line &l1, Line &l2,const float maxError,  QVector3D &point)
 {
     QVector3D point1, point2;
 

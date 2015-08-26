@@ -89,6 +89,11 @@ WccMainWindow::WccMainWindow(QWidget *parent) :
 WccMainWindow::~WccMainWindow()
 {
     delete m_ui;
+
+    if(OpenGlScene::getInstance())
+    {
+        delete OpenGlScene::getInstance();
+    }
 }
 
 void WccMainWindow::enableProjectRelatedWidgets(bool enabled)

@@ -31,6 +31,9 @@
 #include <QVector>
 #include <QVariantMap>
 
+/**
+ * @brief Frame contains all information captured in one image.
+ */
 class WEBCAMCAPPRIMITIVESSHARED_EXPORT Frame
 {
     int m_elapsedTime = 0;
@@ -38,9 +41,12 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT Frame
     QVector<QVector<Line>> m_lines;
 
 public:
+    /**
+     * @brief Frame
+     */
     Frame();
     /**
-     * @brief Frame contains all information captured in one image.
+     * @brief Constructor
      * @param elapsed elapsed milliseconds since last #Frame
      * @param markers captured Markers
      * @param lines captured Lines

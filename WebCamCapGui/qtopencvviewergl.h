@@ -1,6 +1,6 @@
 /*
  * Source Code from:
- * http://www.robot-home.it/blog/en/software/tutorial-opencv-qt-opengl-widget-per-visualizzare-immagini-da-opencv-in-una-gui-con-qt/
+ * https://github.com/Myzhar/QtOpenCVViewerGl
  */
 
 #ifndef QTOPENCVVIEWERGL_H
@@ -12,10 +12,18 @@
 #include <QOpenGLWidget>
 #include <opencv2/core/core.hpp>
 
+/**
+ * @author Walter Lucetti <a href="https://github.com/Myzhar">link GitHub</a>
+ * @brief The QtOpenCVViewerGl class is effective widget for showing OpenCV::Mat/UMat
+ */
 class QtOpenCVViewerGl : public QOpenGLWidget
 {
     Q_OBJECT
 public:
+    /**
+     * @brief QtOpenCVViewerGl default constructor
+     * @param parent
+     */
     explicit QtOpenCVViewerGl(QWidget *parent = 0);
 
 signals:

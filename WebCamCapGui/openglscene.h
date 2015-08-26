@@ -37,12 +37,17 @@
 
 #include <memory>
 
+/**
+ * @author Miroslav Krajicek
+ * @brief The OpenGlScene class is widget for drawing #Frame or whole #Animation . It should be singleton.
+ */
 class WEBCAMCAPGUISHARED_EXPORT OpenGlScene : public QOpenGLWidget
 {
     static OpenGlScene *m_scene;
 
     QVector3D m_roomDims = QVector3D(100,100,100);
     QVector<std::shared_ptr<CameraSettings>> m_camSettings;
+    QVector<QPair<int,int>> m_Topology;
 
     //paint props
     QVector<QColor> m_randomColors;
@@ -63,22 +68,46 @@ class WEBCAMCAPGUISHARED_EXPORT OpenGlScene : public QOpenGLWidget
     GLUquadricObj *m_sphereQuadric = gluNewQuadric();
     GLUquadricObj *m_cubeQuadric = gluNewQuadric();
 public:
+    /**
+     * @brief OpenGlScene default constructor
+     * @param parent
+     */
     explicit OpenGlScene(QWidget *parent = 0);
+
+    /**
+     * @brief For bottom rectangle, #OpenGlScene needs to know size of #IVirtualRoom.
+     * @param m_roomDims Room dimensions
+     */
     void setRoomDimensions(QVector3D m_roomDims);
+
+    /**
+     * @brief For camera position preview, #OpenGlScene needs to know position
+     * and direction vector of every #ICamera in the virtual scene.
+     * @param settings All #CameraSettings in #IVirtualRoom
+     */
     void setCamerasSettings(QVector<std::shared_ptr<CameraSettings>> settings);
 
+    /**
+     * @brief Static function for using #OpenGlScene as singleton.
+     * @return Singleton
+     */
     static OpenGlScene *getInstance();
 
+public slots:
+    /**
+     * @brief SLOT which sets actual frame to scene. #OpenGlScene draws every #Line and #Marker in \a frame
+     * @param frame
+     */
+    void setFrame(Frame frame);
+
+private:
     void initializeGL();
     void paintGL();
     void resizeGL(int w, int h);
 
-public slots:
-    void setFrame(Frame frame);
-
-private:
     void paintScene();
     void paintCameras();
+    void paintTopology();
     void paintFrame();
 
     void mousePressEvent(QMouseEvent * event);
@@ -88,7 +117,6 @@ private:
     void drawLine(const Line &line) const;
 
     void generateRandomColors(int count);
-
 };
 
 #endif // OPENGLSCENE_H

@@ -28,6 +28,10 @@
 #include <QVector3D>
 #include <QObject>
 
+/**
+ * @author Miroslav Krajicek
+ * @brief The RoomSettings class contains all settings for class #IVirtualRoom and its derivatives
+ */
 class WEBCAMCAPPRIMITIVESSHARED_EXPORT RoomSettings : public QObject
 {
     Q_OBJECT
@@ -42,6 +46,9 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT RoomSettings : public QObject
 
 public:
 
+    /**
+     * @brief The RoomSettingsType enum used mainly in changed(RoomSettings::RoomSettingsType)
+     */
     enum class RoomSettingsType {
         ALL,
         NAME,
@@ -72,10 +79,22 @@ public:
     void save();
 
 public slots:
+    /**
+     * @brief setRecordScene
+     * @param recordScene
+     */
     void setRecordScene(bool recordScene);
+    /**
+     * @brief setRecordAnimation
+     * @param recordAnimation
+     */
     void setRecordAnimation(bool recordAnimation);
 
 signals:
+    /**
+     * @brief changed
+     * @param type
+     */
     void changed(RoomSettings::RoomSettingsType type);
 
 private slots:

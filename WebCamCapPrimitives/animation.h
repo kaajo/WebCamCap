@@ -33,6 +33,10 @@
 #include <QObject>
 #include <QVariantMap>
 
+/**
+ * @author Miroslav Krajicek
+ * @brief The Animation class stores captured frames from scene for edit/export.
+ */
 class WEBCAMCAPPRIMITIVESSHARED_EXPORT Animation : public QObject
 {
     Q_OBJECT
@@ -44,7 +48,7 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT Animation : public QObject
 
 public:
     /**
-     * @brief Animation stores captured frames from scene for edit/export.
+     * @brief Animation default constructor
      * @param roomDims dimensions are captured normalized so before exporting,
      * they need to be multiplied again by room dimensions
      * @param name

@@ -76,6 +76,7 @@ void OpenGlScene::paintGL()
 
     paintScene();
     paintCameras();
+    paintTopology();
     paintFrame();
 }
 
@@ -139,6 +140,11 @@ void OpenGlScene::paintCameras()
 
         glPopMatrix();
     }
+}
+
+void OpenGlScene::paintTopology()
+{
+    
 }
 
 void OpenGlScene::paintFrame()

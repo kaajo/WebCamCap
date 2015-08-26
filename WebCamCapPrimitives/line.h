@@ -28,6 +28,10 @@
 #include <QVector2D>
 #include <QVector3D>
 
+/**
+ * @author Miroslav Krajicek
+ * @brief The Line class represents parametric line/ray in 3D space.
+ */
 class WEBCAMCAPPRIMITIVESSHARED_EXPORT Line
 {
     QVector3D m_position;
@@ -38,12 +42,12 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT Line
 public:
 
     /**
-     * @brief Default constructor - inits position and direction to (0,0,0)
+     * @brief Default constructor - inits position and direction to [0,0,0].
      */
     Line();
 
     /**
-     * @brief Creates parametric representation of line/ray in 3D space
+     * @brief Constructor
      * @param position arbitrary point on line/ray
      * @param direction direction of line/ray
      */
@@ -58,7 +62,7 @@ public:
     void setDirection(const QVector3D &direction);
 
     /**
-     * @brief closestPointsTwoLines Finds closest points on two lines.
+     * @brief Finds closest points on two lines.
      * @param[in] line1 First line
      * @param[in] line2 Second line
      * @param[out] closestPointLine1 Point on line1
@@ -69,23 +73,23 @@ public:
 
     /**
      * @brief averagePoint
-     * @param point1
-     * @param point2
-     * @return Midpoint of line segment
+     * @param[in] point1 first point
+     * @param[in] point2 second point
+     * @return Midpoint of line segment.
      */
     static QVector3D averagePoint(const QVector3D &point1, const QVector3D &point2);
     static float lineAngle(const QVector3D &v1, const QVector3D &v2);
     static float lineAngle(const QVector2D &v1, const QVector2D &v2);
 
     /**
-     * @brief
+     * @brief Function using triangulation to find intersection. Ideally, lines have zero distance from each other.
      * @param[inout] l1
      * @param[inout] l2
      * @param[in] maxError
      * @param[out] point 3D point
      * @return If lines are closer than \a maxError returns true, otherwise false.
      */
-    static bool intersection(Line &l1, Line &l2, float maxError, QVector3D &point);
+    static bool intersection(Line &l1, Line &l2,const float maxError, QVector3D &point);
 };
 
 
