@@ -70,10 +70,6 @@ private slots:
 
     void on_buttonBox_rejected();
 
-    void on_FrameX_editingFinished();
-
-    void on_FrameY_editingFinished();
-
     void on_readYAML_clicked();
 
     void on_calibButton_clicked();

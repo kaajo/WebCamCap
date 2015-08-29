@@ -37,6 +37,10 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT Line
     QVector3D m_position;
     QVector3D m_direction;
 
+    /**
+     * @brief Number of intersections detected. If line has more intersections,
+     * we can inspect, which intersection is real.
+     */
     size_t m_numberOfIntersections = 0;
 
 public:
@@ -58,6 +62,7 @@ public:
 
     QVector3D position() const;
     void setPosition(const QVector3D &position);
+
     QVector3D direction() const;
     void setDirection(const QVector3D &direction);
 
@@ -78,15 +83,29 @@ public:
      * @return Midpoint of line segment.
      */
     static QVector3D averagePoint(const QVector3D &point1, const QVector3D &point2);
+
+    /**
+     * @brief Angle between two 3D vectors.
+     * @param v1 First vector
+     * @param v2 Second vector
+     * @return
+     */
     static float lineAngle(const QVector3D &v1, const QVector3D &v2);
+
+    /**
+     * @brief Angle between two 2D vectors.
+     * @param v1 First vector
+     * @param v2 Second vector
+     * @return
+     */
     static float lineAngle(const QVector2D &v1, const QVector2D &v2);
 
     /**
      * @brief Function using triangulation to find intersection. Ideally, lines have zero distance from each other.
-     * @param[inout] l1
-     * @param[inout] l2
-     * @param[in] maxError
-     * @param[out] point 3D point
+     * @param[inout] l1 first line
+     * @param[inout] l2 second line
+     * @param[in] maxError maximum distance between two #Line for detecting intersection.
+     * @param[out] point 3D intersection point
      * @return If lines are closer than \a maxError returns true, otherwise false.
      */
     static bool intersection(Line &l1, Line &l2,const float maxError, QVector3D &point);

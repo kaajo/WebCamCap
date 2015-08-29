@@ -88,9 +88,17 @@ public:
     QString name() const;
     void setName(const QString &name);
 
+    /**
+     * @brief Usefull for animation replay
+     * @return
+     */
     QVector3D roomDimensions() const;
 
 public slots:
+    /**
+     * @brief Adds next frame to end of animation.
+     * @param frame
+     */
     void addFrame(Frame frame);
 
 private:

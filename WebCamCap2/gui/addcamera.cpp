@@ -55,8 +55,7 @@ void AddCamera::setCameraSettings(std::shared_ptr<CameraSettings> cameraSettings
 
     QVector2D frameResolution = m_cameraSettings.get()->resolution();
 
-    m_ui->FrameX->setText(QString::number(frameResolution.x()));
-    m_ui->FrameY->setText(QString::number(frameResolution.y()));
+    m_ui->resolution->setText(QString::number(frameResolution.y()) + "X" + QString::number(frameResolution.x()));
 }
 
 AddCamera::AddCamera(QVector3D roomDims, QWidget *parent) :
@@ -87,7 +86,7 @@ void AddCamera::readYaml(int )
 void AddCamera::on_buttonBox_accepted()
 {    
     QVector3D globalPosition = QVector3D(m_ui->X->text().toFloat(), m_ui->Y->text().toFloat(), m_ui->Z->text().toFloat());
-    QVector2D resolution = QVector2D(m_ui->FrameX->text().toInt(), m_ui->FrameY->text().toInt());
+    QVector2D resolution = QVector2D(m_frame.rows, m_frame.cols);
 
     if(!m_cameraSettings)
     {
@@ -153,16 +152,26 @@ void AddCamera::on_Play_ID_clicked(bool checked)
 {
     if(checked)
     {
-        m_cameraRecording = true;
+        bool isNumber = false;
 
-        m_videoCaptureTemp.open(m_ui->usbId->text().toInt());
+        size_t usbId = m_ui->usbId->text().toInt(&isNumber);
+
+        if(m_ui->usbId->text().isEmpty() || !isNumber)
+        {
+            QMessageBox::warning(this, "No device ID specified",
+                                       "Couldn't turn on camera, because no device ID is specified");
+            m_ui->Play_ID->setChecked(false);
+            m_ui->usbId->setEnabled(true);
+            return;
+        }
+
+        m_cameraRecording = true;
+        m_videoCaptureTemp.open(usbId);
 
         if(! m_videoCaptureTemp.isOpened())
         {
-            QMessageBox msgBox;
-            msgBox.setWindowTitle("");
-            msgBox.warning(this, "", "Wrong device ID");
-            msgBox.setFixedSize(200,100);
+            QMessageBox::warning(this, "Wrong device ID",
+                                       "Specified device ID is wrong, camera could not be opened");
 
             m_ui->Play_ID->setChecked(false);
             m_ui->usbId->setEnabled(true);
@@ -184,12 +193,9 @@ void AddCamera::recording()
     {
         m_tooHighValueWarning = false;
 
-        QCoreApplication::processEvents();
-
         m_videoCaptureTemp >> m_frame;
 
-        m_ui->FrameY->setText(QString::number(m_frame.rows));
-        m_ui->FrameX->setText(QString::number(m_frame.cols));
+        m_ui->resolution->setText(QString::number(m_frame.cols) + "X" + QString::number(m_frame.rows));
 
         /*
         cv::threshold(m_frame, m_mask, 220, 255, cv::THRESH_BINARY);
@@ -207,7 +213,7 @@ void AddCamera::recording()
             }
         }
 
-        endOfLoop:*/
+        endOfLoop:
 
         if(m_tooHighValueWarning)
         {
@@ -217,10 +223,12 @@ void AddCamera::recording()
         {
             m_ui->warning->setText("");
         }
+        */
 
         m_ui->glImage->showImage(m_frame);
 
         cv::waitKey(10);
+        QCoreApplication::processEvents();
     }
 }
 
@@ -229,7 +237,7 @@ void AddCamera::endRecording()
     if(m_cameraRecording)
     {
         m_cameraRecording = false;
-        m_ui->warning->setText("");
+        //m_ui->warning->setText("");
         m_videoCaptureTemp.release();
     }
 }
@@ -240,17 +248,6 @@ void AddCamera::readConfigFile(QString path)
 
     file["camera_matrix"] >> m_cameraMatrix;
     file["distortion_coefficients"] >> m_coefficients;
-}
-
-
-void AddCamera::on_FrameX_editingFinished()
-{
-    m_videoCaptureTemp.set(CV_CAP_PROP_FRAME_WIDTH, m_ui->FrameY->text().toInt());
-}
-
-void AddCamera::on_FrameY_editingFinished()
-{
-    m_videoCaptureTemp.set(CV_CAP_PROP_FRAME_HEIGHT, m_ui->FrameX->text().toInt());
 }
 
 void AddCamera::on_readYAML_clicked()

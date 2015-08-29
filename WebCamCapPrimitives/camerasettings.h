@@ -41,12 +41,28 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT CameraSettings : public QObject
 
     typedef QVector<cv::Point> Contour;
 
-    //BASIC PARAMETERS
+    /**
+     * @brief Name of Camera
+     */
     QString m_name = "Camera";
+    /**
+     * @brief ID of device, on linux usually /dev/videoX where X is ID of camera.
+     */
     int m_videoUsbId = -1;
+    /**
+     * @brief Diagonal field of view of camera. In future, this property will be calibrated.
+     */
     float m_diagonalFov = 0.0f;
+    /**
+     * @brief Position in #IVirtualRoom coordinates.
+     */
     QVector3D m_globalPosition;
+    /**
+     * @brief Resolution of camera (px).
+     */
     QVector2D m_resolution;
+
+
     cv::Mat m_distortionCoeffs;
     QVector3D m_roomDimensions;
     cv::Mat m_roiMask;
@@ -61,6 +77,10 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT CameraSettings : public QObject
     bool m_saved = false;
 
     ///computed parameters
+
+    /**
+     * @brief Direction vector of camera. Head of this vector is ALWAYS in the middle of #IVirtualRoom.
+     */
     QVector4D m_directionVector;
     double m_anglePerPixel;
     QMatrix4x4 m_rotationMatrix; //used for rotated lines (pixels)
@@ -69,9 +89,9 @@ class WEBCAMCAPPRIMITIVESSHARED_EXPORT CameraSettings : public QObject
     QVector<QVector<QVector3D>> m_pixelLines;
 
 public:
-
     cv::Scalar contourColor = cv::Scalar(0, 0, 255);
     cv::Mat dilateKernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3,3));
+
 
     enum class CameraSettingsType{
         ALL,
@@ -89,6 +109,7 @@ public:
     };
 
     explicit CameraSettings(QObject *parent = 0);
+
     CameraSettings(QString m_name, int m_videoUsbId , float m_diagonalFov , QVector3D m_globalPosition , QVector3D m_roomDimensions, QObject *parent = 0);
 
     QVariantMap toVariantMap();

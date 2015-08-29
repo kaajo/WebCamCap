@@ -92,8 +92,8 @@ public slots:
 
 signals:
     /**
-     * @brief changed
-     * @param type
+     * @brief SIGNAL for indicating changed property
+     * @param type type of changed settings
      */
     void changed(RoomSettings::RoomSettingsType type);
 
