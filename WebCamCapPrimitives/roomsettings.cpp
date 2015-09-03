@@ -54,6 +54,11 @@ void RoomSettings::setRecordScene(bool recordScene)
 {
     m_recordScene = recordScene;
 
+    if(! recordScene)
+    {
+        setRecordAnimation(false);
+    }
+
     emit changed(RoomSettingsType::RECORD);
 }
 

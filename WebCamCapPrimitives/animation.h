@@ -80,7 +80,7 @@ public:
      * @param folder
      * @return true if exporting was successful
      */
-    bool save(QString folder);
+    bool save(QString file);
 
     QVariantMap toVariantMap();
     void fromVariantMap(QVariantMap map);
@@ -93,6 +93,8 @@ public:
      * @return
      */
     QVector3D roomDimensions() const;
+
+    QVector<Frame> &frames();
 
 public slots:
     /**

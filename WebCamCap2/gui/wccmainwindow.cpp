@@ -7,6 +7,7 @@
 #include "addcamera.h"
 #include "openglscene.h"
 #include "src/localserver.h"
+#include "animationeditor.h"
 
 #include <QDebug>
 #include <QSettings>
@@ -413,9 +414,18 @@ void WccMainWindow::animationEdit()
     {
         if(snd == m_ui->AnimationsTable->cellWidget(row, 3))
         {
+            m_currentProject->settings()->setRecordScene(false);
+
             //open editor window with animation
+            AnimationEditor* editor = new AnimationEditor(this);
+
+            editor->setAnimation(m_animations[row]);
+
+            editor->show();
+/*
             qDebug() << "row clicked: " << row << m_animations[row]->name();
             m_animations[row]->save(QDir::currentPath());
+            */
         }
     }
 }

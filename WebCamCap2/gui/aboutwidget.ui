@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>347</width>
+    <width>320</width>
     <height>240</height>
    </rect>
   </property>
@@ -22,8 +22,8 @@
   <widget class="QPushButton" name="closeButton">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>210</y>
+     <x>130</x>
+     <y>230</y>
      <width>80</width>
      <height>23</height>
     </rect>
@@ -62,8 +62,8 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>110</y>
-     <width>331</width>
+     <y>130</y>
+     <width>311</width>
      <height>91</height>
     </rect>
    </property>
@@ -100,7 +100,7 @@
      <x>0</x>
      <y>40</y>
      <width>351</width>
-     <height>41</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="text">
@@ -117,6 +117,19 @@
    </property>
    <property name="openExternalLinks">
     <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>70</y>
+     <width>321</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Some icons made by &lt;/span&gt;&lt;a href=&quot;http://www.flaticon.com/authors/daniel-bruce&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;Daniel Bruce &lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;from &lt;/span&gt;&lt;a href=&quot;http://www.flaticon.com/&quot;&gt;&lt;span style=&quot; font-size:8pt; text-decoration: underline; color:#0000ff;&quot;&gt;www.flaticon.com&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
  </widget>

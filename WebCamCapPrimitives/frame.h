@@ -37,6 +37,7 @@
 class WEBCAMCAPPRIMITIVESSHARED_EXPORT Frame
 {
     int m_elapsedTime = 0;
+    int m_maximalPointID = -1;
     QVector<Marker> m_markers;
     QVector<QVector<Line>> m_lines;
 
@@ -57,10 +58,9 @@ public:
     void setElapsedTime(int elapsedTime);
 
     QVector<Marker> markers() const;
-    void setMarkers(const QVector<Marker> &markers);
-
     QVector<QVector<Line>> lines() const;
-    void setLines(const QVector<QVector<Line>> &lines);
+
+    bool changeMarkerId(int oldID, int newID);
 
     QVariantMap toVariantMap() const;
     bool fromVariantMap(QVariantMap varMap);

@@ -1,5 +1,7 @@
 #include "frame.h"
 
+#include "tr1/functional"
+
 Frame::Frame()
 {
 
@@ -7,9 +9,17 @@ Frame::Frame()
 
 Frame::Frame(int elapsed, QVector<Marker> markers, QVector<QVector<Line>> lines)
 {
-    this->m_elapsedTime = elapsed;
-    this->m_markers = markers;
-    this->m_lines = lines;
+    m_elapsedTime = elapsed;
+    m_markers = markers;
+    m_lines = lines;
+
+    for(const Marker &marker : markers)
+    {
+        if(marker.id() > m_maximalPointID)
+        {
+            m_maximalPointID = marker.id();
+        }
+    }
 }
 
 int Frame::elapsedTime() const
@@ -27,19 +37,30 @@ QVector<Marker> Frame::markers() const
     return m_markers;
 }
 
-void Frame::setMarkers(const QVector<Marker> &markers)
-{
-    m_markers = markers;
-}
-
 QVector<QVector<Line>> Frame::lines() const
 {
     return m_lines;
 }
 
-void Frame::setLines(const QVector<QVector<Line>> &lines)
+bool Frame::changeMarkerId(int oldID, int newID)
 {
-    m_lines = lines;
+    auto func = [](const int id, const Marker &marker){return id == marker.id();};
+
+    auto point = std::find_if(m_markers.begin(), m_markers.end(), [func, oldID](const Marker &marker){return func(oldID, marker);});
+
+    if(point == m_markers.end()) return false;
+
+    auto pointWithSameID = std::find_if(m_markers.begin(), m_markers.end(), [func, newID](const Marker &marker){return func(newID, marker);});
+
+    if(pointWithSameID != m_markers.end())
+    {
+        ++m_maximalPointID;
+
+        changeMarkerId(newID, m_maximalPointID);
+    }
+
+    point->setId(newID);
+    return true;
 }
 
 //#########################################################

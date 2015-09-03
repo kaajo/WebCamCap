@@ -92,7 +92,9 @@ public:
     cv::Scalar contourColor = cv::Scalar(0, 0, 255);
     cv::Mat dilateKernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(3,3));
 
-
+    /**
+     * @brief The CameraSettingsType enum
+     */
     enum class CameraSettingsType{
         ALL,
         NAME,

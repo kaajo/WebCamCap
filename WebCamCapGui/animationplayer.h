@@ -18,19 +18,25 @@ public:
     explicit AnimationPlayer(QWidget *parent = 0);
     ~AnimationPlayer();
 
-    Animation *actualAnimation() const;
     void setActualAnimation(Animation *actualAnimation);
+
+signals:
+    void frameChanged(int i);
 
 private slots:
     void play();
+    void nextFrame();
     void pause();
+    void next();
+    void previous();
     void seek(int position);
 
 private:
     Ui::AnimationPlayer *m_ui = nullptr;
 
-    QTimer *m_animationTimer = nullptr;
-    Animation *m_actualAnimation = nullptr;
+    bool m_playing = false;
+
+    Animation *m_animation = nullptr;
 };
 
 #endif // ANIMATIONPLAYER_H

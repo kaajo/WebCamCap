@@ -43,3 +43,6 @@ DEPENDPATH += $$PWD/../WebCamCapPrimitives
 
 FORMS += \
     animationplayer.ui
+
+RESOURCES += \
+    webcamcapgui.qrc

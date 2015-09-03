@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>392</width>
-    <height>70</height>
+    <width>344</width>
+    <height>77</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>344</width>
+    <height>77</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>524287</width>
+    <height>77</height>
+   </size>
   </property>
   <property name="features">
    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
@@ -22,16 +34,79 @@
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <widget class="QPushButton" name="pauseButton">
+     <widget class="QPushButton" name="playButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="toolTip">
+       <string>Play animation</string>
+      </property>
       <property name="text">
-       <string>Play</string>
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="webcamcapgui.qrc">
+        <normaloff>:/Pictures/music-player15.png</normaloff>:/Pictures/music-player15.png</iconset>
+      </property>
+      <property name="autoDefault">
+       <bool>false</bool>
+      </property>
+      <property name="default">
+       <bool>false</bool>
+      </property>
+      <property name="flat">
+       <bool>false</bool>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="playButton">
+     <widget class="QPushButton" name="pauseButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="toolTip">
+       <string>Pause animation</string>
+      </property>
       <property name="text">
-       <string>Pause</string>
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="webcamcapgui.qrc">
+        <normaloff>:/Pictures/music-player7.png</normaloff>:/Pictures/music-player7.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="prevButton">
+      <property name="toolTip">
+       <string>Previous frame</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="webcamcapgui.qrc">
+        <normaloff>:/Pictures/last-track.png</normaloff>:/Pictures/last-track.png</iconset>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="nextButton">
+      <property name="toolTip">
+       <string>Next frame</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="webcamcapgui.qrc">
+        <normaloff>:/Pictures/next-track.png</normaloff>:/Pictures/next-track.png</iconset>
       </property>
      </widget>
     </item>
@@ -51,6 +126,8 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="webcamcapgui.qrc"/>
+ </resources>
  <connections/>
 </ui>

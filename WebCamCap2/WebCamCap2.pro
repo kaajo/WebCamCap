@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     src/pointchecker.cpp \
     src/matrix.tpp \
     gui/aboutwidget.cpp \
-    gui/camerawidget.cpp
+    gui/camerawidget.cpp \
+    gui/animationeditor.cpp
 
 HEADERS  += gui/wccmainwindow.h \
     src/localserver.h \
@@ -41,13 +42,15 @@ HEADERS  += gui/wccmainwindow.h \
     src/matrix.h \
     src/std_2d_vector.h \
     gui/aboutwidget.h \
-    gui/camerawidget.h
+    gui/camerawidget.h \
+    gui/animationeditor.h
 
 FORMS    += gui/wccmainwindow.ui \
     gui/addcamera.ui \
     gui/projectwizard.ui \
     gui/aboutwidget.ui \
-    gui/camerawidget.ui
+    gui/camerawidget.ui \
+    animationeditor.ui
 
 QMAKE_CXXFLAGS += -O2 -msse -msse2 -mssse3 -std=c++11 -pedantic -Wall -Wextra
 

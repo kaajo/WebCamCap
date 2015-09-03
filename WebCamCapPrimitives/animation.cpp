@@ -7,6 +7,12 @@
 
 #include <QDebug>
 
+
+QVector<Frame> &Animation::frames()
+{
+    return m_frames;
+}
+
 Animation::Animation(QVector3D roomDims, QString name, QObject *parent) :
     QObject(parent)
 {
@@ -29,7 +35,7 @@ float Animation::lengthMS()
     return m_elapsedMilliSecondsTime;
 }
 
-bool Animation::save(QString folder)
+bool Animation::save(QString file)
 {
     // ex:
     // create a SdkManager
@@ -83,9 +89,8 @@ bool Animation::save(QString folder)
     // create an exporter.
     FbxExporter* lExporter = FbxExporter::Create(lSdkManager, "");
     // initialize the exporter by providing a filename and the IOSettings to use
-    QString target = (folder + "/" + name()+ ".fbx");
-    qDebug() << "animation saved to: " << target;
-    lExporter->Initialize(target.toStdString().c_str(), -1, ios);
+    qDebug() << "animation saved to: " << file;
+    lExporter->Initialize(file.toStdString().c_str(), -1, ios);
     // export the scene.
     if( ! lExporter->Export(pScene))
     {
