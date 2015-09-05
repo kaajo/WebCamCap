@@ -17,8 +17,8 @@ before_install:
 - cd ..
 - curl -sL http://images.autodesk.com/adsk/files/fbx20151_fbxsdk_linux.tar.gz > fbxsdk.tar.gz
 - ls
-- tar -zxvf fbxsdk.tar.gz fbx20151_fbxsdk_linux
-
+- tar xvf fbxsdk.tar.gz fbx20151_fbxsdk_linux
+- sudo echo -e "yes\nn" | ./fbx20151_fbxsdk_linux /usr
     
 script:
  - qmake -project
