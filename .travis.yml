@@ -2,19 +2,31 @@ language: cpp
 compiler: g++
 
 before_install:
+- sudo apt-get install build-essential
 - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
 - sudo apt-get update -qq
 - sudo apt-get install qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
 - sudo apt-get install qt5-default qttools5-dev-tools
-- sudo apt-get install libopencv-dev
+- curl -sL https://github.com/Itseez/opencv/archive/3.0.0.zip > opencv.zip
+- unzip opencv.zip
+- rm opencv.zip
+- mkdir opencv-build
+- cd opencv-build/
+- cmake -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_DOCS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_opencv_java=OFF -DBUILD_JASPER=ON -DWITH_JASPER=ON -DBUILD_ZLIB=ON -DBUILD_SHARED_LIBS=OFF -DBUILD_TESTS=OFF -DBUILD_PERF_TESTS=OFF -DWITH_OPENEXR=OFF -DBUILD_PNG=ON -DWITH_PNG=ON -DWITH_TIFF=ON -DBUILD_TIFF=ON -DWITH_WEBP=OFF -DWITH_JPEG=ON -DBUILD_JPEG=ON ../opencv-2.4.6.1/
+- sudo make install
+- cd ..
 - curl -sL http://images.autodesk.com/adsk/files/fbx20151_fbxsdk_linux.tar.gz > fbxsdk.tar.gz
-- tar -zxvf fbxsdk.tar.gz
-- rm fbxsdk.tar.gz
+- ls
+- tar -zxvf fbxsdk.tar.gz fbx20151_fbxsdk_linux
+
     
 script:
  - qmake -project
  - qmake WebCamCap.pro
  - make
+
+notifications:
+	email: false
 
 os: linux
     
