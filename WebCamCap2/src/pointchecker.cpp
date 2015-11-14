@@ -111,7 +111,7 @@ QVector<Marker> PointChecker::handleNo(QVector<QVector3D> &points)
     {
         lastRemovedIDs.clear();
 
-        for(size_t i = 0; i < points.size(); i++)
+        for(int i = 0; i < points.size(); i++)
         {
             pts.push_back({nextUniqueIndex(i), points[i]});
         }

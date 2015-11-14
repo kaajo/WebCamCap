@@ -1,6 +1,6 @@
 #include "markercamera.h"
 
-#include <tr1/functional>
+#include <functional>
 
 #include <QDebug>
 #include <QMessageBox>
@@ -388,7 +388,7 @@ void MarkerCamera::applyFilters()
 void MarkerCamera::createLineForComponents()
 {
     m_lines = QtConcurrent::blockingMapped<QVector<Line>>(m_contours,
-              std::tr1::bind(&MarkerCamera::qtConcurrentpickLine, this, std::tr1::placeholders::_1));
+              std::bind(&MarkerCamera::qtConcurrentpickLine, this, std::placeholders::_1));
 }
 
 //########################################################################################

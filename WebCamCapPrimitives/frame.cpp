@@ -1,7 +1,5 @@
 #include "frame.h"
 
-#include "tr1/functional"
-
 Frame::Frame()
 {
 

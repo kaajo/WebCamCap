@@ -188,6 +188,8 @@ QVector<QVector3D> PolygonCameraTopology::mergePoints(size_t targetNumberOfPoint
     {
         retVal+=pts;
     }
+
+    return retVal;
 }
 
 void PolygonCameraTopology::normaliseCoords(QVector<Marker> &points, QVector3D roomSize)
