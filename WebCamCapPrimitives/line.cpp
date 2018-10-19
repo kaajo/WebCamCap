@@ -4,6 +4,8 @@
 #include <QVariant>
 #include <QVariantMap>
 
+#include <cmath>
+
 Line::Line()
 {
 }
