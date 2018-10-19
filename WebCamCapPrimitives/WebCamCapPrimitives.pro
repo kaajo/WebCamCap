@@ -41,10 +41,7 @@ unix {
 }
 
 #FBX_SDK
+unix:!macx: LIBS += -L$$PWD/../../../../../usr/lib/gcc4/x64/release/ -lfbxsdk
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../../usr/lib/release/ -lfbxsdk
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../../usr/lib/debug/ -lfbxsdk
-else:unix: LIBS += -L$$PWD/../../../../../../usr/lib/ -lfbxsdk
-
-INCLUDEPATH += $$PWD/../../../../../../usr/include
-DEPENDPATH += $$PWD/../../../../../../usr/include
+INCLUDEPATH += $$PWD/../../../../../usr/lib/gcc4/x64/release
+DEPENDPATH += $$PWD/../../../../../usr/lib/gcc4/x64/release
