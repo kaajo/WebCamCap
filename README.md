@@ -1,7 +1,5 @@
 ## Project information
-**WebCamCap** is tool for 2D/3D motion capture with active markers (LED diodes) written in C++11. It doesn't require any special hardware, just common webcam with VGA (640 x 480) resolution and diffused white LED diodes for best results. 
-
-[![Build Status](https://travis-ci.org/kaajo/WebCamCap.svg?branch=master)](https://travis-ci.org/kaajo/WebCamCap)
+**WebCamCap** is tool for 2D/3D motion capture with active markers (LED diodes) written in C++11. It doesn't require any special hardware, just common webcam with VGA (640 x 480) resolution and diffused white LED diodes for best results.
 
 NOTE: There are currently 2 versions of **WebCamCap** in QMake project.
 
@@ -13,20 +11,23 @@ NOTE: There are currently 2 versions of **WebCamCap** in QMake project.
 - export animation to .fbx format
 
 ## Requirements
-- Qt 5.4 / 5.5
+- Qt 5.9
 - OpenCV 3.0
 - OpenGL
 - GLU
 - GLUT*
 - GLM*
-- FBX SDK [link](http://usa.autodesk.com/adsk/servlet/pc/item?siteID=123112&id=10775847)
+- FBX SDK
 
 *only first version
+
+## Docker
+```
+docker pull kaajo/webcamcap
+```
 
 ## Donate
 [![Donate via PayPal](https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=kajo8246%40azet%2esk&lc=SK&item_name=WebCamCap&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
 
-
 ## Videos
 For all videos check my WebCamCap [Playlist](https://www.youtube.com/playlist?list=PL06R3YeyHsEbsVQlwZ6-BCoW4DKWrXiek)
-
