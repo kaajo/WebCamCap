@@ -78,9 +78,9 @@ DEPENDPATH += $$PWD/../WebCamCapGui
 RESOURCES += \
     WebCamCap2.qrc
 
-unix:!macx: LIBS += -L$$PWD/../../../../../usr/lib/gcc4/x64/release/ -lfbxsdk
+unix:!macx: LIBS += -L/usr/lib/gcc4/x64/release/ -lfbxsdk
 
-INCLUDEPATH += $$PWD/../../../../../usr/lib/gcc4/x64/release
-DEPENDPATH += $$PWD/../../../../../usr/lib/gcc4/x64/release
+INCLUDEPATH += /usr/lib/gcc4/x64/release
+DEPENDPATH += /usr/lib/gcc4/x64/release
 
-unix:!macx: PRE_TARGETDEPS += $$PWD/../../../../../usr/lib/gcc4/x64/release/libfbxsdk.a
+unix:!macx: PRE_TARGETDEPS += /usr/lib/gcc4/x64/release/libfbxsdk.a
