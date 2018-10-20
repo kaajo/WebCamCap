@@ -34,7 +34,7 @@ ENV PATH=$QT_BASE_DIR/bin:$PATH
 ENV LD_LIBRARY_PATH=$QT_BASE_DIR/lib/x86_64-linux-gnu:$QT_BASE_DIR/lib:$LD_LIBRARY_PATH
 ENV PKG_CONFIG_PATH=$QT_BASE_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
 
-RUN cd /home/wcc && git clone https://github.com/kaajo/WebCamCap.git && mkdir build && cd build && /opt/qt59/bin/qmake -o Makefile ../WebCamCap/WebCamCap.pro -spec linux-g++ && make qmake_all && make sub-WebCamCap2 -j
+RUN cd /home/wcc && git clone https://github.com/kaajo/WebCamCap.git && mkdir build && cd build && /opt/qt59/bin/qmake -o Makefile ../WebCamCap/WebCamCap.pro -spec linux-g++ && make qmake_all && make sub-WebCamCap2
 
 USER root
 RUN cd /home/wcc/build && make install
