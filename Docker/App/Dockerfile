@@ -1,4 +1,4 @@
-FROM dymat/opencv:latest
+FROM ubuntu:16.04
 
 MAINTAINER mirokrajicek@gmail.com
 
@@ -8,7 +8,7 @@ USER root
 ##system
 RUN apt-get -qq update && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y curl locales build-essential git software-properties-common && add-apt-repository -y ppa:beineri/opt-qt596-xenial
 ## application
-RUN apt-get -qq update && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y qt59charts-no-lgpl libglm-dev libglu1-mesa-dev libtbb-dev
+RUN apt-get -qq update && DEBIAN_FRONTEND=noninteractive apt-get install -qq -y libopencv-dev qt59charts-no-lgpl libglm-dev libglu1-mesa-dev libtbb-dev
 ## fbxsdk
 RUN curl http://download.autodesk.com/us/fbx/2019/2019.0/fbx20190_fbxsdk_linux.tar.gz --output fbx20190_fbxsdk_linux.tar.gz \ 
     && mkdir fbx20190_fbxsdk_linux && tar -xzf fbx20190_fbxsdk_linux.tar.gz -C fbx20190_fbxsdk_linux && cd fbx20190_fbxsdk_linux \
@@ -33,6 +33,7 @@ ENV QTDIR=$QT_BASE_DIR
 ENV PATH=$QT_BASE_DIR/bin:$PATH
 ENV LD_LIBRARY_PATH=$QT_BASE_DIR/lib/x86_64-linux-gnu:$QT_BASE_DIR/lib:$LD_LIBRARY_PATH
 ENV PKG_CONFIG_PATH=$QT_BASE_DIR/lib/pkgconfig:$PKG_CONFIG_PATH
+ENV QT_X11_NO_MITSHM=1 #rendering fix for qv4l2
 
 RUN cd /home/wcc && git clone https://github.com/kaajo/WebCamCap.git && mkdir build && cd build && /opt/qt59/bin/qmake -o Makefile ../WebCamCap/WebCamCap.pro -spec linux-g++ && make qmake_all && make sub-WebCamCap2
 

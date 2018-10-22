@@ -1,0 +1,14 @@
+version: "3.2"
+services:
+  webcamcap:
+    image: kaajo/webcamcap:latest
+    privileged: true
+    environment:
+      DISPLAY: $DISPLAY
+    volumes:
+      - type: volume
+        source: /tmp/.X11-unix
+        target: /tmp/.X11-unix
+    devices:
+      - "/dev/video0:/dev/video0"
+    container_name: webcamcap
