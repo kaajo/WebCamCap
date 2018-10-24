@@ -1,0 +1,12 @@
+version: "3.2"
+services:
+  webcamcap:
+    image: kaajo/webcamcap:devel
+    privileged: true
+    environment:
+      DISPLAY: $DISPLAY
+    volumes:
+      - type: volume
+        source: /tmp/.X11-unix
+        target: /tmp/.X11-unix
+    container_name: webcamcap-devel
