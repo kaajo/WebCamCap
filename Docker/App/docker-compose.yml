@@ -9,6 +9,4 @@ services:
       - type: volume
         source: /tmp/.X11-unix
         target: /tmp/.X11-unix
-    devices:
-      - "/dev/video0:/dev/video0"
     container_name: webcamcap
