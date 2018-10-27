@@ -1,9 +1,8 @@
 TEMPLATE = subdirs
 
-SUBDIRS =   WebCamCap \
-            WccSample \
+SUBDIRS =   WccSample \
             WebCamCapAPI \
-            WebCamCap/Calib \
+            Calib \
             WebCamCap2 \
             WebCamCapInterfaces \
             WebCamCapPrimitives \
