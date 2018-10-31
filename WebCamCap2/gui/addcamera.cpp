@@ -277,13 +277,17 @@ void AddCamera::on_calibButton_clicked()
     arguments << "-w" << "7" << "-h" << "5" << "-pt" << "chessboard" << "-n" << "25";
     arguments << "-o" << m_ui->name->text() + ".yaml";
 
-    QString path = QDir::currentPath() + "/Calib/Calib";
+    QDir dir = QDir::current();
+    dir.cdUp();
+    dir.cd("Calib");
+
+    QString path = dir.path() + "/Calib";
 
     QFile file(path);
 
     if(!file.exists())
     {
-        qDebug() << "calib program does not exist";
+        qDebug() << "calib program does not exist in path:" << path;
     }
 
     m_calibApplication = new QProcess(this);
