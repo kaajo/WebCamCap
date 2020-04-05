@@ -1,3 +1,6 @@
+## UPDATE
+This project is no longer maintained. I am currently working on a similar project called [RPIMoCap](https://github.com/kaajo/RPIMoCap) with much better architecture.
+
 ## Project information
 **WebCamCap** is tool for 2D/3D motion capture with active markers (LED diodes) written in C++11. It doesn't require any special hardware, just common webcam with VGA (640 x 480) resolution and diffused white LED diodes for best results.
 
